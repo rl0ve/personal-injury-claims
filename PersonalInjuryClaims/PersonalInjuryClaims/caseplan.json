@@ -3119,6 +3119,14 @@
                     "value": "SubmitMedicalEvidence"
                   },
                   {
+                    "name": "caseInstanceId",
+                    "type": "string",
+                    "id": "aCI040002",
+                    "var": "caseInstanceId",
+                    "elementId": "Stage_Covr04-tCV040002",
+                    "value": "=js:(metadata.InstanceId)"
+                  },
+                  {
                     "name": "claimReference",
                     "type": "string",
                     "id": "aCV040202",

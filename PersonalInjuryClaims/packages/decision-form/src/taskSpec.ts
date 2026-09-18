@@ -13,6 +13,14 @@
 export interface FormData {
   // inputs
   actionType: string;
+  /**
+   * The Maestro case instance this task belongs to. Passed down by the case
+   * plan as `=js:(metadata.InstanceId)`, because Action Center's Task object
+   * carries taskId and folderId but nothing that identifies the case. The
+   * Data Fabric event row is keyed on it: the global event filters on
+   * `CaseId == metadata.InstanceId`, so a row written without it wakes nothing.
+   */
+  caseInstanceId: string;
   claimReference: string;
   claimantName: string;
   incidentLocation: string;
@@ -39,6 +47,7 @@ export interface FormData {
 
 export const defaultFormData: FormData = {
   actionType: '',
+  caseInstanceId: '',
   claimReference: '',
   claimantName: '',
   incidentLocation: '',
