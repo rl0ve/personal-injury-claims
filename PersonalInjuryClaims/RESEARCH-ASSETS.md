@@ -394,3 +394,75 @@ bump the label back to `32.0.1` only in the copy that goes to Studio Web.
 
 **Ported from cloud into local in this pass:** the overall SLA `180d` → `360d`, which clears the
 "Overall SLA is lower than total SLA of all stages" validate warning.
+
+## 9. Case-plan schema version, resolved — 18 Sep
+
+Section 8 said "the `version` field alone routes the migrator". That is half right and it cost a
+day. The migrator does not read the label to pick a chain. It `safeParse`s the document against
+every schema in turn and uses the first that matches, and each schema pins `version` to an exact
+literal. So a label naming a schema that does not exist matches nothing, and detection falls
+through to this branch in `@uipath/case-schema`:
+
+```js
+if (jsonObject.version && jsonObject.metadata && !jsonObject.root) {
+  return { detected: { version: 20, versionString: "20.0.0" } };
+}
+```
+
+**There is no `32.0.1`.** The newest schema in the table is `32.0.0`. A plan labelled `32.0.1`
+therefore reads as 20.0.0, the 20 to 21 migration runs, and V21 validates nodes against
+`CaseManagementJsonNodeSchemaV14`, whose trigger type is the pre-V24 `case-management:Trigger`.
+Our trigger is `uipath.case.trigger`, which is correct from V24 on. Hence the Maestro error:
+
+```
+Error migrating Case JSON from 20.0.0 to 21.0.0: Invalid discriminator value.
+Expected 'case-management:Trigger' | ... at nodes[0].type
+```
+
+Studio Web accepted `32.0.1` because its bundle carries a newer schema table than the Maestro
+viewer does. Fixing one surface broke the other.
+
+### What the migration actually changes
+
+Measured by running the real `migrateCaseInMemoryJsonToLatest` over the plan, not by reading the
+schema source. 56 differences, in three groups:
+
+| Change | Count | Verdict |
+|---|---|---|
+| `selectedStageId` becomes `selectedStageIds`, an array | 16 pairs | Benign, the V29 shape |
+| `current-stage-entered` rewritten to `runs-sequentially` | 5 | Already what the packer emits |
+| Entry-condition ids and display names regenerated | 15 | Ids are noise, names were restored by hand |
+
+The third group matters only for legibility, so the five readable names
+("Policy workstream opens", "Loss detail workstream opens", "Screening workstream opens",
+"Emergency lane opens", "Care support needed") were copied back onto the migrated plan.
+
+### Why the rewrite is safe
+
+`current-stage-entered` is gone in V32 and three of its five uses are the Fnol01 tasks that open
+together on stage entry, so on paper this threatens the parallel fan-out. It does not, because the
+packer already applies the same rewrite when it compiles. The deployed `caseplan.json.bpmn` that
+ran the verified six-stage fan-out carries 30 `runs-sequentially` and no live
+`current-stage-entered`. The runtime has been on V32 semantics all along.
+
+Proved by packing both plans and comparing the compiled output:
+
+- Packing the 27.0.0 plan and the migrated 32.0.0 plan gives BPMN of identical length whose only
+  differences are 95 characters of regenerated ids.
+- Packing the *same* plan twice gives 94 such characters, so that is the noise floor.
+- Normalising ids and display names away, the two compiled documents are identical apart from the
+  `ruleName` strings deliberately restored above. The guard expressions
+  (`vars.caseState.tasksCompleted.some(...)`) match byte for byte.
+
+Worth knowing: the packer reads the plan through an older lineage that tops out at 20 and reports
+`Current migration version: 20, Latest available: 20` whatever the label says. The label is
+inert at pack time. It only decides what the Maestro and Studio Web viewers do.
+
+### State now
+
+Local `PersonalInjuryClaims/caseplan.json` is a genuine `32.0.0` document: content unchanged,
+readable rule names kept, formatted with `uip maestro case format`. It round-trips through the
+migrator with no further migration, and it compiles to the BPMN we verified end to end.
+
+**Cloud is still on the broken `32.0.1` label** and has not been touched. Uploading the local plan
+over it is now the reconciliation section 8 deferred, and it no longer needs a relabelling dance.
