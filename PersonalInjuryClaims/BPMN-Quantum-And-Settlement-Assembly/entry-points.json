@@ -1,0 +1,43 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "/content/BPMN-Quantum-And-Settlement-Assembly.bpmn#Event_start",
+      "uniqueId": "48ec445a-c483-45ac-a590-b5ea286675a7",
+      "type": "ProcessOrchestration",
+      "input": {
+        "type": "object",
+        "properties": {
+          "scenario": {
+            "type": "string"
+          },
+          "claimReference": {
+            "type": "string"
+          },
+          "liabilityBasisCode": {
+            "type": "string"
+          },
+          "contributoryNegligenceFlag": {
+            "type": "boolean"
+          }
+        }
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "estimatedCost": {
+            "type": "number"
+          },
+          "settlementBasis": {
+            "type": "string"
+          },
+          "settlementPath": {
+            "type": "string"
+          }
+        }
+      },
+      "displayName": "Manual trigger"
+    }
+  ]
+}

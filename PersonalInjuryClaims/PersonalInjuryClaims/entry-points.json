@@ -1,0 +1,47 @@
+{
+    "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+    "$id": "entry-points.json",
+    "entryPoints": [
+        {
+            "filePath": "/content/caseplan.json.bpmn#trigger_Start1",
+            "uniqueId": "ec5a23ec-206f-4736-bf9e-49e93a63920e",
+            "type": "CaseManagement",
+            "input": {
+                "type": "object",
+                "properties": {
+                    "scenario": {
+                        "type": "string",
+                        "title": "scenario",
+                        "default": "Standard"
+                    },
+                    "runId": {
+                        "type": "string",
+                        "title": "runId",
+                        "default": "5182"
+                    },
+                    "ownerEmail": {
+                        "type": "string",
+                        "title": "ownerEmail",
+                        "default": "robert.love@uipath.com"
+                    }
+                }
+            },
+            "output": {
+                "type": "object",
+                "properties": {
+                    "caseOutcome": {
+                        "type": "string",
+                        "title": "caseOutcome",
+                        "default": ""
+                    },
+                    "closureReasonCode": {
+                        "type": "string",
+                        "title": "closureReasonCode",
+                        "default": ""
+                    }
+                }
+            },
+            "displayName": "Report a personal injury claim"
+        }
+    ]
+}

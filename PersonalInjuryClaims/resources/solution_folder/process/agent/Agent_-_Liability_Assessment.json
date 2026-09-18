@@ -1,0 +1,38 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Agent - Liability Assessment",
+    "kind": "process",
+    "type": "agent",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "2fe83978-d0d1-43a4-9fd0-2e00e980c20b",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "kind": "package",
+        "name": "Agent - Liability Assessment"
+      }
+    ],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "Agent",
+      "name": "Agent - Liability Assessment",
+      "package": {
+        "key": "b055fdba-b550-4980-ae0a-13dfde5c14a0"
+      },
+      "targetFrameworkValue": "Portable",
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180
+    },
+    "locks": [],
+    "key": "3647fe8d-c983-437c-9005-e6bcab98530c",
+    "files": []
+  }
+}

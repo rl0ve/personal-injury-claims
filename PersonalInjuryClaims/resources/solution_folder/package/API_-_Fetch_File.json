@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "API - Fetch File",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "45d3b970-780f-4d67-8493-91c6444431d1",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "API - Fetch File"
+    },
+    "locks": [],
+    "key": "6f5c8cdd-1111-4fd7-8ac3-419640ef7066",
+    "files": []
+  }
+}

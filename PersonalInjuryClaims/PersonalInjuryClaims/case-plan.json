@@ -1,0 +1,2800 @@
+{
+  "case": {
+    "completionConditions": [
+      {
+        "completionConditionType": "StagesCompleted",
+        "parameters": {
+          "stageNames": [
+            "FNOL & Claim Registration",
+            "Triage & Loss Adjuster Instruction",
+            "Investigation & Cause-of-Loss",
+            "Coverage & Scope Assessment",
+            "Mitigation & Restoration",
+            "Reinstatement / Settlement Execution",
+            "Recoveries, Salvage & Subrogation",
+            "Settlement & Closure"
+          ]
+        },
+        "ruleName": "Claim settled and closed"
+      },
+      {
+        "completionConditionType": "StagesCompleted",
+        "parameters": {
+          "stageNames": [
+            "Coverage Decline & Adverse Decision"
+          ]
+        },
+        "ruleName": "Claim declined"
+      },
+      {
+        "operator": "AND",
+        "conditions": [
+          {
+            "completionConditionType": "StagesCompleted",
+            "parameters": {
+              "stageNames": [
+                "SIU & Investigative Restriction"
+              ]
+            }
+          },
+          {
+            "completionConditionType": "Expression",
+            "parameters": {
+              "expression": "=js:vars.restrictionOutcome === 'Authorised'",
+              "expressionString": "vars.restrictionOutcome === 'Authorised'"
+            }
+          }
+        ],
+        "ruleName": "Claim denied for fraud"
+      }
+    ]
+  },
+  "stages": [
+    {
+      "name": "FNOL & Claim Registration",
+      "entryConditions": [
+        {
+          "entryConditionType": "CaseEntered",
+          "parameters": {},
+          "ruleName": "Loss reported"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"FNOL & Claim Registration\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"FNOL & Claim Registration\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Emergency Response & Alternative Accommodation"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Property made safe"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"FNOL & Claim Registration\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"FNOL & Claim Registration\"))"
+              }
+            },
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.restrictionOutcome !== 'Authorised'",
+                "expressionString": "vars.restrictionOutcome !== 'Authorised'"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "SIU & Investigative Restriction"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Claim cleared"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"FNOL & Claim Registration\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"FNOL & Claim Registration\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Escalation & Authority Referral"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Escalation resolved"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"FNOL & Claim Registration\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"FNOL & Claim Registration\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Complaint & Ombudsman Referral"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Complaint resolved"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"FNOL & Claim Registration\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"FNOL & Claim Registration\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "CAT Surge Handling"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Surge handling applied"
+        }
+      ],
+      "exitConditions": [],
+      "completionConditions": [
+        {
+          "completionConditionType": "TasksCompleted",
+          "parameters": {
+            "taskNames": [
+              "Wait for User to Select Next Stage for FNOL & Claim Registration"
+            ]
+          },
+          "ruleName": "Claim registered"
+        }
+      ],
+      "tasks": [
+        {
+          "name": "Create claim shell",
+          "runOnlyOnce": true,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "FNOL & Claim Registration"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "Expression",
+                  "parameters": {
+                    "expression": "=js:(vars.caseState != null && vars.caseState.tasksCompleted != null) ? (!vars.caseState.tasksCompleted.some((task) => task == \"Create claim shell\")) : true",
+                    "expressionString": "(vars.caseState != null && vars.caseState.tasksCompleted != null) ? (!vars.caseState.tasksCompleted.some((task) => task == \"Create claim shell\")) : true"
+                  }
+                }
+              ],
+              "ruleName": "Case started"
+            }
+          ]
+        },
+        {
+          "name": "Verify policy and cover",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "FNOL & Claim Registration"
+                    ]
+                  }
+                },
+                {
+                  "operator": "OR",
+                  "conditions": [
+                    {
+                      "entryConditionType": "TasksCompleted",
+                      "parameters": {
+                        "taskNames": [
+                          "Create claim shell"
+                        ]
+                      }
+                    },
+                    {
+                      "entryConditionType": "Expression",
+                      "parameters": {
+                        "expression": "=js:(vars.caseState != null && vars.caseState.tasksCompleted != null && vars.caseState.tasksCompleted.some((task) => task == \"Create claim shell\"))",
+                        "expressionString": "(vars.caseState != null && vars.caseState.tasksCompleted != null && vars.caseState.tasksCompleted.some((task) => task == \"Create claim shell\"))"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "ruleName": "Entry rule 1"
+            }
+          ]
+        },
+        {
+          "name": "Capture peril and damage detail",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "FNOL & Claim Registration"
+                    ]
+                  }
+                },
+                {
+                  "operator": "OR",
+                  "conditions": [
+                    {
+                      "entryConditionType": "TasksCompleted",
+                      "parameters": {
+                        "taskNames": [
+                          "Create claim shell"
+                        ]
+                      }
+                    },
+                    {
+                      "entryConditionType": "Expression",
+                      "parameters": {
+                        "expression": "=js:(vars.caseState != null && vars.caseState.tasksCompleted != null && vars.caseState.tasksCompleted.some((task) => task == \"Create claim shell\"))",
+                        "expressionString": "(vars.caseState != null && vars.caseState.tasksCompleted != null && vars.caseState.tasksCompleted.some((task) => task == \"Create claim shell\"))"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "ruleName": "Entry rule 2"
+            }
+          ]
+        },
+        {
+          "name": "Screen for fraud and prior claims",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "FNOL & Claim Registration"
+                    ]
+                  }
+                },
+                {
+                  "operator": "OR",
+                  "conditions": [
+                    {
+                      "entryConditionType": "TasksCompleted",
+                      "parameters": {
+                        "taskNames": [
+                          "Create claim shell"
+                        ]
+                      }
+                    },
+                    {
+                      "entryConditionType": "Expression",
+                      "parameters": {
+                        "expression": "=js:(vars.caseState != null && vars.caseState.tasksCompleted != null && vars.caseState.tasksCompleted.some((task) => task == \"Create claim shell\"))",
+                        "expressionString": "(vars.caseState != null && vars.caseState.tasksCompleted != null && vars.caseState.tasksCompleted.some((task) => task == \"Create claim shell\"))"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "ruleName": "Entry rule 3"
+            }
+          ]
+        },
+        {
+          "name": "Confirm registration and set reserves",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "entryConditionType": "TasksCompleted",
+              "parameters": {
+                "taskNames": [
+                  "Verify policy and cover",
+                  "Capture peril and damage detail",
+                  "Screen for fraud and prior claims"
+                ]
+              },
+              "ruleName": "All workstreams reported"
+            }
+          ]
+        },
+        {
+          "name": "Wait for User to Select Next Stage for FNOL & Claim Registration",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Create claim shell",
+                      "Verify policy and cover",
+                      "Capture peril and damage detail",
+                      "Screen for fraud and prior claims",
+                      "Confirm registration and set reserves"
+                    ]
+                  },
+                  "ruleName": "Claim registered"
+                },
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "FNOL & Claim Registration"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Triage & Loss Adjuster Instruction",
+      "entryConditions": [
+        {
+          "entryConditionType": "StagesCompleted",
+          "parameters": {
+            "stageNames": [
+              "FNOL & Claim Registration"
+            ]
+          },
+          "ruleName": "Registration complete"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Triage & Loss Adjuster Instruction\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Triage & Loss Adjuster Instruction\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Emergency Response & Alternative Accommodation"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Property made safe"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Triage & Loss Adjuster Instruction\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Triage & Loss Adjuster Instruction\"))"
+              }
+            },
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.restrictionOutcome !== 'Authorised'",
+                "expressionString": "vars.restrictionOutcome !== 'Authorised'"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "SIU & Investigative Restriction"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Claim cleared"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Triage & Loss Adjuster Instruction\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Triage & Loss Adjuster Instruction\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Escalation & Authority Referral"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Escalation resolved"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Triage & Loss Adjuster Instruction\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Triage & Loss Adjuster Instruction\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Complaint & Ombudsman Referral"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Complaint resolved"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Triage & Loss Adjuster Instruction\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Triage & Loss Adjuster Instruction\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "CAT Surge Handling"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Surge handling applied"
+        }
+      ],
+      "exitConditions": [],
+      "completionConditions": [
+        {
+          "completionConditionType": "TasksCompleted",
+          "parameters": {
+            "taskNames": [
+              "Wait for User to Select Next Stage for Triage & Loss Adjuster Instruction"
+            ]
+          },
+          "ruleName": "Triage complete"
+        }
+      ],
+      "tasks": [
+        {
+          "name": "Assign handling track",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "entryConditionType": "StageEntered",
+              "parameters": {
+                "stageNames": [
+                  "Triage & Loss Adjuster Instruction"
+                ]
+              },
+              "ruleName": "Triage opens"
+            }
+          ]
+        },
+        {
+          "name": "Allocate loss adjuster",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Triage & Loss Adjuster Instruction"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Assign handling track"
+                    ]
+                  }
+                }
+              ],
+              "ruleName": "Track assigned"
+            }
+          ]
+        },
+        {
+          "name": "Request supplementary evidence",
+          "entryConditions": [
+            {
+              "entryConditionType": "UserAdhocTrigger",
+              "parameters": {
+                "taskNames": [
+                  "Request supplementary evidence"
+                ]
+              },
+              "ruleName": "Handler requests evidence"
+            }
+          ]
+        },
+        {
+          "name": "Wait for User to Select Next Stage for Triage & Loss Adjuster Instruction",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Assign handling track",
+                      "Allocate loss adjuster"
+                    ]
+                  },
+                  "ruleName": "Triage complete"
+                },
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Triage & Loss Adjuster Instruction"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Investigation & Cause-of-Loss",
+      "entryConditions": [
+        {
+          "entryConditionType": "StagesCompleted",
+          "parameters": {
+            "stageNames": [
+              "Triage & Loss Adjuster Instruction"
+            ]
+          },
+          "ruleName": "Adjuster instructed"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "SIU & Investigative Restriction"
+                ]
+              }
+            },
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.restrictionOutcome !== 'Authorised'",
+                "expressionString": "vars.restrictionOutcome !== 'Authorised'"
+              }
+            }
+          ],
+          "ruleName": "Returned from investigation"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Investigation & Cause-of-Loss\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Investigation & Cause-of-Loss\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Emergency Response & Alternative Accommodation"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Property made safe"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Investigation & Cause-of-Loss\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Investigation & Cause-of-Loss\"))"
+              }
+            },
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.restrictionOutcome !== 'Authorised'",
+                "expressionString": "vars.restrictionOutcome !== 'Authorised'"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "SIU & Investigative Restriction"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Claim cleared"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Investigation & Cause-of-Loss\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Investigation & Cause-of-Loss\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Escalation & Authority Referral"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Escalation resolved"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Investigation & Cause-of-Loss\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Investigation & Cause-of-Loss\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Complaint & Ombudsman Referral"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Complaint resolved"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Investigation & Cause-of-Loss\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Investigation & Cause-of-Loss\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "CAT Surge Handling"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Surge handling applied"
+        }
+      ],
+      "exitConditions": [
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "exitConditionType": "TasksCompleted",
+              "parameters": {
+                "taskNames": [
+                  "Retrieve property risk data",
+                  "Determine cause of loss",
+                  "Assess sum insured and average"
+                ]
+              }
+            },
+            {
+              "exitConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.fraudScore >= 75",
+                "expressionString": "vars.fraudScore >= 75"
+              }
+            }
+          ],
+          "ruleName": "Referred to investigation"
+        }
+      ],
+      "completionConditions": [
+        {
+          "completionConditionType": "TasksCompleted",
+          "parameters": {
+            "taskNames": [
+              "Wait for User to Select Next Stage for Investigation & Cause-of-Loss"
+            ]
+          },
+          "ruleName": "Investigation concluded"
+        }
+      ],
+      "tasks": [
+        {
+          "name": "Retrieve property risk data",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "entryConditionType": "StageEntered",
+              "parameters": {
+                "stageNames": [
+                  "Investigation & Cause-of-Loss"
+                ]
+              },
+              "ruleName": "Investigation opens"
+            }
+          ]
+        },
+        {
+          "name": "Determine cause of loss",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Investigation & Cause-of-Loss"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Retrieve property risk data"
+                    ]
+                  }
+                }
+              ],
+              "ruleName": "Risk data retrieved"
+            }
+          ]
+        },
+        {
+          "name": "Assess sum insured and average",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Investigation & Cause-of-Loss"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Determine cause of loss"
+                    ]
+                  }
+                }
+              ],
+              "ruleName": "Cause determined"
+            }
+          ]
+        },
+        {
+          "name": "Wait for User to Select Next Stage for Investigation & Cause-of-Loss",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "operator": "AND",
+                  "conditions": [
+                    {
+                      "entryConditionType": "TasksCompleted",
+                      "parameters": {
+                        "taskNames": [
+                          "Retrieve property risk data",
+                          "Determine cause of loss",
+                          "Assess sum insured and average"
+                        ]
+                      }
+                    },
+                    {
+                      "entryConditionType": "Expression",
+                      "parameters": {
+                        "expression": "=js:vars.fraudScore < 75",
+                        "expressionString": "vars.fraudScore < 75"
+                      }
+                    }
+                  ],
+                  "ruleName": "Investigation concluded"
+                },
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Investigation & Cause-of-Loss"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Coverage & Scope Assessment",
+      "entryConditions": [
+        {
+          "entryConditionType": "StagesCompleted",
+          "parameters": {
+            "stageNames": [
+              "Investigation & Cause-of-Loss"
+            ]
+          },
+          "ruleName": "Investigation complete"
+        },
+        {
+          "entryConditionType": "StagesCompleted",
+          "parameters": {
+            "stageNames": [
+              "Hidden Damage & Supplemental Scope"
+            ]
+          },
+          "ruleName": "Re-scoped after hidden damage"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Coverage & Scope Assessment\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Coverage & Scope Assessment\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Emergency Response & Alternative Accommodation"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Property made safe"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Coverage & Scope Assessment\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Coverage & Scope Assessment\"))"
+              }
+            },
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.restrictionOutcome !== 'Authorised'",
+                "expressionString": "vars.restrictionOutcome !== 'Authorised'"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "SIU & Investigative Restriction"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Claim cleared"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Coverage & Scope Assessment\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Coverage & Scope Assessment\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Escalation & Authority Referral"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Escalation resolved"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Coverage & Scope Assessment\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Coverage & Scope Assessment\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Complaint & Ombudsman Referral"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Complaint resolved"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Coverage & Scope Assessment\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Coverage & Scope Assessment\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "CAT Surge Handling"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Surge handling applied"
+        }
+      ],
+      "exitConditions": [
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "exitConditionType": "TasksCompleted",
+              "parameters": {
+                "taskNames": [
+                  "Assemble scope and settlement figures",
+                  "Confirm coverage position",
+                  "Record coverage and settlement decision"
+                ]
+              }
+            },
+            {
+              "exitConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.liabilityOutcome === 'Declined'",
+                "expressionString": "vars.liabilityOutcome === 'Declined'"
+              }
+            }
+          ],
+          "ruleName": "Coverage position declined"
+        }
+      ],
+      "completionConditions": [
+        {
+          "completionConditionType": "TasksCompleted",
+          "parameters": {
+            "taskNames": [
+              "Wait for User to Select Next Stage for Coverage & Scope Assessment"
+            ]
+          },
+          "ruleName": "Coverage position confirmed"
+        }
+      ],
+      "tasks": [
+        {
+          "name": "Assemble scope and settlement figures",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "entryConditionType": "StageEntered",
+              "parameters": {
+                "stageNames": [
+                  "Coverage & Scope Assessment"
+                ]
+              },
+              "ruleName": "Assessment opens"
+            }
+          ]
+        },
+        {
+          "name": "Confirm coverage position",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Coverage & Scope Assessment"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Assemble scope and settlement figures"
+                    ]
+                  }
+                }
+              ],
+              "ruleName": "Scope ready for decision"
+            }
+          ]
+        },
+        {
+          "name": "Authorise settlement",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Confirm coverage position"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "Expression",
+                  "parameters": {
+                    "expression": "=js:vars.liabilityOutcome !== 'Declined'",
+                    "expressionString": "vars.liabilityOutcome !== 'Declined'"
+                  }
+                }
+              ],
+              "ruleName": "Coverage confirmed"
+            }
+          ]
+        },
+        {
+          "name": "Record coverage and settlement decision",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "entryConditionType": "TasksCompleted",
+              "parameters": {
+                "taskNames": [
+                  "Confirm coverage position"
+                ]
+              },
+              "ruleName": "Decision taken"
+            }
+          ]
+        },
+        {
+          "name": "Wait for User to Select Next Stage for Coverage & Scope Assessment",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "operator": "AND",
+                  "conditions": [
+                    {
+                      "entryConditionType": "TasksCompleted",
+                      "parameters": {
+                        "taskNames": [
+                          "Assemble scope and settlement figures",
+                          "Confirm coverage position",
+                          "Record coverage and settlement decision"
+                        ]
+                      }
+                    },
+                    {
+                      "entryConditionType": "Expression",
+                      "parameters": {
+                        "expression": "=js:vars.liabilityOutcome !== 'Declined'",
+                        "expressionString": "vars.liabilityOutcome !== 'Declined'"
+                      }
+                    }
+                  ],
+                  "ruleName": "Coverage position confirmed"
+                },
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Coverage & Scope Assessment"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Mitigation & Restoration",
+      "entryConditions": [
+        {
+          "entryConditionType": "StagesCompleted",
+          "parameters": {
+            "stageNames": [
+              "Coverage & Scope Assessment"
+            ]
+          },
+          "ruleName": "Scope agreed"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Mitigation & Restoration\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Mitigation & Restoration\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Emergency Response & Alternative Accommodation"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Property made safe"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Mitigation & Restoration\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Mitigation & Restoration\"))"
+              }
+            },
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.restrictionOutcome !== 'Authorised'",
+                "expressionString": "vars.restrictionOutcome !== 'Authorised'"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "SIU & Investigative Restriction"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Claim cleared"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Mitigation & Restoration\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Mitigation & Restoration\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Escalation & Authority Referral"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Escalation resolved"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Mitigation & Restoration\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Mitigation & Restoration\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Complaint & Ombudsman Referral"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Complaint resolved"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Mitigation & Restoration\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Mitigation & Restoration\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "CAT Surge Handling"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Surge handling applied"
+        }
+      ],
+      "exitConditions": [
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "exitConditionType": "TasksCompleted",
+              "parameters": {
+                "taskNames": [
+                  "Authorise strip-out and dispatch restorer",
+                  "Run drying programme",
+                  "Inspect for hidden damage"
+                ]
+              }
+            },
+            {
+              "exitConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.hiddenDamageFound === true",
+                "expressionString": "vars.hiddenDamageFound === true"
+              }
+            }
+          ],
+          "ruleName": "Hidden damage found"
+        }
+      ],
+      "completionConditions": [
+        {
+          "completionConditionType": "TasksCompleted",
+          "parameters": {
+            "taskNames": [
+              "Wait for User to Select Next Stage for Mitigation & Restoration"
+            ]
+          },
+          "ruleName": "Property dried and stable"
+        }
+      ],
+      "tasks": [
+        {
+          "name": "Authorise strip-out and dispatch restorer",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "entryConditionType": "StageEntered",
+              "parameters": {
+                "stageNames": [
+                  "Mitigation & Restoration"
+                ]
+              },
+              "ruleName": "Mitigation opens"
+            }
+          ]
+        },
+        {
+          "name": "Run drying programme",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Mitigation & Restoration"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Authorise strip-out and dispatch restorer"
+                    ]
+                  }
+                }
+              ],
+              "ruleName": "Restorer on site"
+            }
+          ]
+        },
+        {
+          "name": "Inspect for hidden damage",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Mitigation & Restoration"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Run drying programme"
+                    ]
+                  }
+                }
+              ],
+              "ruleName": "Drying complete"
+            }
+          ]
+        },
+        {
+          "name": "Wait for User to Select Next Stage for Mitigation & Restoration",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "operator": "AND",
+                  "conditions": [
+                    {
+                      "entryConditionType": "TasksCompleted",
+                      "parameters": {
+                        "taskNames": [
+                          "Authorise strip-out and dispatch restorer",
+                          "Run drying programme",
+                          "Inspect for hidden damage"
+                        ]
+                      }
+                    },
+                    {
+                      "entryConditionType": "Expression",
+                      "parameters": {
+                        "expression": "=js:vars.hiddenDamageFound !== true",
+                        "expressionString": "vars.hiddenDamageFound !== true"
+                      }
+                    }
+                  ],
+                  "ruleName": "Property dried and stable"
+                },
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Mitigation & Restoration"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reinstatement / Settlement Execution",
+      "entryConditions": [
+        {
+          "entryConditionType": "StagesCompleted",
+          "parameters": {
+            "stageNames": [
+              "Mitigation & Restoration"
+            ]
+          },
+          "ruleName": "Property dried"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Reinstatement / Settlement Execution\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Reinstatement / Settlement Execution\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Emergency Response & Alternative Accommodation"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Property made safe"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Reinstatement / Settlement Execution\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Reinstatement / Settlement Execution\"))"
+              }
+            },
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.restrictionOutcome !== 'Authorised'",
+                "expressionString": "vars.restrictionOutcome !== 'Authorised'"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "SIU & Investigative Restriction"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Claim cleared"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Reinstatement / Settlement Execution\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Reinstatement / Settlement Execution\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Escalation & Authority Referral"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Escalation resolved"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Reinstatement / Settlement Execution\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Reinstatement / Settlement Execution\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Complaint & Ombudsman Referral"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Complaint resolved"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Reinstatement / Settlement Execution\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Reinstatement / Settlement Execution\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "CAT Surge Handling"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Surge handling applied"
+        }
+      ],
+      "exitConditions": [],
+      "completionConditions": [
+        {
+          "completionConditionType": "TasksCompleted",
+          "parameters": {
+            "taskNames": [
+              "Wait for User to Select Next Stage for Reinstatement / Settlement Execution"
+            ]
+          },
+          "ruleName": "Reinstatement finished"
+        }
+      ],
+      "tasks": [
+        {
+          "name": "Allocate reinstatement contractor",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "entryConditionType": "StageEntered",
+              "parameters": {
+                "stageNames": [
+                  "Reinstatement / Settlement Execution"
+                ]
+              },
+              "ruleName": "Reinstatement opens"
+            }
+          ]
+        },
+        {
+          "name": "Record works in adjuster portal",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Reinstatement / Settlement Execution"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Allocate reinstatement contractor"
+                    ]
+                  }
+                }
+              ],
+              "ruleName": "Contractor allocated"
+            }
+          ]
+        },
+        {
+          "name": "Reconcile contractor invoices",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Reinstatement / Settlement Execution"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Record works in adjuster portal"
+                    ]
+                  }
+                }
+              ],
+              "ruleName": "Works recorded"
+            }
+          ]
+        },
+        {
+          "name": "Wait for User to Select Next Stage for Reinstatement / Settlement Execution",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Allocate reinstatement contractor",
+                      "Reconcile contractor invoices"
+                    ]
+                  },
+                  "ruleName": "Reinstatement finished"
+                },
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Reinstatement / Settlement Execution"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Recoveries, Salvage & Subrogation",
+      "entryConditions": [
+        {
+          "entryConditionType": "StagesCompleted",
+          "parameters": {
+            "stageNames": [
+              "Reinstatement / Settlement Execution"
+            ]
+          },
+          "ruleName": "Reinstatement complete"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Recoveries, Salvage & Subrogation\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Recoveries, Salvage & Subrogation\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Emergency Response & Alternative Accommodation"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Property made safe"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Recoveries, Salvage & Subrogation\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Recoveries, Salvage & Subrogation\"))"
+              }
+            },
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.restrictionOutcome !== 'Authorised'",
+                "expressionString": "vars.restrictionOutcome !== 'Authorised'"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "SIU & Investigative Restriction"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Claim cleared"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Recoveries, Salvage & Subrogation\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Recoveries, Salvage & Subrogation\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Escalation & Authority Referral"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Escalation resolved"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Recoveries, Salvage & Subrogation\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Recoveries, Salvage & Subrogation\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Complaint & Ombudsman Referral"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Complaint resolved"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Recoveries, Salvage & Subrogation\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Recoveries, Salvage & Subrogation\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "CAT Surge Handling"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Surge handling applied"
+        }
+      ],
+      "exitConditions": [],
+      "completionConditions": [
+        {
+          "completionConditionType": "TasksCompleted",
+          "parameters": {
+            "taskNames": [
+              "Wait for User to Select Next Stage for Recoveries, Salvage & Subrogation"
+            ]
+          },
+          "ruleName": "Recoveries finished"
+        }
+      ],
+      "tasks": [
+        {
+          "name": "Assess recovery potential",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "entryConditionType": "StageEntered",
+              "parameters": {
+                "stageNames": [
+                  "Recoveries, Salvage & Subrogation"
+                ]
+              },
+              "ruleName": "Recoveries open"
+            }
+          ]
+        },
+        {
+          "name": "Pursue recoveries and salvage",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "entryConditionType": "TasksCompleted",
+              "parameters": {
+                "taskNames": [
+                  "Assess recovery potential"
+                ]
+              },
+              "ruleName": "Recovery assessed"
+            }
+          ]
+        },
+        {
+          "name": "Wait for User to Select Next Stage for Recoveries, Salvage & Subrogation",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Assess recovery potential",
+                      "Pursue recoveries and salvage"
+                    ]
+                  },
+                  "ruleName": "Recoveries finished"
+                },
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Recoveries, Salvage & Subrogation"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Settlement & Closure",
+      "entryConditions": [
+        {
+          "entryConditionType": "StagesCompleted",
+          "parameters": {
+            "stageNames": [
+              "Recoveries, Salvage & Subrogation"
+            ]
+          },
+          "ruleName": "Recoveries concluded"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Settlement & Closure\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Settlement & Closure\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Emergency Response & Alternative Accommodation"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Property made safe"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Settlement & Closure\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Settlement & Closure\"))"
+              }
+            },
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.restrictionOutcome !== 'Authorised'",
+                "expressionString": "vars.restrictionOutcome !== 'Authorised'"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "SIU & Investigative Restriction"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Claim cleared"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Settlement & Closure\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Settlement & Closure\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Escalation & Authority Referral"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Escalation resolved"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Settlement & Closure\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Settlement & Closure\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "Complaint & Ombudsman Referral"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Complaint resolved"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Settlement & Closure\"))",
+                "expressionString": "(vars.MainEventSubprocessLocalLastPrimaryStageExited != null && vars.MainEventSubprocessLocalLastPrimaryStageExited.length > 0 && vars.MainEventSubprocessLocalLastPrimaryStageExited.some((stage) => stage == \"Settlement & Closure\"))"
+              }
+            },
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "CAT Surge Handling"
+                ]
+              }
+            }
+          ],
+          "ruleName": "Surge handling applied"
+        }
+      ],
+      "exitConditions": [],
+      "completionConditions": [
+        {
+          "completionConditionType": "TasksCompleted",
+          "parameters": {
+            "taskNames": [
+              "Wait for User to Select Next Stage for Settlement & Closure"
+            ]
+          },
+          "ruleName": "Claim closed"
+        }
+      ],
+      "tasks": [
+        {
+          "name": "Check open subjectivities",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "entryConditionType": "StageEntered",
+              "parameters": {
+                "stageNames": [
+                  "Settlement & Closure"
+                ]
+              },
+              "ruleName": "Closure opens"
+            }
+          ]
+        },
+        {
+          "name": "Confirm closure",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Settlement & Closure"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Check open subjectivities"
+                    ]
+                  }
+                }
+              ],
+              "ruleName": "Subjectivities checked"
+            }
+          ]
+        },
+        {
+          "name": "Archive claim file",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "entryConditionType": "TasksCompleted",
+              "parameters": {
+                "taskNames": [
+                  "Confirm closure"
+                ]
+              },
+              "ruleName": "Closure confirmed"
+            }
+          ]
+        },
+        {
+          "name": "Wait for User to Select Next Stage for Settlement & Closure",
+          "runOnlyOnce": false,
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Check open subjectivities",
+                      "Confirm closure",
+                      "Archive claim file"
+                    ]
+                  },
+                  "ruleName": "Claim closed"
+                },
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Settlement & Closure"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Emergency Response & Alternative Accommodation",
+      "entryConditions": [
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "FNOL & Claim Registration"
+                ],
+                "cancelStagesAndTasks": true
+              }
+            },
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.activeDamageFlag === true || vars.independentLivingFlag === false",
+                "expressionString": "vars.activeDamageFlag === true || vars.independentLivingFlag === false",
+                "cancelStagesAndTasks": true
+              }
+            }
+          ],
+          "ruleName": "Active damage or displacement"
+        }
+      ],
+      "exitConditions": [],
+      "completionConditions": [
+        {
+          "completionConditionType": "TasksCompleted",
+          "parameters": {
+            "taskNames": [
+              "Dispatch emergency mitigation",
+              "Book alternative accommodation"
+            ]
+          },
+          "ruleName": "Property made safe"
+        }
+      ],
+      "tasks": [
+        {
+          "name": "Dispatch emergency mitigation",
+          "entryConditions": [
+            {
+              "entryConditionType": "StageEntered",
+              "parameters": {
+                "stageNames": [
+                  "Emergency Response & Alternative Accommodation"
+                ]
+              },
+              "ruleName": "Entry rule 4"
+            }
+          ]
+        },
+        {
+          "name": "Book alternative accommodation",
+          "entryConditions": [
+            {
+              "entryConditionType": "StageEntered",
+              "parameters": {
+                "stageNames": [
+                  "Emergency Response & Alternative Accommodation"
+                ]
+              },
+              "ruleName": "Entry rule 5"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SIU & Investigative Restriction",
+      "entryConditions": [
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "StagesExited",
+              "parameters": {
+                "stageNames": [
+                  "Investigation & Cause-of-Loss"
+                ],
+                "cancelStagesAndTasks": true
+              }
+            },
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.fraudScore >= 75",
+                "expressionString": "vars.fraudScore >= 75",
+                "cancelStagesAndTasks": true
+              }
+            }
+          ],
+          "ruleName": "Screening threshold crossed"
+        }
+      ],
+      "exitConditions": [],
+      "completionConditions": [
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "completionConditionType": "TasksCompleted",
+              "parameters": {
+                "taskNames": [
+                  "Compile screening evidence",
+                  "Authorise investigative restriction"
+                ]
+              }
+            },
+            {
+              "completionConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.restrictionOutcome !== 'Authorised'",
+                "expressionString": "vars.restrictionOutcome !== 'Authorised'"
+              }
+            }
+          ],
+          "ruleName": "Claim cleared"
+        },
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "completionConditionType": "TasksCompleted",
+              "parameters": {
+                "taskNames": [
+                  "Compile screening evidence",
+                  "Authorise investigative restriction"
+                ]
+              }
+            },
+            {
+              "completionConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.restrictionOutcome === 'Authorised'",
+                "expressionString": "vars.restrictionOutcome === 'Authorised'"
+              }
+            }
+          ],
+          "ruleName": "Fraud confirmed"
+        }
+      ],
+      "tasks": [
+        {
+          "name": "Compile screening evidence",
+          "entryConditions": [
+            {
+              "entryConditionType": "StageEntered",
+              "parameters": {
+                "stageNames": [
+                  "SIU & Investigative Restriction"
+                ]
+              },
+              "ruleName": "Referral opens"
+            }
+          ]
+        },
+        {
+          "name": "Authorise investigative restriction",
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "SIU & Investigative Restriction"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Compile screening evidence"
+                    ]
+                  }
+                }
+              ],
+              "ruleName": "Evidence compiled"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Coverage Decline & Adverse Decision",
+      "entryConditions": [
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "StagesExited",
+              "parameters": {
+                "stageNames": [
+                  "Coverage & Scope Assessment"
+                ],
+                "cancelStagesAndTasks": true
+              }
+            },
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.liabilityOutcome === 'Declined'",
+                "expressionString": "vars.liabilityOutcome === 'Declined'",
+                "cancelStagesAndTasks": true
+              }
+            }
+          ],
+          "ruleName": "Coverage declined"
+        }
+      ],
+      "exitConditions": [],
+      "completionConditions": [
+        {
+          "completionConditionType": "TasksCompleted",
+          "parameters": {
+            "taskNames": [
+              "Issue adverse decision notice"
+            ]
+          },
+          "ruleName": "Decline issued"
+        }
+      ],
+      "tasks": [
+        {
+          "name": "Issue adverse decision notice",
+          "entryConditions": [
+            {
+              "entryConditionType": "StageEntered",
+              "parameters": {
+                "stageNames": [
+                  "Coverage Decline & Adverse Decision"
+                ]
+              },
+              "ruleName": "Decline lane opens"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Hidden Damage & Supplemental Scope",
+      "entryConditions": [
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "StagesExited",
+              "parameters": {
+                "stageNames": [
+                  "Mitigation & Restoration"
+                ],
+                "cancelStagesAndTasks": true
+              }
+            },
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.hiddenDamageFound === true",
+                "expressionString": "vars.hiddenDamageFound === true",
+                "cancelStagesAndTasks": true
+              }
+            }
+          ],
+          "ruleName": "Hidden damage uncovered"
+        }
+      ],
+      "exitConditions": [],
+      "completionConditions": [
+        {
+          "completionConditionType": "TasksCompleted",
+          "parameters": {
+            "taskNames": [
+              "Authorise supplemental scope",
+              "Update reserve for supplemental scope"
+            ]
+          },
+          "ruleName": "Supplemental scope resolved"
+        }
+      ],
+      "tasks": [
+        {
+          "name": "Authorise supplemental scope",
+          "entryConditions": [
+            {
+              "entryConditionType": "StageEntered",
+              "parameters": {
+                "stageNames": [
+                  "Hidden Damage & Supplemental Scope"
+                ]
+              },
+              "ruleName": "Supplemental lane opens"
+            }
+          ]
+        },
+        {
+          "name": "Update reserve for supplemental scope",
+          "entryConditions": [
+            {
+              "entryConditionType": "TasksCompleted",
+              "parameters": {
+                "taskNames": [
+                  "Authorise supplemental scope"
+                ]
+              },
+              "ruleName": "Scope decided"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Escalation & Authority Referral",
+      "entryConditions": [
+        {
+          "entryConditionType": "SlaStatusChange",
+          "parameters": {
+            "status": "Breached",
+            "scope": "Stage",
+            "stageNames": [
+              "Coverage & Scope Assessment"
+            ],
+            "slaName": "Coverage and Scope SLA",
+            "cancelStagesAndTasks": true
+          },
+          "ruleName": "Coverage decision breached"
+        }
+      ],
+      "exitConditions": [],
+      "completionConditions": [
+        {
+          "completionConditionType": "TasksCompleted",
+          "parameters": {
+            "taskNames": [
+              "Look up delegated authority",
+              "Authorise at manager level"
+            ]
+          },
+          "ruleName": "Escalation resolved"
+        }
+      ],
+      "tasks": [
+        {
+          "name": "Look up delegated authority",
+          "entryConditions": [
+            {
+              "entryConditionType": "StageEntered",
+              "parameters": {
+                "stageNames": [
+                  "Escalation & Authority Referral"
+                ]
+              },
+              "ruleName": "Escalation lane opens"
+            }
+          ]
+        },
+        {
+          "name": "Authorise at manager level",
+          "entryConditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StageEntered",
+                  "parameters": {
+                    "stageNames": [
+                      "Escalation & Authority Referral"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "TasksCompleted",
+                  "parameters": {
+                    "taskNames": [
+                      "Look up delegated authority"
+                    ]
+                  }
+                }
+              ],
+              "ruleName": "Authority known"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Complaint & Ombudsman Referral",
+      "entryConditions": [
+        {
+          "operator": "OR",
+          "conditions": [
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StagesCompleted",
+                  "parameters": {
+                    "stageNames": [
+                      "FNOL & Claim Registration"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "Expression",
+                  "parameters": {
+                    "expression": "=js:(vars.EventSubProcessLatestEventType == \"TaskCompleted\" && vars.EventSubProcessLatestEventParams != null && vars.EventSubProcessLatestEventParams.taskName == \"Wait for User to Select Next Stage for FNOL & Claim Registration\" && vars.UserSelectStageMessageResponse_Stage_Fnol01 != null && vars.UserSelectStageMessageResponse_Stage_Fnol01.stageName != null && vars.UserSelectStageMessageResponse_Stage_Fnol01.stageName == \"Complaint & Ombudsman Referral\")",
+                    "expressionString": "(vars.EventSubProcessLatestEventType == \"TaskCompleted\" && vars.EventSubProcessLatestEventParams != null && vars.EventSubProcessLatestEventParams.taskName == \"Wait for User to Select Next Stage for FNOL & Claim Registration\" && vars.UserSelectStageMessageResponse_Stage_Fnol01 != null && vars.UserSelectStageMessageResponse_Stage_Fnol01.stageName != null && vars.UserSelectStageMessageResponse_Stage_Fnol01.stageName == \"Complaint & Ombudsman Referral\")"
+                  }
+                }
+              ]
+            },
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StagesCompleted",
+                  "parameters": {
+                    "stageNames": [
+                      "Triage & Loss Adjuster Instruction"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "Expression",
+                  "parameters": {
+                    "expression": "=js:(vars.EventSubProcessLatestEventType == \"TaskCompleted\" && vars.EventSubProcessLatestEventParams != null && vars.EventSubProcessLatestEventParams.taskName == \"Wait for User to Select Next Stage for Triage & Loss Adjuster Instruction\" && vars.UserSelectStageMessageResponse_Stage_Trge02 != null && vars.UserSelectStageMessageResponse_Stage_Trge02.stageName != null && vars.UserSelectStageMessageResponse_Stage_Trge02.stageName == \"Complaint & Ombudsman Referral\")",
+                    "expressionString": "(vars.EventSubProcessLatestEventType == \"TaskCompleted\" && vars.EventSubProcessLatestEventParams != null && vars.EventSubProcessLatestEventParams.taskName == \"Wait for User to Select Next Stage for Triage & Loss Adjuster Instruction\" && vars.UserSelectStageMessageResponse_Stage_Trge02 != null && vars.UserSelectStageMessageResponse_Stage_Trge02.stageName != null && vars.UserSelectStageMessageResponse_Stage_Trge02.stageName == \"Complaint & Ombudsman Referral\")"
+                  }
+                }
+              ]
+            },
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StagesCompleted",
+                  "parameters": {
+                    "stageNames": [
+                      "Investigation & Cause-of-Loss"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "Expression",
+                  "parameters": {
+                    "expression": "=js:(vars.EventSubProcessLatestEventType == \"TaskCompleted\" && vars.EventSubProcessLatestEventParams != null && vars.EventSubProcessLatestEventParams.taskName == \"Wait for User to Select Next Stage for Investigation & Cause-of-Loss\" && vars.UserSelectStageMessageResponse_Stage_Invs03 != null && vars.UserSelectStageMessageResponse_Stage_Invs03.stageName != null && vars.UserSelectStageMessageResponse_Stage_Invs03.stageName == \"Complaint & Ombudsman Referral\")",
+                    "expressionString": "(vars.EventSubProcessLatestEventType == \"TaskCompleted\" && vars.EventSubProcessLatestEventParams != null && vars.EventSubProcessLatestEventParams.taskName == \"Wait for User to Select Next Stage for Investigation & Cause-of-Loss\" && vars.UserSelectStageMessageResponse_Stage_Invs03 != null && vars.UserSelectStageMessageResponse_Stage_Invs03.stageName != null && vars.UserSelectStageMessageResponse_Stage_Invs03.stageName == \"Complaint & Ombudsman Referral\")"
+                  }
+                }
+              ]
+            },
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StagesCompleted",
+                  "parameters": {
+                    "stageNames": [
+                      "Coverage & Scope Assessment"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "Expression",
+                  "parameters": {
+                    "expression": "=js:(vars.EventSubProcessLatestEventType == \"TaskCompleted\" && vars.EventSubProcessLatestEventParams != null && vars.EventSubProcessLatestEventParams.taskName == \"Wait for User to Select Next Stage for Coverage & Scope Assessment\" && vars.UserSelectStageMessageResponse_Stage_Covr04 != null && vars.UserSelectStageMessageResponse_Stage_Covr04.stageName != null && vars.UserSelectStageMessageResponse_Stage_Covr04.stageName == \"Complaint & Ombudsman Referral\")",
+                    "expressionString": "(vars.EventSubProcessLatestEventType == \"TaskCompleted\" && vars.EventSubProcessLatestEventParams != null && vars.EventSubProcessLatestEventParams.taskName == \"Wait for User to Select Next Stage for Coverage & Scope Assessment\" && vars.UserSelectStageMessageResponse_Stage_Covr04 != null && vars.UserSelectStageMessageResponse_Stage_Covr04.stageName != null && vars.UserSelectStageMessageResponse_Stage_Covr04.stageName == \"Complaint & Ombudsman Referral\")"
+                  }
+                }
+              ]
+            },
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StagesCompleted",
+                  "parameters": {
+                    "stageNames": [
+                      "Mitigation & Restoration"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "Expression",
+                  "parameters": {
+                    "expression": "=js:(vars.EventSubProcessLatestEventType == \"TaskCompleted\" && vars.EventSubProcessLatestEventParams != null && vars.EventSubProcessLatestEventParams.taskName == \"Wait for User to Select Next Stage for Mitigation & Restoration\" && vars.UserSelectStageMessageResponse_Stage_Mitg05 != null && vars.UserSelectStageMessageResponse_Stage_Mitg05.stageName != null && vars.UserSelectStageMessageResponse_Stage_Mitg05.stageName == \"Complaint & Ombudsman Referral\")",
+                    "expressionString": "(vars.EventSubProcessLatestEventType == \"TaskCompleted\" && vars.EventSubProcessLatestEventParams != null && vars.EventSubProcessLatestEventParams.taskName == \"Wait for User to Select Next Stage for Mitigation & Restoration\" && vars.UserSelectStageMessageResponse_Stage_Mitg05 != null && vars.UserSelectStageMessageResponse_Stage_Mitg05.stageName != null && vars.UserSelectStageMessageResponse_Stage_Mitg05.stageName == \"Complaint & Ombudsman Referral\")"
+                  }
+                }
+              ]
+            },
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StagesCompleted",
+                  "parameters": {
+                    "stageNames": [
+                      "Reinstatement / Settlement Execution"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "Expression",
+                  "parameters": {
+                    "expression": "=js:(vars.EventSubProcessLatestEventType == \"TaskCompleted\" && vars.EventSubProcessLatestEventParams != null && vars.EventSubProcessLatestEventParams.taskName == \"Wait for User to Select Next Stage for Reinstatement / Settlement Execution\" && vars.UserSelectStageMessageResponse_Stage_Rein06 != null && vars.UserSelectStageMessageResponse_Stage_Rein06.stageName != null && vars.UserSelectStageMessageResponse_Stage_Rein06.stageName == \"Complaint & Ombudsman Referral\")",
+                    "expressionString": "(vars.EventSubProcessLatestEventType == \"TaskCompleted\" && vars.EventSubProcessLatestEventParams != null && vars.EventSubProcessLatestEventParams.taskName == \"Wait for User to Select Next Stage for Reinstatement / Settlement Execution\" && vars.UserSelectStageMessageResponse_Stage_Rein06 != null && vars.UserSelectStageMessageResponse_Stage_Rein06.stageName != null && vars.UserSelectStageMessageResponse_Stage_Rein06.stageName == \"Complaint & Ombudsman Referral\")"
+                  }
+                }
+              ]
+            },
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StagesCompleted",
+                  "parameters": {
+                    "stageNames": [
+                      "Recoveries, Salvage & Subrogation"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "Expression",
+                  "parameters": {
+                    "expression": "=js:(vars.EventSubProcessLatestEventType == \"TaskCompleted\" && vars.EventSubProcessLatestEventParams != null && vars.EventSubProcessLatestEventParams.taskName == \"Wait for User to Select Next Stage for Recoveries, Salvage & Subrogation\" && vars.UserSelectStageMessageResponse_Stage_Recv07 != null && vars.UserSelectStageMessageResponse_Stage_Recv07.stageName != null && vars.UserSelectStageMessageResponse_Stage_Recv07.stageName == \"Complaint & Ombudsman Referral\")",
+                    "expressionString": "(vars.EventSubProcessLatestEventType == \"TaskCompleted\" && vars.EventSubProcessLatestEventParams != null && vars.EventSubProcessLatestEventParams.taskName == \"Wait for User to Select Next Stage for Recoveries, Salvage & Subrogation\" && vars.UserSelectStageMessageResponse_Stage_Recv07 != null && vars.UserSelectStageMessageResponse_Stage_Recv07.stageName != null && vars.UserSelectStageMessageResponse_Stage_Recv07.stageName == \"Complaint & Ombudsman Referral\")"
+                  }
+                }
+              ]
+            },
+            {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "entryConditionType": "StagesCompleted",
+                  "parameters": {
+                    "stageNames": [
+                      "Settlement & Closure"
+                    ]
+                  }
+                },
+                {
+                  "entryConditionType": "Expression",
+                  "parameters": {
+                    "expression": "=js:(vars.EventSubProcessLatestEventType == \"TaskCompleted\" && vars.EventSubProcessLatestEventParams != null && vars.EventSubProcessLatestEventParams.taskName == \"Wait for User to Select Next Stage for Settlement & Closure\" && vars.UserSelectStageMessageResponse_Stage_Clos08 != null && vars.UserSelectStageMessageResponse_Stage_Clos08.stageName != null && vars.UserSelectStageMessageResponse_Stage_Clos08.stageName == \"Complaint & Ombudsman Referral\")",
+                    "expressionString": "(vars.EventSubProcessLatestEventType == \"TaskCompleted\" && vars.EventSubProcessLatestEventParams != null && vars.EventSubProcessLatestEventParams.taskName == \"Wait for User to Select Next Stage for Settlement & Closure\" && vars.UserSelectStageMessageResponse_Stage_Clos08 != null && vars.UserSelectStageMessageResponse_Stage_Clos08.stageName != null && vars.UserSelectStageMessageResponse_Stage_Clos08.stageName == \"Complaint & Ombudsman Referral\")"
+                  }
+                }
+              ]
+            }
+          ],
+          "ruleName": "Handler raises a complaint"
+        }
+      ],
+      "exitConditions": [],
+      "completionConditions": [
+        {
+          "completionConditionType": "TasksCompleted",
+          "parameters": {
+            "taskNames": [
+              "Log complaint and referral rights"
+            ]
+          },
+          "ruleName": "Complaint resolved"
+        }
+      ],
+      "tasks": [
+        {
+          "name": "Log complaint and referral rights",
+          "entryConditions": [
+            {
+              "entryConditionType": "UserAdhocTrigger",
+              "parameters": {
+                "taskNames": [
+                  "Log complaint and referral rights"
+                ]
+              },
+              "ruleName": "Handler logs the complaint"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CAT Surge Handling",
+      "entryConditions": [
+        {
+          "operator": "AND",
+          "conditions": [
+            {
+              "entryConditionType": "StagesCompleted",
+              "parameters": {
+                "stageNames": [
+                  "FNOL & Claim Registration"
+                ],
+                "cancelStagesAndTasks": true
+              }
+            },
+            {
+              "entryConditionType": "Expression",
+              "parameters": {
+                "expression": "=js:vars.litigationEventCode !== ''",
+                "expressionString": "vars.litigationEventCode !== ''",
+                "cancelStagesAndTasks": true
+              }
+            }
+          ],
+          "ruleName": "Catastrophe declared"
+        }
+      ],
+      "exitConditions": [],
+      "completionConditions": [
+        {
+          "completionConditionType": "TasksCompleted",
+          "parameters": {
+            "taskNames": [
+              "Apply catastrophe event code"
+            ]
+          },
+          "ruleName": "Surge handling applied"
+        }
+      ],
+      "tasks": [
+        {
+          "name": "Apply catastrophe event code",
+          "entryConditions": [
+            {
+              "entryConditionType": "StageEntered",
+              "parameters": {
+                "stageNames": [
+                  "CAT Surge Handling"
+                ]
+              },
+              "ruleName": "Surge lane opens"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "version": 1
+}

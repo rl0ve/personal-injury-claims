@@ -1,0 +1,118 @@
+{
+  "document": {
+    "dsl": "1.0.0",
+    "name": "Workflow",
+    "tags": {
+      "projectId": "22c29777-5704-4ccc-8932-efd4485b9be7"
+    },
+    "version": "0.0.1",
+    "namespace": "default",
+    "metadata": {
+      "variables": []
+    }
+  },
+  "input": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "properties": {
+          "caseInstanceId": {
+            "type": "string",
+            "description": "The case instance id whose case plan overview is being fetched."
+          },
+          "folderKey": {
+            "type": "string",
+            "description": "The Orchestrator folder key the case instance lives in."
+          }
+        },
+        "title": "Inputs",
+        "required": [
+          "caseInstanceId",
+          "folderKey"
+        ]
+      }
+    }
+  },
+  "do": [
+    {
+      "Sequence_1": {
+        "do": [
+          {
+            "WorkflowStart": {
+              "set": "${ { ...Object.entries($workflow.definition?.document?.metadata?.variables?.schema?.document?.properties || {}).reduce((acc, [name, def]) => ({ ...acc, [name]: def?.default }), {}), ...($workflow.input || {}) } }",
+              "output": {
+                "as": "${$input}"
+              },
+              "export": {
+                "as": "{ ...$context, variables: { ...$context.variables, ...$output } }"
+              },
+              "metadata": {
+                "activityType": "Assign",
+                "displayName": "Workflow start",
+                "fullName": "Assign",
+                "isTransparent": true
+              }
+            }
+          },
+          {
+            "HttpRequest_1": {
+              "call": "UiPath.Http",
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"http_request_1\": $output } }"
+              },
+              "with": {
+                "connector": "uipath-uipath-http",
+                "connectionId": "35136c07-f20a-4abb-b2f0-8086bd1c3df5",
+                "connectionResourceId": "35136c07-f20a-4abb-b2f0-8086bd1c3df5",
+                "method": "POST",
+                "endpoint": "/http-request",
+                "bodyParameters": {
+                  "authentication": "connector",
+                  "targetConnector": "uipath-uipath-http",
+                  "connection": "35136c07-f20a-4abb-b2f0-8086bd1c3df5",
+                  "method": "GET",
+                  "path": "${[ \"/pims_/api/v1/cases/\", $workflow.input.caseInstanceId, \"/case-plan-overview\" ].join('')}",
+                  "headers": "${{'x-uipath-folderkey' : $workflow.input.folderKey}}",
+                  "url": "${[ \"/pims_/api/v1/cases/\", $workflow.input.caseInstanceId, \"/case-plan-overview\" ].join('')}"
+                }
+              },
+              "metadata": {
+                "activityType": "Connector",
+                "displayName": "HTTP Request",
+                "fullName": "Connector",
+                "uiPathActivityTypeId": "5c4cc855-b42a-37e6-b910-de8588998fce",
+                "assemblyQualifiedName": "Connector",
+                "configuration": "{\"essentialConfiguration\":{\"connectorVersion\":\"\",\"executionType\":null,\"customFieldsRequestDetails\":null,\"instanceParameters\":{\"version\":\"1.0.0\",\"connectorKey\":\"uipath-uipath-http\",\"activityType\":\"Curated\",\"objectName\":\"http-request\",\"httpMethod\":\"POST\",\"operation\":null,\"eventOperation\":null,\"eventMode\":null,\"connectorObjects\":null,\"previewEndpoint\":null},\"objectName\":\"http-request\",\"operation\":null,\"packageVersion\":\"1.0.0\",\"httpMethod\":\"POST\",\"path\":\"/http-request\",\"unifiedTypesCompatible\":true,\"savedJitInputFieldId\":\"in_http-request\"}}"
+              }
+            }
+          },
+          {
+            "Response_1": {
+              "response": "${$context.outputs.http_request_1.content}",
+              "markJobAsFailed": false,
+              "then": "end",
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Response_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "Response",
+                "displayName": "Response",
+                "fullName": "Response"
+              }
+            }
+          }
+        ],
+        "metadata": {
+          "activityType": "Sequence",
+          "displayName": "Sequence",
+          "fullName": "Sequence"
+        }
+      }
+    }
+  ],
+  "evaluate": {
+    "mode": "strict",
+    "language": "javascript"
+  }
+}

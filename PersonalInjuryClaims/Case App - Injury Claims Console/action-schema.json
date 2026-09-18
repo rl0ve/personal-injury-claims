@@ -1,0 +1,64 @@
+{
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "actionType": {
+        "type": "string",
+        "required": true,
+        "description": "Which decision this task represents: SubmitMedicalEvidence, AuthoriseSettlement, AuthoriseSupplementalTreatment, AuthoriseInvestigativeRestriction, or ConfirmClosure"
+      },
+      "claimReference": {
+        "type": "string",
+        "required": true,
+        "description": "The claim reference number"
+      },
+      "claimantName": { "type": "string", "required": false, "description": "Name of the claimant" },
+      "incidentLocation": { "type": "string", "required": false, "description": "Location where the accident happened" },
+      "injuryTypeCode": { "type": "string", "required": false, "description": "Type of injury claimed under the policy" },
+      "liabilityBasisCode": { "type": "string", "required": false, "description": "Investigated basis of liability" },
+      "liabilityOutcome": { "type": "string", "required": false, "description": "Recommended or prior liability outcome" },
+      "settlementBasis": { "type": "string", "required": false, "description": "Basis of settlement, e.g. general damages or special damages" },
+      "settlementPath": { "type": "string", "required": false, "description": "Settlement route, e.g. lump sum or periodical payment" },
+      "decisionRationale": { "type": "string", "required": false, "description": "The recommendation and the reasoning behind it" },
+      "agentRationale": { "type": "string", "required": false, "description": "The automated agent's supporting rationale" },
+      "notificationDelayDays": { "type": "integer", "required": false, "description": "Number of days between the accident and the claim being notified" },
+      "fraudScore": { "type": "integer", "required": false, "description": "Fraud risk score for the claim" },
+      "estimatedCost": { "type": "number", "required": false, "description": "Estimated quantum of the claim" },
+      "authorityLimit": { "type": "number", "required": false, "description": "The authority limit for this reviewer" },
+      "recoveryAmountReceived": { "type": "number", "required": false, "description": "Amount recovered from a third-party insurer" },
+      "liabilityCoverInForce": { "type": "boolean", "required": false, "description": "Whether personal injury liability cover is in force on the policy" },
+      "contributoryNegligenceFlag": { "type": "boolean", "required": false, "description": "Whether a contributory negligence reduction has been applied" },
+      "closureReasonCode": { "type": "string", "required": false, "description": "Reason code proposed for claim closure" },
+      "settlementOutcome": { "type": "string", "required": false, "description": "Outcome of the settlement to date" }
+    }
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "decisionRationale": { "type": "string", "required": false, "description": "The rationale the reviewer records for their decision" },
+      "evidenceHelpful": { "type": "string", "required": false, "description": "Which evidence the reviewer found most useful" }
+    }
+  },
+  "inOuts": {
+    "type": "object",
+    "properties": {}
+  },
+  "outcomes": {
+    "type": "object",
+    "properties": {
+      "Covered": { "type": "string" },
+      "CoveredWithAverage": { "type": "string" },
+      "RightsReserved": { "type": "string" },
+      "Declined": { "type": "string" },
+      "Approved": { "type": "string" },
+      "Partial": { "type": "string" },
+      "Referred": { "type": "string" },
+      "Rejected": { "type": "string" },
+      "Authorised": { "type": "string" },
+      "Refused": { "type": "string" },
+      "ReferToSpecialist": { "type": "string" },
+      "Confirmed": { "type": "string" },
+      "ReturnedForReview": { "type": "string" }
+    }
+  }
+}

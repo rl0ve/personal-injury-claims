@@ -1,0 +1,38 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "API - Injury Rules",
+    "kind": "process",
+    "type": "api",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "3b80a9b7-5fd8-4fc4-b189-fa011b013fc7",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "kind": "package",
+        "name": "API - Injury Rules"
+      }
+    ],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "Api",
+      "name": "API - Injury Rules",
+      "package": {
+        "key": "fd2e2d8f-eec4-40ce-8732-784d1b48bc30"
+      },
+      "targetFrameworkValue": "Portable",
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180
+    },
+    "locks": [],
+    "key": "d9ea0a02-9982-49e2-a6ed-c6ec9221a35c",
+    "files": []
+  }
+}

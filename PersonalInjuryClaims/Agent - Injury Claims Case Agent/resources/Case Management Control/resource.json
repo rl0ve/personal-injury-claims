@@ -1,0 +1,541 @@
+{
+  "$resourceType": "mcp",
+  "id": "f08887fc-23b8-4687-9171-07e6f30a9f3a",
+  "name": "Case Management Control",
+  "description": "",
+  "folderPath": "solution_folder",
+  "slug": "case-management-control",
+  "availableTools": [
+    {
+      "name": "CaseAppVariablesGet",
+      "description": "Get global variables and element inputs, outputs, and inputDefinitions",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "instanceId": {
+            "type": "string",
+            "name": "instanceId"
+          },
+          "parentElementId": {
+            "type": "string",
+            "name": "parentElementId"
+          },
+          "x-uipath-folderkey": {
+            "type": "string",
+            "description": "Folder Key header",
+            "name": "x-uipath-folderkey"
+          }
+        },
+        "required": [
+          "instanceId",
+          "x-uipath-folderkey"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "elements": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "object",
+              "properties": {
+                "elementId": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "elementRunId": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "isMarker": {
+                  "type": "boolean"
+                },
+                "inputs": {
+                  "type": "object",
+                  "nullable": true
+                },
+                "inputDefinitions": {
+                  "type": "object",
+                  "nullable": true
+                },
+                "outputs": {
+                  "type": "object",
+                  "nullable": true
+                }
+              }
+            }
+          },
+          "globals": {
+            "type": "object",
+            "nullable": true
+          },
+          "instanceId": {
+            "type": "string",
+            "nullable": true
+          },
+          "workflowId": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentElementId": {
+            "type": "string",
+            "nullable": true
+          },
+          "globalDefinitions": {
+            "type": "object",
+            "nullable": true
+          }
+        }
+      },
+      "argumentProperties": {}
+    },
+    {
+      "name": "InstancesGetExecutionState",
+      "description": "Get latest CaseCurrentExecutionState (state portion) for the instance",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "instanceId": {
+            "type": "string",
+            "name": "instanceId"
+          },
+          "x-uipath-folderkey": {
+            "type": "string",
+            "description": "Folder Key header",
+            "name": "x-uipath-folderkey"
+          }
+        },
+        "required": [
+          "instanceId",
+          "x-uipath-folderkey"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "state": {
+            "type": "object",
+            "properties": {
+              "stagesEntered": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stagesExited": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stagesCompleted": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "tasksRunning": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "identifier": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "name": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "tasksCompleted": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "argumentProperties": {}
+    },
+    {
+      "name": "InstancesGetCaseJson",
+      "description": "Get case plan JSON file for the instance",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "instanceId": {
+            "type": "string",
+            "name": "instanceId"
+          },
+          "x-uipath-folderkey": {
+            "type": "string",
+            "description": "Folder Key header",
+            "name": "x-uipath-folderkey"
+          }
+        },
+        "required": [
+          "instanceId",
+          "x-uipath-folderkey"
+        ]
+      },
+      "outputSchema": null,
+      "argumentProperties": {}
+    },
+    {
+      "name": "GetCasePlanOverview",
+      "description": "Get case plan overview for the instance",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "instanceId": {
+            "type": "string",
+            "name": "instanceId"
+          },
+          "x-uipath-folderkey": {
+            "type": "string",
+            "description": "Folder Key header",
+            "name": "x-uipath-folderkey"
+          }
+        },
+        "required": [
+          "instanceId",
+          "x-uipath-folderkey"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "case": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true
+              },
+              "description": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          },
+          "stages": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "tasks": {
+                  "type": "array",
+                  "nullable": true,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "description": {
+                        "type": "string",
+                        "nullable": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "argumentProperties": {}
+    },
+    {
+      "name": "GetCaseRules",
+      "description": "Get case deterministic rules for the instance",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "instanceId": {
+            "type": "string",
+            "name": "instanceId"
+          },
+          "x-uipath-folderkey": {
+            "type": "string",
+            "description": "Folder Key header",
+            "name": "x-uipath-folderkey"
+          }
+        },
+        "required": [
+          "instanceId",
+          "x-uipath-folderkey"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "case": {
+            "type": "object",
+            "properties": {
+              "exitConditions": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "displayName": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "rules": {
+                      "type": "array",
+                      "nullable": true,
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "ruleName": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "rule": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "conditionExpression": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "stages": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "name": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "isRequired": {
+                  "type": "boolean"
+                },
+                "entryConditions": {
+                  "type": "array",
+                  "nullable": true,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "displayName": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "rules": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "ruleName": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "rule": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "conditionExpression": {
+                                "type": "string",
+                                "nullable": true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "exitConditions": {
+                  "type": "array",
+                  "nullable": true,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "displayName": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "rules": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "ruleName": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "rule": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "conditionExpression": {
+                                "type": "string",
+                                "nullable": true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "tasks": {
+                  "type": "array",
+                  "nullable": true,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "name": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "isRequired": {
+                        "type": "boolean"
+                      },
+                      "shouldRunOnlyOnce": {
+                        "type": "boolean"
+                      },
+                      "entryConditions": {
+                        "type": "array",
+                        "nullable": true,
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "displayName": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "rules": {
+                              "type": "array",
+                              "nullable": true,
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "nullable": true
+                                    },
+                                    "ruleName": {
+                                      "type": "string",
+                                      "nullable": true
+                                    },
+                                    "rule": {
+                                      "type": "string",
+                                      "nullable": true
+                                    },
+                                    "conditionExpression": {
+                                      "type": "string",
+                                      "nullable": true
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "argumentProperties": {}
+    }
+  ],
+  "toolsConfiguration": {
+    "discoveryMode": {
+      "type": "dynamic",
+      "allowAll": true
+    }
+  },
+  "solutionProperties": {
+    "resourceKey": "a02676c3-9f48-473b-9148-02e9ea8a0813",
+    "resourceName": "Case Management Control"
+  }
+}

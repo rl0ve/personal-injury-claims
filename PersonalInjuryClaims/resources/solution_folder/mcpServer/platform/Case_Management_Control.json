@@ -1,0 +1,76 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Case Management Control",
+    "kind": "mcpServer",
+    "type": "platform",
+    "apiVersion": "agenthub.uipath.com/v1",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "serviceName": "casemanagementcontrol",
+      "selectedToolNames": [
+        "CaseAppVariablesGet",
+        "InstancesGetExecutionState",
+        "InstancesGetCaseJson",
+        "GetCasePlanOverview",
+        "GetCaseRules"
+      ],
+      "useAllTools": false,
+      "slug": "case-management-control",
+      "version": "1.0.0",
+      "tools": [
+        {
+          "name": "CaseAppVariablesGet",
+          "title": "CaseAppVariablesGet",
+          "description": "Get global variables and element inputs, outputs, and inputDefinitions",
+          "category": "CaseApp",
+          "inputSchema": "{\"type\":\"object\",\"properties\":{\"instanceId\":{\"type\":\"string\",\"name\":\"instanceId\"},\"parentElementId\":{\"type\":\"string\",\"name\":\"parentElementId\"},\"x-uipath-folderkey\":{\"type\":\"string\",\"name\":\"x-uipath-folderkey\",\"description\":\"Folder Key header\"}},\"required\":[\"instanceId\",\"x-uipath-folderkey\"]}",
+          "outputSchema": "{\"type\":\"object\",\"properties\":{\"elements\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"object\",\"properties\":{\"elementId\":{\"type\":[\"string\",\"null\"]},\"elementRunId\":{\"type\":[\"string\",\"null\"]},\"isMarker\":{\"type\":\"boolean\"},\"inputs\":{\"type\":[\"object\",\"null\"]},\"inputDefinitions\":{\"type\":[\"object\",\"null\"]},\"outputs\":{\"type\":[\"object\",\"null\"]}}}},\"globals\":{\"type\":[\"object\",\"null\"]},\"instanceId\":{\"type\":[\"string\",\"null\"]},\"workflowId\":{\"type\":[\"string\",\"null\"]},\"parentElementId\":{\"type\":[\"string\",\"null\"]},\"globalDefinitions\":{\"type\":[\"object\",\"null\"]}}}"
+        },
+        {
+          "name": "InstancesGetExecutionState",
+          "title": "InstancesGetExecutionState",
+          "description": "Get latest CaseCurrentExecutionState (state portion) for the instance",
+          "category": "CaseManagement",
+          "inputSchema": "{\"type\":\"object\",\"properties\":{\"instanceId\":{\"type\":\"string\",\"name\":\"instanceId\"},\"x-uipath-folderkey\":{\"type\":\"string\",\"name\":\"x-uipath-folderkey\",\"description\":\"Folder Key header\"}},\"required\":[\"instanceId\",\"x-uipath-folderkey\"]}",
+          "outputSchema": "{\"type\":\"object\",\"properties\":{\"version\":{\"type\":\"integer\",\"format\":\"int32\"},\"state\":{\"type\":\"object\",\"properties\":{\"stagesEntered\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"string\"}},\"stagesExited\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"string\"}},\"stagesCompleted\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"string\"}},\"tasksRunning\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"object\",\"properties\":{\"identifier\":{\"type\":[\"string\",\"null\"]},\"name\":{\"type\":[\"string\",\"null\"]}}}},\"tasksCompleted\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"string\"}}}}}}"
+        },
+        {
+          "name": "InstancesGetCaseJson",
+          "title": "InstancesGetCaseJson",
+          "description": "Get case plan JSON file for the instance",
+          "category": "CaseManagement",
+          "inputSchema": "{\"type\":\"object\",\"properties\":{\"instanceId\":{\"type\":\"string\",\"name\":\"instanceId\"},\"x-uipath-folderkey\":{\"type\":\"string\",\"name\":\"x-uipath-folderkey\",\"description\":\"Folder Key header\"}},\"required\":[\"instanceId\",\"x-uipath-folderkey\"]}"
+        },
+        {
+          "name": "GetCasePlanOverview",
+          "title": "GetCasePlanOverview",
+          "description": "Get case plan overview for the instance",
+          "category": "CaseManagement",
+          "inputSchema": "{\"type\":\"object\",\"properties\":{\"instanceId\":{\"type\":\"string\",\"name\":\"instanceId\"},\"x-uipath-folderkey\":{\"type\":\"string\",\"name\":\"x-uipath-folderkey\",\"description\":\"Folder Key header\"}},\"required\":[\"instanceId\",\"x-uipath-folderkey\"]}",
+          "outputSchema": "{\"type\":\"object\",\"properties\":{\"case\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":[\"string\",\"null\"]},\"description\":{\"type\":[\"string\",\"null\"]}}},\"stages\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":[\"string\",\"null\"]},\"description\":{\"type\":[\"string\",\"null\"]},\"tasks\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":[\"string\",\"null\"]},\"description\":{\"type\":[\"string\",\"null\"]}}}}}}}}}"
+        },
+        {
+          "name": "GetCaseRules",
+          "title": "GetCaseRules",
+          "description": "Get case deterministic rules for the instance",
+          "category": "CaseManagement",
+          "inputSchema": "{\"type\":\"object\",\"properties\":{\"instanceId\":{\"type\":\"string\",\"name\":\"instanceId\"},\"x-uipath-folderkey\":{\"type\":\"string\",\"name\":\"x-uipath-folderkey\",\"description\":\"Folder Key header\"}},\"required\":[\"instanceId\",\"x-uipath-folderkey\"]}",
+          "outputSchema": "{\"type\":\"object\",\"properties\":{\"case\":{\"type\":\"object\",\"properties\":{\"exitConditions\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":[\"string\",\"null\"]},\"displayName\":{\"type\":[\"string\",\"null\"]},\"rules\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":[\"string\",\"null\"]},\"ruleName\":{\"type\":[\"string\",\"null\"]},\"rule\":{\"type\":[\"string\",\"null\"]},\"conditionExpression\":{\"type\":[\"string\",\"null\"]}}}}}}}}}},\"stages\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":[\"string\",\"null\"]},\"name\":{\"type\":[\"string\",\"null\"]},\"isRequired\":{\"type\":\"boolean\"},\"entryConditions\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":[\"string\",\"null\"]},\"displayName\":{\"type\":[\"string\",\"null\"]},\"rules\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":[\"string\",\"null\"]},\"ruleName\":{\"type\":[\"string\",\"null\"]},\"rule\":{\"type\":[\"string\",\"null\"]},\"conditionExpression\":{\"type\":[\"string\",\"null\"]}}}}}}}},\"exitConditions\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":[\"string\",\"null\"]},\"displayName\":{\"type\":[\"string\",\"null\"]},\"rules\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":[\"string\",\"null\"]},\"ruleName\":{\"type\":[\"string\",\"null\"]},\"rule\":{\"type\":[\"string\",\"null\"]},\"conditionExpression\":{\"type\":[\"string\",\"null\"]}}}}}}}},\"tasks\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":[\"string\",\"null\"]},\"name\":{\"type\":[\"string\",\"null\"]},\"isRequired\":{\"type\":\"boolean\"},\"shouldRunOnlyOnce\":{\"type\":\"boolean\"},\"entryConditions\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":[\"string\",\"null\"]},\"displayName\":{\"type\":[\"string\",\"null\"]},\"rules\":{\"type\":[\"array\",\"null\"],\"items\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":[\"string\",\"null\"]},\"ruleName\":{\"type\":[\"string\",\"null\"]},\"rule\":{\"type\":[\"string\",\"null\"]},\"conditionExpression\":{\"type\":[\"string\",\"null\"]}}}}}}}}}}}}}}}}"
+        }
+      ],
+      "name": "Case Management Control",
+      "description": ""
+    },
+    "locks": [],
+    "key": "a02676c3-9f48-473b-9148-02e9ea8a0813",
+    "files": []
+  }
+}

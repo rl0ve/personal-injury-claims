@@ -1,0 +1,28 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Data Fabric - Robert Love",
+    "kind": "connection",
+    "type": "uipath-uipath-dataservice",
+    "apiVersion": "integrationservice.uipath.com/v1",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "connectorName": "UiPath Data Fabric",
+      "name": "Data Fabric - Robert Love",
+      "authenticationType": "AuthenticateAfterDeployment",
+      "connectorVersion": "1.72.0",
+      "connectorKey": "uipath-uipath-dataservice",
+      "pollingInterval": 5
+    },
+    "locks": [],
+    "key": "080f3ca9-b976-46d2-a5ed-454a628e6214",
+    "files": []
+  }
+}

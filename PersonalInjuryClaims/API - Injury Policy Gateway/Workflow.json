@@ -1,0 +1,115 @@
+{
+  "document": {
+    "dsl": "1.0.0",
+    "name": "Workflow",
+    "tags": {
+      "projectId": "db5cef1f-7903-4a40-b9be-24e372755205"
+    },
+    "version": "0.0.1",
+    "namespace": "default",
+    "metadata": {
+      "variables": []
+    }
+  },
+  "input": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "title": "Inputs",
+        "properties": {
+          "requestSource": { "type": "string", "default": "PolicyInForceCheck" },
+          "scenario": { "type": "string", "default": "Standard" },
+          "runId": { "type": "string", "default": "RUN-0001" },
+          "claimReference": { "type": "string", "default": "" }
+        }
+      }
+    }
+  },
+  "output": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "title": "Outputs",
+        "properties": {
+          "policyNumber": { "type": "string" },
+          "coverType": { "type": "string" },
+          "policyLimitIndemnity": { "type": "number" },
+          "policyLimitCosts": { "type": "number" },
+          "notificationDelayDays": { "type": "integer" },
+          "liabilityCoverInForce": { "type": "boolean" },
+          "explanation": { "type": "string" }
+        }
+      }
+    }
+  },
+  "do": [
+    {
+      "Sequence_1": {
+        "do": [
+          {
+            "WorkflowStart": {
+              "set": "${ { ...Object.entries($workflow.definition?.document?.metadata?.variables?.schema?.document?.properties || {}).reduce((acc, [name, def]) => ({ ...acc, [name]: def?.default }), {}), ...($workflow.input || {}) } }",
+              "output": {
+                "as": "${$input}"
+              },
+              "export": {
+                "as": "{ ...$context, variables: { ...$context.variables, ...$output } }"
+              },
+              "metadata": {
+                "activityType": "Assign",
+                "displayName": "Workflow start",
+                "fullName": "Assign",
+                "isTransparent": true
+              }
+            }
+          },
+          {
+            "Javascript_1": {
+              "run": {
+                "script": {
+                  "code": "const inp = $workflow.input || {};\nconst src = inp.requestSource || 'PolicyInForceCheck';\nconst scenario = inp.scenario || 'Standard';\nconst claimReference = inp.claimReference || '';\n\nconst SCENARIOS = {\n  Standard: { policyNumber: 'PIC-ML-204471', coverType: 'Motor Third Party Liability - Standard', policyLimitIndemnity: 5000000, policyLimitCosts: 250000, notificationDelayDays: 0, liabilityCoverInForce: true },\n  Displaced: { policyNumber: 'PIC-ML-118820', coverType: 'Motor Third Party Liability - Enhanced', policyLimitIndemnity: 10000000, policyLimitCosts: 500000, notificationDelayDays: 0, liabilityCoverInForce: true },\n  Underinsured: { policyNumber: 'PIC-ML-337512', coverType: 'Motor Third Party Liability - Standard', policyLimitIndemnity: 1000000, policyLimitCosts: 100000, notificationDelayDays: 0, liabilityCoverInForce: true },\n  Investigated: { policyNumber: 'PIC-ML-552901', coverType: 'Employers Liability - Standard', policyLimitIndemnity: 5000000, policyLimitCosts: 200000, notificationDelayDays: 0, liabilityCoverInForce: true },\n  Declined: { policyNumber: 'PIC-ML-771034', coverType: 'Motor Third Party Liability - Standard', policyLimitIndemnity: 5000000, policyLimitCosts: 250000, notificationDelayDays: 75, liabilityCoverInForce: false },\n  Reopened: { policyNumber: 'PIC-ML-990112', coverType: 'Motor Third Party Liability - Standard', policyLimitIndemnity: 5000000, policyLimitCosts: 250000, notificationDelayDays: 0, liabilityCoverInForce: true }\n};\n\nconst s = SCENARIOS[scenario] || SCENARIOS.Standard;\n\nconst out = {\n  policyNumber: '',\n  coverType: '',\n  policyLimitIndemnity: 0,\n  policyLimitCosts: 0,\n  notificationDelayDays: 0,\n  liabilityCoverInForce: false,\n  explanation: ''\n};\n\nif (src === 'PolicyInForceCheck') {\n  out.policyNumber = s.policyNumber;\n  out.coverType = s.coverType;\n  out.policyLimitIndemnity = s.policyLimitIndemnity;\n  out.policyLimitCosts = s.policyLimitCosts;\n  out.notificationDelayDays = s.notificationDelayDays;\n  out.liabilityCoverInForce = s.liabilityCoverInForce;\n  out.explanation = 'Policy ' + s.policyNumber + ' confirmed in force for claim ' + (claimReference || '(unspecified)') + ' with ' + s.coverType + ' cover in place at the date of the accident.';\n} else {\n  out.explanation = 'Unrecognised requestSource: ' + src + '.';\n}\n\nreturn out;",
+                  "language": "javascript",
+                  "arguments": "${{ \"$context\": $context, \"$workflow\": $workflow, \"$input\": $input }}"
+                }
+              },
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Javascript_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "JsInvoke",
+                "displayName": "Resolve policy administration response",
+                "fullName": "JsInvoke"
+              }
+            }
+          },
+          {
+            "Response_1": {
+              "response": "${$context.outputs.Javascript_1}",
+              "markJobAsFailed": false,
+              "then": "end",
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Response_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "Response",
+                "displayName": "Response",
+                "fullName": "Response"
+              }
+            }
+          }
+        ],
+        "metadata": {
+          "activityType": "Sequence",
+          "displayName": "Sequence",
+          "fullName": "Sequence"
+        }
+      }
+    }
+  ],
+  "evaluate": {
+    "mode": "strict",
+    "language": "javascript"
+  }
+}

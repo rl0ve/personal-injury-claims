@@ -1,0 +1,100 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Flow-Threshold-Injury-Assessment",
+    "kind": "process",
+    "type": "flow",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "85d35194-3010-49a8-9d21-fa916f67c715",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "kind": "package",
+        "name": "Flow-Threshold-Injury-Assessment"
+      }
+    ],
+    "runtimeDependencies": [
+      {
+        "bindingType": "process",
+        "bindingKey": "Shared/Personal Injury Claims Demo.Agent - Injury Claims Triage",
+        "bindingValues": {
+          "folderPath": {
+            "defaultValue": "Shared/Personal Injury Claims Demo",
+            "isExpression": false
+          },
+          "name": {
+            "defaultValue": "Agent - Injury Claims Triage",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {
+          "activityName": "Analyze medical report",
+          "bindingsVersion": "2.2",
+          "solutionsSupport": "true"
+        },
+        "resourceKind": "Process"
+      },
+      {
+        "bindingType": "process",
+        "bindingKey": "Shared/Personal Injury Claims Demo.Agent - Liability Assessment",
+        "bindingValues": {
+          "folderPath": {
+            "defaultValue": "Shared/Personal Injury Claims Demo",
+            "isExpression": false
+          },
+          "name": {
+            "defaultValue": "Agent - Liability Assessment",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {
+          "activityName": "Analyze medical report",
+          "bindingsVersion": "2.2",
+          "solutionsSupport": "true"
+        },
+        "resourceKind": "Process"
+      },
+      {
+        "bindingType": "process",
+        "bindingKey": "Shared/Personal Injury Claims Demo.Agent - Subrogation Assessment",
+        "bindingValues": {
+          "folderPath": {
+            "defaultValue": "Shared/Personal Injury Claims Demo",
+            "isExpression": false
+          },
+          "name": {
+            "defaultValue": "Agent - Subrogation Assessment",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {
+          "activityName": "Analyze medical report",
+          "bindingsVersion": "2.2",
+          "solutionsSupport": "true"
+        },
+        "resourceKind": "Process"
+      }
+    ],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "runtimeProfile": "Standard",
+      "type": "Flow",
+      "name": "Flow-Threshold-Injury-Assessment",
+      "package": {
+        "key": "5e6a45fd-aef3-4b14-9e0a-09d15dbdcbdf"
+      },
+      "targetFrameworkValue": "Portable",
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180
+    },
+    "locks": [],
+    "key": "d630037d-771e-4b0b-a6a5-93e5af46a8c7",
+    "files": []
+  }
+}

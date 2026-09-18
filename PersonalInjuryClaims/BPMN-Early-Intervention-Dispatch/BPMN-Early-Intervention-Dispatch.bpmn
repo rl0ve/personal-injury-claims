@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:uipath="http://uipath.org/schema/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="UiPath Maestro (https://uipath.com)" exporterVersion="1.203.0-dev.8692">
+  <bpmn:process id="Process_1" name="BPMN-Early-Intervention-Dispatch" isExecutable="true">
+    <bpmn:extensionElements>
+      <uipath:variables version="v1">
+        <uipath:input id="Var_Scenario" name="scenario" type="string" elementId="Event_start" default="" />
+        <uipath:input id="Var_ClaimReference" name="claimReference" type="string" elementId="Event_start" default="" />
+        <uipath:input id="Var_RiskAddress" name="incidentLocation" type="string" elementId="Event_start" default="" />
+        <uipath:input id="Var_VulnerableCustomerFlag" name="vulnerableCustomerFlag" type="boolean" elementId="Event_start" default="false" />
+        <uipath:inputOutput id="Var_DispatchReference" name="dispatchReference" type="string" elementId="Process_1" />
+        <uipath:inputOutput id="Var_TreatmentProviderName" name="treatmentProviderName" type="string" elementId="Process_1" />
+        <uipath:inputOutput id="Var_TreatmentAuthorisationStatus" name="treatmentAuthorisationStatus" type="string" elementId="Process_1" />
+        <uipath:inputOutput id="Var_WelfareCheckStatus" name="welfareCheckStatus" type="string" elementId="Process_1" />
+        <uipath:inputOutput id="Var_EscalationReference" name="escalationReference" type="string" elementId="Process_1" />
+        <uipath:output id="Var_ClaimStatus" name="claimStatus" type="string" elementId="Event_end" />
+      </uipath:variables>
+      <uipath:bindings version="v1" />
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="Event_start" name="core.trigger.manual">
+      <bpmn:extensionElements>
+        <uipath:entryPointId value="4e32495a-467c-4bfe-884b-5388945335cc" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:parallelGateway id="Gw_Fork" name="Fan out early intervention">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToTreatment</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ToRehab</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ToWelfare</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:scriptTask id="Task_ArrangeTreatment" name="Arrange urgent treatment and transport" scriptFormat="JavaScript">
+      <bpmn:extensionElements>
+        <uipath:mapping version="v1">
+          <uipath:type value="BPMN.ScriptTask" version="v1" />
+          <uipath:input name="args" type="json" target="bodyField"><![CDATA[{"scenario":"=vars.Var_Scenario","claimReference":"=vars.Var_ClaimReference","incidentLocation":"=vars.Var_RiskAddress"}]]></uipath:input>
+          <uipath:output name="dispatchReference" type="string" var="Var_DispatchReference" source="=result.response.dispatchReference" />
+          <uipath:output name="treatmentProviderName" type="string" var="Var_TreatmentProviderName" source="=result.response.treatmentProviderName" />
+        </uipath:mapping>
+        <uipath:scriptVersion value="v3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ToTreatment</bpmn:incoming>
+      <bpmn:outgoing>Flow_TreatmentDone</bpmn:outgoing>
+      <bpmn:script><![CDATA[var s = scenario ? scenario : "Standard";
+var ref = "DISP-" + (claimReference ? claimReference : "CLM-UNKNOWN");
+var provider = "Meridian Injury Rehabilitation Ltd";
+if (s === "Displaced") {
+  provider = "FirstResponse Trauma Rehabilitation";
+  ref = ref + "-URGENT";
+} else if (s === "Investigated") {
+  provider = "Meridian Injury Rehabilitation Ltd";
+  ref = ref + "-HOLD";
+} else if (s === "Reopened") {
+  provider = "Coastal Physiotherapy Partners";
+  ref = ref + "-R2";
+}
+return { response: { dispatchReference: ref, treatmentProviderName: provider } };]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:boundaryEvent id="Boundary_DispatchSla" attachedToRef="Task_ArrangeTreatment" cancelActivity="false">
+      <bpmn:timerEventDefinition>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT4H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+      <bpmn:outgoing>Flow_ToEscalate</bpmn:outgoing>
+    </bpmn:boundaryEvent>
+    <bpmn:scriptTask id="Task_EscalateLateDispatch" name="Escalate late dispatch" scriptFormat="JavaScript">
+      <bpmn:extensionElements>
+        <uipath:mapping version="v1">
+          <uipath:type value="BPMN.ScriptTask" version="v1" />
+          <uipath:input name="args" type="json" target="bodyField"><![CDATA[{"claimReference":"=vars.Var_ClaimReference","incidentLocation":"=vars.Var_RiskAddress"}]]></uipath:input>
+          <uipath:output name="escalationReference" type="string" var="Var_EscalationReference" source="=result.response" />
+        </uipath:mapping>
+        <uipath:scriptVersion value="v3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ToEscalate</bpmn:incoming>
+      <bpmn:outgoing>Flow_EscalationEnd</bpmn:outgoing>
+      <bpmn:script><![CDATA[var ref = "ESC-" + (claimReference ? claimReference : "CLM-UNKNOWN") + "-4HR-SLA";
+return { response: ref };]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:endEvent id="Event_EscalationRaised" name="Late dispatch escalated">
+      <bpmn:incoming>Flow_EscalationEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:scriptTask id="Task_AuthoriseRehab" name="Authorise initial rehabilitation" scriptFormat="JavaScript">
+      <bpmn:extensionElements>
+        <uipath:mapping version="v1">
+          <uipath:type value="BPMN.ScriptTask" version="v1" />
+          <uipath:input name="args" type="json" target="bodyField"><![CDATA[{"scenario":"=vars.Var_Scenario","claimReference":"=vars.Var_ClaimReference"}]]></uipath:input>
+          <uipath:output name="treatmentAuthorisationStatus" type="string" var="Var_TreatmentAuthorisationStatus" source="=result.response" />
+        </uipath:mapping>
+        <uipath:scriptVersion value="v3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ToRehab</bpmn:incoming>
+      <bpmn:outgoing>Flow_RehabDone</bpmn:outgoing>
+      <bpmn:script><![CDATA[var s = scenario ? scenario : "Standard";
+if (s === "Displaced") {
+  return { response: "Neuro-rehabilitation and 12 sessions of physiotherapy authorised; care package started within 48 hours" };
+}
+return { response: "Six sessions of physiotherapy authorised; treatment started within five working days" };]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="Task_WelfareCheck" name="Welfare check on vulnerable claimant" scriptFormat="JavaScript">
+      <bpmn:extensionElements>
+        <uipath:mapping version="v1">
+          <uipath:type value="BPMN.ScriptTask" version="v1" />
+          <uipath:input name="args" type="json" target="bodyField"><![CDATA[{"scenario":"=vars.Var_Scenario","claimReference":"=vars.Var_ClaimReference","vulnerableCustomerFlag":"=vars.Var_VulnerableCustomerFlag"}]]></uipath:input>
+          <uipath:output name="welfareCheckStatus" type="string" var="Var_WelfareCheckStatus" source="=result.response" />
+        </uipath:mapping>
+        <uipath:scriptVersion value="v3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ToWelfare</bpmn:incoming>
+      <bpmn:outgoing>Flow_WelfareDone</bpmn:outgoing>
+      <bpmn:script><![CDATA[if (vulnerableCustomerFlag === true) {
+  return { response: "Welfare check completed; claimant confirmed safe and offered interim care support" };
+}
+return { response: "No vulnerable claimant flagged; welfare check not required" };]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:parallelGateway id="Gw_Join" name="Early intervention gathered">
+      <bpmn:incoming>Flow_TreatmentDone</bpmn:incoming>
+      <bpmn:incoming>Flow_RehabDone</bpmn:incoming>
+      <bpmn:incoming>Flow_WelfareDone</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToConfirm</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:scriptTask id="Task_ConfirmCarePlan" name="Confirm care plan in place" scriptFormat="JavaScript">
+      <bpmn:extensionElements>
+        <uipath:mapping version="v1">
+          <uipath:type value="BPMN.ScriptTask" version="v1" />
+          <uipath:input name="args" type="json" target="bodyField"><![CDATA[{"scenario":"=vars.Var_Scenario","treatmentAuthorisationStatus":"=vars.Var_TreatmentAuthorisationStatus","welfareCheckStatus":"=vars.Var_WelfareCheckStatus","treatmentProviderName":"=vars.Var_TreatmentProviderName"}]]></uipath:input>
+          <uipath:output name="claimStatus" type="string" var="Var_ClaimStatus" source="=result.response" />
+        </uipath:mapping>
+        <uipath:scriptVersion value="v3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ToConfirm</bpmn:incoming>
+      <bpmn:outgoing>Flow_End</bpmn:outgoing>
+      <bpmn:script><![CDATA[var s = scenario ? scenario : "Standard";
+var status = "Early Intervention Complete";
+if (s === "Displaced") {
+  status = "Early Intervention Complete - Care Package In Place";
+} else if (s === "Underinsured") {
+  status = "Early Intervention Complete - Policy Limits Under Review";
+} else if (s === "Investigated") {
+  status = "Early Intervention Complete - Claim Under Investigation";
+} else if (s === "Declined") {
+  status = "Early Intervention Complete - Liability Declined Pending Review";
+} else if (s === "Reopened") {
+  status = "Early Intervention Re-Dispatched And Complete";
+}
+return { response: status };]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:endEvent id="Event_end" name="Claimant support in place">
+      <bpmn:incoming>Flow_End</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Event_start" targetRef="Gw_Fork" />
+    <bpmn:sequenceFlow id="Flow_ToTreatment" sourceRef="Gw_Fork" targetRef="Task_ArrangeTreatment" />
+    <bpmn:sequenceFlow id="Flow_ToRehab" sourceRef="Gw_Fork" targetRef="Task_AuthoriseRehab" />
+    <bpmn:sequenceFlow id="Flow_ToWelfare" sourceRef="Gw_Fork" targetRef="Task_WelfareCheck" />
+    <bpmn:sequenceFlow id="Flow_ToEscalate" sourceRef="Boundary_DispatchSla" targetRef="Task_EscalateLateDispatch" />
+    <bpmn:sequenceFlow id="Flow_EscalationEnd" sourceRef="Task_EscalateLateDispatch" targetRef="Event_EscalationRaised" />
+    <bpmn:sequenceFlow id="Flow_TreatmentDone" sourceRef="Task_ArrangeTreatment" targetRef="Gw_Join" />
+    <bpmn:sequenceFlow id="Flow_RehabDone" sourceRef="Task_AuthoriseRehab" targetRef="Gw_Join" />
+    <bpmn:sequenceFlow id="Flow_WelfareDone" sourceRef="Task_WelfareCheck" targetRef="Gw_Join" />
+    <bpmn:sequenceFlow id="Flow_ToConfirm" sourceRef="Gw_Join" targetRef="Task_ConfirmCarePlan" />
+    <bpmn:sequenceFlow id="Flow_End" sourceRef="Task_ConfirmCarePlan" targetRef="Event_end" />
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="Diagram_1">
+    <bpmndi:BPMNPlane id="Plane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="S_Boundary_DispatchSla" bpmnElement="Boundary_DispatchSla"><dc:Bounds x="548" y="514" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Event_end" bpmnElement="Event_end"><dc:Bounds x="916" y="344" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Event_EscalationRaised" bpmnElement="Event_EscalationRaised"><dc:Bounds x="402" y="353.5" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Event_start" bpmnElement="Event_start"><dc:Bounds x="316" y="461.5" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Gw_Fork" bpmnElement="Gw_Fork"><dc:Bounds x="402" y="454.5" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Gw_Join" bpmnElement="Gw_Join"><dc:Bounds x="666" y="337" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_ConfirmCarePlan" bpmnElement="Task_ConfirmCarePlan"><dc:Bounds x="766" y="322" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_EscalateLateDispatch" bpmnElement="Task_EscalateLateDispatch"><dc:Bounds x="252" y="331.5" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_AuthoriseRehab" bpmnElement="Task_AuthoriseRehab"><dc:Bounds x="516" y="322" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_ArrangeTreatment" bpmnElement="Task_ArrangeTreatment"><dc:Bounds x="516" y="452" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_WelfareCheck" bpmnElement="Task_WelfareCheck"><dc:Bounds x="516" y="192" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="E_Flow_1" bpmnElement="Flow_1"><di:waypoint x="352" y="479.5" /><di:waypoint x="402" y="479.5" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_End" bpmnElement="Flow_End"><di:waypoint x="866" y="362" /><di:waypoint x="916" y="362" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_EscalationEnd" bpmnElement="Flow_EscalationEnd"><di:waypoint x="352" y="371.5" /><di:waypoint x="402" y="371.5" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_TreatmentDone" bpmnElement="Flow_TreatmentDone"><di:waypoint x="616" y="492" /><di:waypoint x="640" y="492" /><di:waypoint x="640" y="362" /><di:waypoint x="666" y="362" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_ToConfirm" bpmnElement="Flow_ToConfirm"><di:waypoint x="716" y="362" /><di:waypoint x="766" y="362" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_ToEscalate" bpmnElement="Flow_ToEscalate"><di:waypoint x="548" y="532" /><di:waypoint x="450" y="532" /><di:waypoint x="450" y="371.5" /><di:waypoint x="352" y="371.5" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_ToTreatment" bpmnElement="Flow_ToTreatment"><di:waypoint x="452" y="479.5" /><di:waypoint x="484" y="479.5" /><di:waypoint x="484" y="492" /><di:waypoint x="516" y="492" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_ToRehab" bpmnElement="Flow_ToRehab"><di:waypoint x="452" y="479.5" /><di:waypoint x="492" y="479.5" /><di:waypoint x="492" y="362" /><di:waypoint x="516" y="362" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_ToWelfare" bpmnElement="Flow_ToWelfare"><di:waypoint x="452" y="479.5" /><di:waypoint x="476" y="479.5" /><di:waypoint x="476" y="232" /><di:waypoint x="516" y="232" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_RehabDone" bpmnElement="Flow_RehabDone"><di:waypoint x="616" y="362" /><di:waypoint x="666" y="362" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_WelfareDone" bpmnElement="Flow_WelfareDone"><di:waypoint x="616" y="232" /><di:waypoint x="640" y="232" /><di:waypoint x="640" y="362" /><di:waypoint x="666" y="362" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

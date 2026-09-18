@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:uipath="http://uipath.org/schema/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="UiPath Maestro (https://uipath.com)" exporterVersion="1.203.0-dev.8692">
+  <bpmn:process id="Process_1" name="BPMN-Quantum-And-Settlement-Assembly" isExecutable="true">
+    <bpmn:extensionElements>
+      <uipath:variables version="v1">
+        <uipath:input id="Var_Scenario" name="scenario" type="string" elementId="Event_start" default="" />
+        <uipath:input id="Var_ClaimReference" name="claimReference" type="string" elementId="Event_start" default="" />
+        <uipath:input id="Var_LiabilityBasisCode" name="liabilityBasisCode" type="string" elementId="Event_start" default="" />
+        <uipath:input id="Var_ContributoryNegligenceFlag" name="contributoryNegligenceFlag" type="boolean" elementId="Event_start" default="false" />
+        <uipath:inputOutput id="Var_GeneralDamagesCost" name="generalDamagesCost" type="number" elementId="Process_1" />
+        <uipath:inputOutput id="Var_GeneralDamagesSummary" name="generalDamagesSummary" type="string" elementId="Process_1" />
+        <uipath:inputOutput id="Var_SpecialDamagesCost" name="specialDamagesCost" type="number" elementId="Process_1" />
+        <uipath:inputOutput id="Var_ContributoryReductionFactor" name="contributoryReductionFactor" type="number" elementId="Process_1" />
+        <uipath:inputOutput id="Var_CareAndRehabCost" name="careAndRehabCost" type="number" elementId="Process_1" />
+        <uipath:output id="Var_EstimatedCost" name="estimatedCost" type="number" elementId="Event_end" />
+        <uipath:output id="Var_SettlementBasis" name="settlementBasis" type="string" elementId="Event_end" />
+        <uipath:output id="Var_SettlementPath" name="settlementPath" type="string" elementId="Event_end" />
+      </uipath:variables>
+      <uipath:bindings version="v1" />
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="Event_start" name="core.trigger.manual">
+      <bpmn:extensionElements>
+        <uipath:entryPointId value="48ec445a-c483-45ac-a590-b5ea286675a7" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:parallelGateway id="Gw_Fork" name="Fan out quantum assessment">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToGeneral</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ToSpecial</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ToContributory</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ToCareAndRehab</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:scriptTask id="Task_GeneralDamages" name="Assess general damages" scriptFormat="JavaScript">
+      <bpmn:extensionElements>
+        <uipath:mapping version="v1">
+          <uipath:type value="BPMN.ScriptTask" version="v1" />
+          <uipath:input name="args" type="json" target="bodyField"><![CDATA[{"scenario":"=vars.Var_Scenario","liabilityBasisCode":"=vars.Var_LiabilityBasisCode"}]]></uipath:input>
+          <uipath:output name="generalDamagesCost" type="number" var="Var_GeneralDamagesCost" source="=result.response.cost" />
+          <uipath:output name="generalDamagesSummary" type="string" var="Var_GeneralDamagesSummary" source="=result.response.summary" />
+        </uipath:mapping>
+        <uipath:scriptVersion value="v3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ToGeneral</bpmn:incoming>
+      <bpmn:outgoing>Flow_GeneralDone</bpmn:outgoing>
+      <bpmn:script><![CDATA[var raw = liabilityBasisCode ? String(liabilityBasisCode) : "RearEndCollision";
+var code = raw.toLowerCase().replace(/[^a-z]/g, "");
+var cost = 18400;
+var summary = "General damages for whiplash and soft tissue injury, 9 month prognosis, per JC Guidelines";
+if (code === "fire") {
+  cost = 64500;
+  summary = "General damages for head injury with continuing cognitive impairment, expert evidence obtained";
+} else if (code === "flood") {
+  cost = 41200;
+  summary = "General damages for multiple fractures with partial permanent disability";
+} else if (code === "storm") {
+  cost = 12750;
+  summary = "General damages for psychological injury, moderate, treatment ongoing";
+}
+return { response: { cost: cost, summary: summary } };]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="Task_SpecialDamages" name="Cost special damages schedule" scriptFormat="JavaScript">
+      <bpmn:extensionElements>
+        <uipath:mapping version="v1">
+          <uipath:type value="BPMN.ScriptTask" version="v1" />
+          <uipath:input name="args" type="json" target="bodyField"><![CDATA[{"scenario":"=vars.Var_Scenario"}]]></uipath:input>
+          <uipath:output name="specialDamagesCost" type="number" var="Var_SpecialDamagesCost" source="=result.response" />
+        </uipath:mapping>
+        <uipath:scriptVersion value="v3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ToSpecial</bpmn:incoming>
+      <bpmn:outgoing>Flow_SpecialDone</bpmn:outgoing>
+      <bpmn:script><![CDATA[var s = scenario ? scenario : "Standard";
+var cost = 6200;
+if (s === "Displaced") {
+  cost = 15800;
+} else if (s === "Underinsured") {
+  cost = 9600;
+}
+return { response: cost };]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="Task_ApplyContributory" name="Apply contributory negligence reduction" scriptFormat="JavaScript">
+      <bpmn:extensionElements>
+        <uipath:mapping version="v1">
+          <uipath:type value="BPMN.ScriptTask" version="v1" />
+          <uipath:input name="args" type="json" target="bodyField"><![CDATA[{"contributoryNegligenceFlag":"=vars.Var_ContributoryNegligenceFlag"}]]></uipath:input>
+          <uipath:output name="contributoryReductionFactor" type="number" var="Var_ContributoryReductionFactor" source="=result.response" />
+        </uipath:mapping>
+        <uipath:scriptVersion value="v3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ToContributory</bpmn:incoming>
+      <bpmn:outgoing>Flow_ContributoryDone</bpmn:outgoing>
+      <bpmn:script><![CDATA[if (contributoryNegligenceFlag === true) {
+  return { response: 0.7 };
+}
+return { response: 1 };]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="Task_CareAndRehabCost" name="Project care and rehabilitation cost" scriptFormat="JavaScript">
+      <bpmn:extensionElements>
+        <uipath:mapping version="v1">
+          <uipath:type value="BPMN.ScriptTask" version="v1" />
+          <uipath:input name="args" type="json" target="bodyField"><![CDATA[{"scenario":"=vars.Var_Scenario"}]]></uipath:input>
+          <uipath:output name="careAndRehabCost" type="number" var="Var_CareAndRehabCost" source="=result.response" />
+        </uipath:mapping>
+        <uipath:scriptVersion value="v3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ToCareAndRehab</bpmn:incoming>
+      <bpmn:outgoing>Flow_CareAndRehabDone</bpmn:outgoing>
+      <bpmn:script><![CDATA[var s = scenario ? scenario : "Standard";
+var cost = 2800;
+if (s === "Displaced") {
+  cost = 11400;
+} else if (s === "Investigated") {
+  cost = 4600;
+} else if (s === "Reopened") {
+  cost = 3200;
+}
+return { response: cost };]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:parallelGateway id="Gw_Join" name="Quantum assessment gathered">
+      <bpmn:incoming>Flow_GeneralDone</bpmn:incoming>
+      <bpmn:incoming>Flow_SpecialDone</bpmn:incoming>
+      <bpmn:incoming>Flow_ContributoryDone</bpmn:incoming>
+      <bpmn:incoming>Flow_CareAndRehabDone</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToConsolidate</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:scriptTask id="Task_Consolidate" name="Consolidate settlement figures" scriptFormat="JavaScript">
+      <bpmn:extensionElements>
+        <uipath:mapping version="v1">
+          <uipath:type value="BPMN.ScriptTask" version="v1" />
+          <uipath:input name="args" type="json" target="bodyField"><![CDATA[{"scenario":"=vars.Var_Scenario","generalDamagesCost":"=vars.Var_GeneralDamagesCost","specialDamagesCost":"=vars.Var_SpecialDamagesCost","careAndRehabCost":"=vars.Var_CareAndRehabCost","contributoryReductionFactor":"=vars.Var_ContributoryReductionFactor","contributoryNegligenceFlag":"=vars.Var_ContributoryNegligenceFlag"}]]></uipath:input>
+          <uipath:output name="estimatedCost" type="number" var="Var_EstimatedCost" source="=result.response.estimatedCost" />
+          <uipath:output name="settlementBasis" type="string" var="Var_SettlementBasis" source="=result.response.settlementBasis" />
+          <uipath:output name="settlementPath" type="string" var="Var_SettlementPath" source="=result.response.settlementPath" />
+        </uipath:mapping>
+        <uipath:scriptVersion value="v3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ToConsolidate</bpmn:incoming>
+      <bpmn:outgoing>Flow_End</bpmn:outgoing>
+      <bpmn:script><![CDATA[var s = scenario ? scenario : "Standard";
+var factor = (typeof contributoryReductionFactor === "number") ? contributoryReductionFactor : 1;
+var subtotal = (generalDamagesCost || 0) + (specialDamagesCost || 0) + (careAndRehabCost || 0);
+var total = Math.round(subtotal * factor);
+var basis = "Reinstatement";
+var path = "Insurer-Managed Reinstatement";
+if (contributoryNegligenceFlag === true) {
+  basis = "Indemnity";
+  path = "Cash-In-Lieu";
+} else if (s === "Investigated") {
+  basis = "Reinstatement";
+  path = "Combination";
+} else if (s === "Declined") {
+  basis = "First Loss";
+  path = "Cash-In-Lieu";
+} else if (s === "Reopened") {
+  basis = "Reinstatement";
+  path = "Combination";
+} else if (s === "Displaced") {
+  basis = "Reinstatement";
+  path = "Insurer-Managed Reinstatement";
+}
+return { response: { estimatedCost: total, settlementBasis: basis, settlementPath: path } };]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:endEvent id="Event_end" name="Settlement figures assembled">
+      <bpmn:incoming>Flow_End</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Event_start" targetRef="Gw_Fork" />
+    <bpmn:sequenceFlow id="Flow_ToGeneral" sourceRef="Gw_Fork" targetRef="Task_GeneralDamages" />
+    <bpmn:sequenceFlow id="Flow_ToSpecial" sourceRef="Gw_Fork" targetRef="Task_SpecialDamages" />
+    <bpmn:sequenceFlow id="Flow_ToContributory" sourceRef="Gw_Fork" targetRef="Task_ApplyContributory" />
+    <bpmn:sequenceFlow id="Flow_ToCareAndRehab" sourceRef="Gw_Fork" targetRef="Task_CareAndRehabCost" />
+    <bpmn:sequenceFlow id="Flow_GeneralDone" sourceRef="Task_GeneralDamages" targetRef="Gw_Join" />
+    <bpmn:sequenceFlow id="Flow_SpecialDone" sourceRef="Task_SpecialDamages" targetRef="Gw_Join" />
+    <bpmn:sequenceFlow id="Flow_ContributoryDone" sourceRef="Task_ApplyContributory" targetRef="Gw_Join" />
+    <bpmn:sequenceFlow id="Flow_CareAndRehabDone" sourceRef="Task_CareAndRehabCost" targetRef="Gw_Join" />
+    <bpmn:sequenceFlow id="Flow_ToConsolidate" sourceRef="Gw_Join" targetRef="Task_Consolidate" />
+    <bpmn:sequenceFlow id="Flow_End" sourceRef="Task_Consolidate" targetRef="Event_end" />
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="Diagram_1">
+    <bpmndi:BPMNPlane id="Plane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="S_Event_end" bpmnElement="Event_end"><dc:Bounds x="882" y="349" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Event_start" bpmnElement="Event_start"><dc:Bounds x="252" y="229" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Gw_Fork" bpmnElement="Gw_Fork"><dc:Bounds x="338" y="222" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Gw_Join" bpmnElement="Gw_Join"><dc:Bounds x="632" y="342" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_CareAndRehabCost" bpmnElement="Task_CareAndRehabCost"><dc:Bounds x="468" y="192" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_ApplyContributory" bpmnElement="Task_ApplyContributory"><dc:Bounds x="468" y="582" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_Consolidate" bpmnElement="Task_Consolidate"><dc:Bounds x="732" y="327" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_SpecialDamages" bpmnElement="Task_SpecialDamages"><dc:Bounds x="468" y="452" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_GeneralDamages" bpmnElement="Task_GeneralDamages"><dc:Bounds x="468" y="322" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="E_Flow_1" bpmnElement="Flow_1"><di:waypoint x="288" y="247" /><di:waypoint x="338" y="247" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_CareAndRehabDone" bpmnElement="Flow_CareAndRehabDone"><di:waypoint x="568" y="232" /><di:waypoint x="592" y="232" /><di:waypoint x="592" y="367" /><di:waypoint x="632" y="367" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_ContributoryDone" bpmnElement="Flow_ContributoryDone"><di:waypoint x="568" y="622" /><di:waypoint x="608" y="622" /><di:waypoint x="608" y="367" /><di:waypoint x="632" y="367" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_SpecialDone" bpmnElement="Flow_SpecialDone"><di:waypoint x="568" y="492" /><di:waypoint x="592" y="492" /><di:waypoint x="592" y="367" /><di:waypoint x="632" y="367" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_End" bpmnElement="Flow_End"><di:waypoint x="832" y="367" /><di:waypoint x="882" y="367" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_GeneralDone" bpmnElement="Flow_GeneralDone"><di:waypoint x="568" y="362" /><di:waypoint x="600" y="362" /><di:waypoint x="600" y="367" /><di:waypoint x="632" y="367" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_ToCareAndRehab" bpmnElement="Flow_ToCareAndRehab"><di:waypoint x="388" y="247" /><di:waypoint x="428" y="247" /><di:waypoint x="428" y="232" /><di:waypoint x="468" y="232" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_ToContributory" bpmnElement="Flow_ToContributory"><di:waypoint x="388" y="247" /><di:waypoint x="412" y="247" /><di:waypoint x="412" y="622" /><di:waypoint x="468" y="622" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_ToConsolidate" bpmnElement="Flow_ToConsolidate"><di:waypoint x="682" y="367" /><di:waypoint x="732" y="367" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_ToSpecial" bpmnElement="Flow_ToSpecial"><di:waypoint x="388" y="247" /><di:waypoint x="428" y="247" /><di:waypoint x="428" y="492" /><di:waypoint x="468" y="492" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E_Flow_ToGeneral" bpmnElement="Flow_ToGeneral"><di:waypoint x="388" y="247" /><di:waypoint x="444" y="247" /><di:waypoint x="444" y="362" /><di:waypoint x="468" y="362" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

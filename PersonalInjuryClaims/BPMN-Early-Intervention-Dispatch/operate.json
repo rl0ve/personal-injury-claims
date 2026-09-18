@@ -1,0 +1,11 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/operate",
+  "projectId": "f6830c1b-2327-488a-ba70-a3e2becf84fd",
+  "main": "/content/BPMN-Early-Intervention-Dispatch.bpmn#Event_start",
+  "contentType": "ProcessOrchestration",
+  "targetFramework": "Portable",
+  "runtimeOptions": {
+    "requiresUserInteraction": false,
+    "isAttended": false
+  }
+}

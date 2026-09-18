@@ -1,0 +1,141 @@
+{
+  "document": {
+    "dsl": "1.0.0",
+    "name": "Workflow",
+    "tags": {
+      "projectId": "b2538969-98a6-4c54-9db8-b54b79587fc7"
+    },
+    "version": "0.0.1",
+    "namespace": "default",
+    "metadata": {
+      "variables": []
+    }
+  },
+  "input": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "properties": {
+          "requestSource": {
+            "type": "string",
+            "description": "Which rule operation to evaluate: AverageAssessment, DelegatedAuthorityLookup, or SubrogationThreshold. Omit it to get every rule value back in one call."
+          },
+          "scenario": {
+            "type": "string",
+            "description": "Claim scenario driving the rule outcome (e.g. Standard, Underinsured, Displaced, Investigated, Declined, Reopened).",
+            "default": "Standard"
+          },
+          "policyLimitIndemnity": {
+            "type": "number",
+            "description": "Indemnity limit on the liability policy schedule."
+          },
+          "policyLimitCosts": {
+            "type": "number",
+            "description": "Legal costs limit on the liability policy schedule."
+          },
+          "estimatedCost": {
+            "type": "number",
+            "description": "Estimated full value of the injury claim including damages and costs."
+          }
+        },
+        "title": "Inputs"
+      }
+    }
+  },
+  "output": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "properties": {
+          "contributoryNegligenceFlag": {
+            "type": "boolean",
+            "description": "Whether a contributory negligence deduction was applied to the settlement (AverageAssessment only)."
+          },
+          "authorityLimit": {
+            "type": "number",
+            "description": "The applicable sign-off authority limit (AverageAssessment or DelegatedAuthorityLookup)."
+          },
+          "minimumPursuitValue": {
+            "type": "number",
+            "description": "Minimum claim value at which recovery against the third party insurer is considered (SubrogationThreshold only)."
+          },
+          "pursueRecovery": {
+            "type": "boolean",
+            "description": "Whether recovery against the third party insurer should be pursued (SubrogationThreshold only)."
+          }
+        },
+        "title": "Outputs"
+      }
+    }
+  },
+  "do": [
+    {
+      "Sequence_1": {
+        "do": [
+          {
+            "WorkflowStart": {
+              "set": "${ { ...Object.entries($workflow.definition?.document?.metadata?.variables?.schema?.document?.properties || {}).reduce((acc, [name, def]) => ({ ...acc, [name]: def?.default }), {}), ...($workflow.input || {}) } }",
+              "output": {
+                "as": "${$input}"
+              },
+              "export": {
+                "as": "{ ...$context, variables: { ...$context.variables, ...$output } }"
+              },
+              "metadata": {
+                "activityType": "Assign",
+                "displayName": "Workflow start",
+                "fullName": "Assign",
+                "isTransparent": true
+              }
+            }
+          },
+          {
+            "Javascript_1": {
+              "run": {
+                "script": {
+                  "code": "/* Contributory negligence deduction: settlement = full value x (1 - claimant contribution). Where the claimant contributed to the accident, damages are reduced proportionally; policyLimitIndemnity + policyLimitCosts are the liability policy limits available to meet the reduced award in this scenario check. */ const requestSource = $workflow.input.requestSource; const scenario = $workflow.input.scenario || 'Standard'; const policyLimitIndemnity = $workflow.input.policyLimitIndemnity; const policyLimitCosts = $workflow.input.policyLimitCosts; const estimatedCost = $workflow.input.estimatedCost; if (requestSource === 'AverageAssessment') { const contributoryNegligenceFlag = scenario === 'Underinsured'; const authorityLimit = 35000; return { contributoryNegligenceFlag: contributoryNegligenceFlag, authorityLimit: authorityLimit }; } if (requestSource === 'DelegatedAuthorityLookup') { const authorityLimit = 150000; return { authorityLimit: authorityLimit }; } if (requestSource === 'SubrogationThreshold') { const minimumPursuitValue = 750; const pursueRecovery = typeof estimatedCost === 'number' ? estimatedCost >= minimumPursuitValue : false; return { minimumPursuitValue: minimumPursuitValue, pursueRecovery: pursueRecovery }; } const minimumPursuitValue = 750; return { contributoryNegligenceFlag: scenario === 'Underinsured', authorityLimit: 35000, minimumPursuitValue: minimumPursuitValue, pursueRecovery: typeof estimatedCost === 'number' ? estimatedCost >= minimumPursuitValue : false };",
+                  "language": "javascript",
+                  "arguments": "${{ \"$context\": $context, \"$workflow\": $workflow, \"$input\": $input }}"
+                }
+              },
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Javascript_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "JsInvoke",
+                "displayName": "Evaluate Rule",
+                "fullName": "JsInvoke"
+              }
+            }
+          },
+          {
+            "Response_1": {
+              "response": "${$context.outputs.Javascript_1}",
+              "markJobAsFailed": false,
+              "then": "end",
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Response_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "Response",
+                "displayName": "Response",
+                "fullName": "Response"
+              }
+            }
+          }
+        ],
+        "metadata": {
+          "activityType": "Sequence",
+          "displayName": "Sequence",
+          "fullName": "Sequence"
+        }
+      }
+    }
+  ],
+  "evaluate": {
+    "mode": "strict",
+    "language": "javascript"
+  }
+}

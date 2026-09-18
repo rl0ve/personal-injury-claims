@@ -1,0 +1,8 @@
+{
+  "scope": "OR.Execution.Read OR.Folders.Read OR.Tasks OR.Tasks.Read OR.Jobs OR.Jobs.Write PIMS DataFabric.Data.Read DataFabric.Data.Write DataFabric.Schema.Read",
+  "clientId": "215093d8-6afd-4c78-9d81-f082f0bb819f",
+  "orgName": "businessorchestration",
+  "tenantName": "DefaultTenant",
+  "baseUrl": "https://api.uipath.com",
+  "redirectUri": "https://businessorchestration.uipath.host/personal-injury-claims/"
+}

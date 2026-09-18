@@ -1,0 +1,155 @@
+{
+  "document": {
+    "dsl": "1.0.0",
+    "name": "Workflow",
+    "tags": {
+      "projectId": "83f43f18-bc95-4d13-9ef2-6d6a87867f14"
+    },
+    "version": "0.0.1",
+    "namespace": "default",
+    "metadata": {
+      "variables": []
+    }
+  },
+  "input": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "title": "Inputs",
+        "properties": {
+          "requestSource": {
+            "type": "string",
+            "default": "InjurySeverityLookup"
+          },
+          "scenario": {
+            "type": "string",
+            "default": "Standard"
+          },
+          "runId": {
+            "type": "string",
+            "default": "RUN-0001"
+          },
+          "incidentLocation": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  "output": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "title": "Outputs",
+        "properties": {
+          "notificationDelayDays": {
+            "type": "integer"
+          },
+          "estimatedQuantum": {
+            "type": "number"
+          },
+          "litigationRiskBand": {
+            "type": "string"
+          },
+          "deteriorationRiskBand": {
+            "type": "string"
+          },
+          "employmentStatus": {
+            "type": "string"
+          },
+          "explanation": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "do": [
+    {
+      "Sequence_1": {
+        "do": [
+          {
+            "WorkflowStart": {
+              "set": "${ { ...Object.entries($workflow.definition?.document?.metadata?.variables?.schema?.document?.properties || {}).reduce((acc, [name, def]) => ({ ...acc, [name]: def?.default }), {}), ...($workflow.input || {}) } }",
+              "output": {
+                "as": "${$input}"
+              },
+              "export": {
+                "as": "{ ...$context, variables: { ...$context.variables, ...$output } }"
+              },
+              "metadata": {
+                "activityType": "Assign",
+                "displayName": "Workflow start",
+                "fullName": "Assign",
+                "isTransparent": true
+              }
+            }
+          },
+          {
+            "Wait_1": {
+              "wait": {
+                "minutes": 0,
+                "seconds": 15,
+                "milliseconds": 0
+              },
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Wait_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "Wait",
+                "displayName": "Await severity data provider response",
+                "fullName": "Wait"
+              }
+            }
+          },
+          {
+            "Javascript_1": {
+              "run": {
+                "script": {
+                  "code": "const inp = $workflow.input || {};\nconst src = inp.requestSource || 'InjurySeverityLookup';\nconst scenario = inp.scenario || 'Standard';\nconst incidentLocation = inp.incidentLocation || '';\n\nconst SCENARIOS = {\n  Standard: { notificationDelayDays: 0, estimatedQuantum: 345000, litigationRiskBand: 'Low', deteriorationRiskBand: 'Low', employmentStatus: 'Employed - full time' },\n  Displaced: { notificationDelayDays: 0, estimatedQuantum: 400000, litigationRiskBand: 'Low', deteriorationRiskBand: 'Medium', employmentStatus: 'Employed - full time' },\n  Underinsured: { notificationDelayDays: 0, estimatedQuantum: 340000, litigationRiskBand: 'Low', deteriorationRiskBand: 'Low', employmentStatus: 'Employed - full time' },\n  Investigated: { notificationDelayDays: 0, estimatedQuantum: 270000, litigationRiskBand: 'Low', deteriorationRiskBand: 'Low', employmentStatus: 'Employed - full time' },\n  Declined: { notificationDelayDays: 75, estimatedQuantum: 295000, litigationRiskBand: 'High', deteriorationRiskBand: 'Low', employmentStatus: 'Signed off work' },\n  Reopened: { notificationDelayDays: 0, estimatedQuantum: 315000, litigationRiskBand: 'Low', deteriorationRiskBand: 'Medium', employmentStatus: 'Employed - full time' }\n};\n\nconst s = SCENARIOS[scenario] || SCENARIOS.Standard;\n\nconst out = {\n  notificationDelayDays: 0,\n  estimatedQuantum: 0,\n  litigationRiskBand: '',\n  deteriorationRiskBand: '',\n  employmentStatus: '',\n  explanation: ''\n};\n\nif (src === 'InjurySeverityLookup') {\n  out.notificationDelayDays = s.notificationDelayDays;\n  out.estimatedQuantum = s.estimatedQuantum;\n  out.litigationRiskBand = s.litigationRiskBand;\n  out.deteriorationRiskBand = s.deteriorationRiskBand;\n  out.employmentStatus = s.employmentStatus;\n  out.explanation = 'Severity assessment for ' + (incidentLocation || 'the incident location') + ' returned an estimated quantum of ' + s.estimatedQuantum + ' with ' + s.litigationRiskBand + ' litigation risk and ' + s.notificationDelayDays + ' vacancy days.';\n} else {\n  out.explanation = 'Unrecognised requestSource: ' + src + '.';\n}\n\nreturn out;",
+                  "language": "javascript",
+                  "arguments": "${{ \"$context\": $context, \"$workflow\": $workflow, \"$input\": $input }}"
+                }
+              },
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Javascript_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "JsInvoke",
+                "displayName": "Resolve injury severity data response",
+                "fullName": "JsInvoke"
+              }
+            }
+          },
+          {
+            "Response_1": {
+              "response": "${$context.outputs.Javascript_1}",
+              "markJobAsFailed": false,
+              "then": "end",
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Response_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "Response",
+                "displayName": "Response",
+                "fullName": "Response"
+              }
+            }
+          }
+        ],
+        "metadata": {
+          "activityType": "Sequence",
+          "displayName": "Sequence",
+          "fullName": "Sequence"
+        }
+      }
+    }
+  ],
+  "evaluate": {
+    "mode": "strict",
+    "language": "javascript"
+  }
+}

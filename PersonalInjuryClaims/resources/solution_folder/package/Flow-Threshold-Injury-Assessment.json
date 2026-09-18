@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Flow-Threshold-Injury-Assessment",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "85d35194-3010-49a8-9d21-fa916f67c715",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "Flow-Threshold-Injury-Assessment"
+    },
+    "locks": [],
+    "key": "5e6a45fd-aef3-4b14-9e0a-09d15dbdcbdf",
+    "files": []
+  }
+}

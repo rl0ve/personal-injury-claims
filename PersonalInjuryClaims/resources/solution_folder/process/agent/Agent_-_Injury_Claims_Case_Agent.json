@@ -1,0 +1,69 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Agent - Injury Claims Case Agent",
+    "kind": "process",
+    "type": "agent",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "b020111b-2d10-4ff4-8ca6-845e9e24b51d",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "kind": "package",
+        "name": "Agent - Injury Claims Case Agent"
+      }
+    ],
+    "runtimeDependencies": [
+      {
+        "bindingType": "process",
+        "bindingKey": "API - Fetch File",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "API - Fetch File",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {
+          "bindingsVersion": "2.2",
+          "solutionsSupport": "true"
+        },
+        "resourceKind": "Process"
+      },
+      {
+        "bindingType": "mcpServer",
+        "bindingKey": "Case Management Control",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "Case Management Control",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {
+          "bindingsVersion": "2.2",
+          "solutionsSupport": "true"
+        },
+        "resourceKind": "MCPServer"
+      }
+    ],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "Agent",
+      "name": "Agent - Injury Claims Case Agent",
+      "package": {
+        "key": "216d09fd-2c98-422a-bd2e-cf5da0e309bf"
+      },
+      "targetFrameworkValue": "Portable",
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180
+    },
+    "locks": [],
+    "key": "67a0c243-c553-4d8f-b080-335f95c61f13",
+    "files": []
+  }
+}

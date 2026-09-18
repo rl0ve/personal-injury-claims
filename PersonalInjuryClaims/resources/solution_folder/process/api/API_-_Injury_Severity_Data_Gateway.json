@@ -1,0 +1,38 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "API - Injury Severity Data Gateway",
+    "kind": "process",
+    "type": "api",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "2191eddb-eb76-4b4d-ae99-436ec24a5669",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "kind": "package",
+        "name": "API - Injury Severity Data Gateway"
+      }
+    ],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "Api",
+      "name": "API - Injury Severity Data Gateway",
+      "package": {
+        "key": "6f126380-4609-41af-94b0-ff7a6c43b638"
+      },
+      "targetFrameworkValue": "Portable",
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180
+    },
+    "locks": [],
+    "key": "663d4810-c141-45f7-a75d-10bef220058b",
+    "files": []
+  }
+}

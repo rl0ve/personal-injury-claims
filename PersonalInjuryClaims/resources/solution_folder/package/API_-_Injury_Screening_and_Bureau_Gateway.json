@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "API - Injury Screening and Bureau Gateway",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "0bab20aa-8359-4eab-8f58-2c3af44e9726",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "API - Injury Screening and Bureau Gateway"
+    },
+    "locks": [],
+    "key": "536cf7e4-086c-4ffc-9c8b-ed13890595f9",
+    "files": []
+  }
+}

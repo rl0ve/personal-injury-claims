@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Agent - Subrogation Assessment",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "9ec92b4a-c3a4-4b45-b9c3-d61323773083",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "Agent - Subrogation Assessment"
+    },
+    "locks": [],
+    "key": "93fda901-3be5-418c-a657-0f451d76be3f",
+    "files": []
+  }
+}

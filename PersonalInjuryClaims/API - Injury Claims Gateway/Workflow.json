@@ -1,0 +1,262 @@
+{
+  "document": {
+    "dsl": "1.0.0",
+    "name": "Workflow",
+    "tags": {
+      "projectId": "75a2601e-17d3-4475-9b69-be6c34b7c9be"
+    },
+    "version": "0.0.1",
+    "namespace": "default",
+    "metadata": {
+      "variables": []
+    }
+  },
+  "input": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "title": "Inputs",
+        "properties": {
+          "requestSource": {
+            "type": "string",
+            "default": "CreateClaimShell"
+          },
+          "scenario": {
+            "type": "string",
+            "default": "Standard"
+          },
+          "runId": {
+            "type": "string",
+            "default": "RUN-0001"
+          },
+          "claimReference": {
+            "type": "string",
+            "default": ""
+          },
+          "injuryTypeCode": {
+            "type": "string",
+            "default": ""
+          },
+          "independentLivingFlag": {
+            "type": "boolean",
+            "default": false
+          },
+          "liabilityOutcome": {
+            "type": "string",
+            "default": ""
+          },
+          "settlementOutcome": {
+            "type": "string",
+            "default": ""
+          },
+          "liabilityBasisCode": {
+            "type": "string",
+            "default": "RearEndCollision"
+          },
+          "contributoryNegligenceFlag": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    }
+  },
+  "output": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "title": "Outputs",
+        "properties": {
+          "claimReference": {
+            "type": "string"
+          },
+          "claimantName": {
+            "type": "string"
+          },
+          "incidentLocation": {
+            "type": "string"
+          },
+          "injuryTypeCode": {
+            "type": "string"
+          },
+          "claimStatus": {
+            "type": "string"
+          },
+          "independentLivingFlag": {
+            "type": "boolean"
+          },
+          "activeDamageFlag": {
+            "type": "boolean"
+          },
+          "vulnerableCustomerFlag": {
+            "type": "boolean"
+          },
+          "reserveGeneralDamages": {
+            "type": "number"
+          },
+          "reserveSpecialDamages": {
+            "type": "number"
+          },
+          "reserveCareAndRehab": {
+            "type": "number"
+          },
+          "closureReasonCode": {
+            "type": "string"
+          },
+          "complaintRef": {
+            "type": "string"
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "estimatedCost": {
+            "type": "number"
+          },
+          "settlementBasis": {
+            "type": "string"
+          },
+          "settlementPath": {
+            "type": "string"
+          },
+          "scopeOfWorksSummary": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "do": [
+    {
+      "Sequence_1": {
+        "do": [
+          {
+            "WorkflowStart": {
+              "set": "${ { ...Object.entries($workflow.definition?.document?.metadata?.variables?.schema?.document?.properties || {}).reduce((acc, [name, def]) => ({ ...acc, [name]: def?.default }), {}), ...($workflow.input || {}) } }",
+              "output": {
+                "as": "${$input}"
+              },
+              "export": {
+                "as": "{ ...$context, variables: { ...$context.variables, ...$output } }"
+              },
+              "metadata": {
+                "activityType": "Assign",
+                "displayName": "Workflow start",
+                "fullName": "Assign",
+                "isTransparent": true
+              }
+            }
+          },
+          {
+            "If_1#Wrapper": {
+              "do": [
+                {
+                  "If_1": {
+                    "switch": [
+                      {
+                        "case": {
+                          "when": "${$workflow.input.requestSource === 'UpdateSupplementalReserve'}",
+                          "then": "If_1#Then"
+                        }
+                      },
+                      {
+                        "default": {
+                          "then": "If_1#Else"
+                        }
+                      }
+                    ],
+                    "metadata": {
+                      "displayName": "Supplemental reserve route"
+                    }
+                  }
+                },
+                {
+                  "If_1#Then": {
+                    "do": [
+                      {
+                        "Wait_1": {
+                          "wait": {
+                            "minutes": 0,
+                            "seconds": 15,
+                            "milliseconds": 0
+                          },
+                          "export": {
+                            "as": "{ ...$context, outputs: { ...$context?.outputs, \"Wait_1\": $output } }"
+                          },
+                          "metadata": {
+                            "activityType": "Wait",
+                            "displayName": "Await reserve posting confirmation",
+                            "fullName": "Wait"
+                          }
+                        }
+                      }
+                    ],
+                    "then": "exit"
+                  }
+                },
+                {
+                  "If_1#Else": {
+                    "do": [],
+                    "then": "exit"
+                  }
+                }
+              ],
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"If_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "If",
+                "displayName": "If",
+                "fullName": "If"
+              }
+            }
+          },
+          {
+            "Javascript_1": {
+              "run": {
+                "script": {
+                  "code": "const inp = $workflow.input || {};\nconst src = inp.requestSource || 'CreateClaimShell';\nconst scenario = inp.scenario || 'Standard';\nconst runId = inp.runId || '5182';\nconst claimReference = inp.claimReference || ('CLAIM-' + runId);\n\nconst SCENARIOS = {\n  Standard: {\n    claimantName: 'Joseph Thompson',\n    incidentLocation: 'A4155 Caversham Road junction with Vastern Road, Reading',\n    injuryTypeCode: 'WHIPLASH',\n    injuryDescription: 'a neck and lower back soft tissue injury sustained as a driver in a rear-end collision at a signalled junction',\n    independentLivingFlag: true,\n    activeDamageFlag: false,\n    vulnerableCustomerFlag: false,\n    reserveGeneralDamages: 8500,\n    reserveSpecialDamages: 2200,\n    reserveCareAndRehab: 0\n  },\n  Displaced: {\n    claimantName: 'Thomas Okafor',\n    incidentLocation: 'Wilmslow Road pedestrian crossing at Birchwood Avenue, Manchester',\n    injuryTypeCode: 'HEAD_INJURY',\n    injuryDescription: 'a traumatic head injury and multiple rib fractures sustained as a pedestrian struck on a marked crossing, with an eleven day inpatient admission',\n    independentLivingFlag: false,\n    activeDamageFlag: true,\n    vulnerableCustomerFlag: true,\n    reserveGeneralDamages: 65000,\n    reserveSpecialDamages: 18000,\n    reserveCareAndRehab: 4500\n  },\n  Underinsured: {\n    claimantName: 'Priya Chandrasekaran',\n    incidentLocation: 'Mill Lane junction with Otley Road, Leeds',\n    injuryTypeCode: 'FRACTURE',\n    injuryDescription: 'a displaced tibia and fibula fracture sustained when a cyclist was struck by a vehicle emerging from a side road',\n    independentLivingFlag: true,\n    activeDamageFlag: false,\n    vulnerableCustomerFlag: false,\n    reserveGeneralDamages: 22000,\n    reserveSpecialDamages: 4000,\n    reserveCareAndRehab: 0\n  },\n  Investigated: {\n    claimantName: 'Daniel Foster',\n    incidentLocation: 'Kestrel Road car park exit, Bristol',\n    injuryTypeCode: 'SOFT_TISSUE',\n    injuryDescription: 'a low speed shunt reported as a soft tissue back and shoulder injury, notified nine days after the accident with no police report on file and a large lost earnings claim',\n    independentLivingFlag: true,\n    activeDamageFlag: false,\n    vulnerableCustomerFlag: false,\n    reserveGeneralDamages: 1500,\n    reserveSpecialDamages: 12000,\n    reserveCareAndRehab: 0\n  },\n  Declined: {\n    claimantName: 'Helen Marsh',\n    incidentLocation: 'Riverside Court loading yard, Shrewsbury',\n    injuryTypeCode: 'PSYCHOLOGICAL',\n    injuryDescription: 'a psychological injury claimed after a workplace vehicle incident, notified 75 days after the accident on a policy where liability cover had already lapsed',\n    independentLivingFlag: false,\n    activeDamageFlag: true,\n    vulnerableCustomerFlag: false,\n    reserveGeneralDamages: 0,\n    reserveSpecialDamages: 0,\n    reserveCareAndRehab: 0\n  },\n  Reopened: {\n    claimantName: 'George Whitfield',\n    incidentLocation: 'Orchard Way roundabout approach, Norwich',\n    injuryTypeCode: 'WHIPLASH',\n    injuryDescription: 'a whiplash and lower back injury sustained as a driver rear-ended while stationary at a roundabout',\n    independentLivingFlag: true,\n    activeDamageFlag: false,\n    vulnerableCustomerFlag: false,\n    reserveGeneralDamages: 9200,\n    reserveSpecialDamages: 1800,\n    reserveCareAndRehab: 0\n  }\n};\n\nconst s = SCENARIOS[scenario] || SCENARIOS.Standard;\n\nconst out = {\n  claimReference: '',\n  claimantName: '',\n  incidentLocation: '',\n  injuryTypeCode: '',\n  claimStatus: '',\n  independentLivingFlag: false,\n  activeDamageFlag: false,\n  vulnerableCustomerFlag: false,\n  reserveGeneralDamages: 0,\n  reserveSpecialDamages: 0,\n  reserveCareAndRehab: 0,\n  closureReasonCode: '',\n  complaintRef: '',\n  explanation: ''\n};\n\nif (src === 'CreateClaimShell') {\n  out.claimReference = claimReference;\n  out.claimantName = s.claimantName;\n  out.incidentLocation = s.incidentLocation;\n  out.injuryTypeCode = s.injuryTypeCode;\n  out.claimStatus = 'Registered';\n  out.explanation = 'Claim shell opened for ' + s.claimantName + ' at ' + s.incidentLocation + ' following ' + s.injuryDescription + '.';\n} else if (src === 'ScopeAndSettlement') {\n  const rawBasis = inp.liabilityBasisCode ? String(inp.liabilityBasisCode) : s.injuryTypeCode;\n  const basisKey = rawBasis.toLowerCase().replace(/[^a-z]/g, '');\n  let generalDamages = 8400;\n  let quantumSummary = 'Whiplash and neck soft tissue injury valued on the judicial guidelines bracket for a recovery period of up to two years';\n  if (basisKey === 'headinjury' || basisKey === 'pedestrianstruck' || basisKey === 'failuretostop') { generalDamages = 64500; quantumSummary = 'Traumatic head injury with ongoing cognitive deficit, valued on the judicial guidelines bracket for moderate brain injury'; }\n  else if (basisKey === 'fracture' || basisKey === 'failuretogiveway') { generalDamages = 21200; quantumSummary = 'Displaced lower limb fracture with residual restriction, valued on the judicial guidelines bracket for a serious leg injury'; }\n  else if (basisKey === 'psychological') { generalDamages = 12750; quantumSummary = 'Moderate psychological injury valued on the judicial guidelines bracket, subject to a supportive psychiatric report'; }\n  let medicalAndEarningsCost = 6200;\n  if (scenario === 'Displaced') { medicalAndEarningsCost = 15800; }\n  else if (scenario === 'Underinsured') { medicalAndEarningsCost = 9600; }\n  let careAndRehabCost = 2800;\n  if (scenario === 'Displaced') { careAndRehabCost = 11400; }\n  else if (scenario === 'Investigated') { careAndRehabCost = 4600; }\n  else if (scenario === 'Reopened') { careAndRehabCost = 3200; }\n  const contributoryApplied = inp.contributoryNegligenceFlag === true;\n  const factor = contributoryApplied ? 0.7 : 1;\n  const total = Math.round((generalDamages + medicalAndEarningsCost + careAndRehabCost) * factor);\n  let basis = 'Full Liability';\n  let path = 'Negotiated Settlement';\n  if (contributoryApplied) { basis = 'Reduced for Contributory Negligence'; path = 'Part 36 Offer'; }\n  else if (scenario === 'Investigated') { path = 'Settlement Pending Investigation'; }\n  else if (scenario === 'Declined') { basis = 'Without Prejudice'; path = 'Part 36 Offer'; }\n  else if (scenario === 'Reopened') { path = 'Settlement Pending Investigation'; }\n  out.estimatedCost = total;\n  out.settlementBasis = basis;\n  out.settlementPath = path;\n  out.scopeOfWorksSummary = quantumSummary;\n  out.explanation = 'Quantum assembled: ' + generalDamages + ' general damages, ' + medicalAndEarningsCost + ' medical costs and lost earnings, ' + careAndRehabCost + ' care and rehabilitation' + (contributoryApplied ? ', reduced for contributory negligence to ' : ', totalling ') + total + '.';\n} else if (src === 'CaptureLossDetail') {\n  out.independentLivingFlag = s.independentLivingFlag;\n  out.activeDamageFlag = s.activeDamageFlag;\n  out.vulnerableCustomerFlag = s.vulnerableCustomerFlag;\n  out.explanation = 'Accident and injury detail captured: ' + s.injuryDescription + (s.independentLivingFlag ? '. The claimant is managing unaided at home.' : '. The claimant cannot manage unaided and needs daily support.');\n} else if (src === 'ConfirmRegistration') {\n  out.reserveGeneralDamages = s.reserveGeneralDamages;\n  out.reserveSpecialDamages = s.reserveSpecialDamages;\n  out.reserveCareAndRehab = s.reserveCareAndRehab;\n  out.claimStatus = (scenario === 'Displaced') ? 'Open - Serious Injury Lane' : 'Open';\n  out.explanation = 'Registration confirmed with opening reserves of ' + s.reserveGeneralDamages + ' general damages and ' + s.reserveSpecialDamages + ' special damages.';\n} else if (src === 'RequestEvidence') {\n  out.claimStatus = 'Awaiting Evidence';\n  out.explanation = 'Medical evidence and special damages schedule requested from the claimant representative for claim ' + claimReference + '.';\n} else if (src === 'RecordCoverageDecision') {\n  const liabilityOutcome = inp.liabilityOutcome || 'Covered';\n  out.claimStatus = 'Liability Recorded: ' + liabilityOutcome;\n  out.explanation = 'Liability decision recorded as ' + liabilityOutcome + ' for claim ' + claimReference + '.';\n} else if (src === 'ReconcileInvoices') {\n  out.claimStatus = 'Invoices Reconciled';\n  out.explanation = 'Treatment and rehabilitation provider invoices reconciled against the agreed treatment plan for claim ' + claimReference + '.';\n} else if (src === 'CheckSubjectivities') {\n  const open = (scenario === 'Investigated');\n  out.closureReasonCode = open ? 'OPEN_SUBJECTIVITIES' : 'CLEAR';\n  out.claimStatus = open ? 'Subjectivities Outstanding' : 'Ready to Close';\n  out.explanation = open ? 'Outstanding subjectivities remain open pending investigation sign-off.' : 'No outstanding subjectivities remain; the claim is ready to close.';\n} else if (src === 'ArchiveClaim') {\n  out.claimStatus = 'Closed';\n  out.explanation = 'Claim ' + claimReference + ' archived and closed.';\n} else if (src === 'IssueAdverseDecision') {\n  out.closureReasonCode = (scenario === 'Declined') ? 'LIABILITY_COVER_NOT_IN_FORCE' : 'LIABILITY_DENIED';\n  out.explanation = 'Adverse decision notice issued for claim ' + claimReference + ' with closure reason ' + out.closureReasonCode + '.';\n} else if (src === 'UpdateSupplementalReserve') {\n  out.reserveGeneralDamages = s.reserveGeneralDamages + 3500;\n  out.explanation = 'Supplemental reserve of 3500 added following the further medical report; general damages reserve now ' + out.reserveGeneralDamages + '.';\n} else if (src === 'LogComplaint') {\n  out.complaintRef = 'CMP-' + runId;\n  out.explanation = 'Complaint logged under reference ' + out.complaintRef + ' with ombudsman referral rights issued to the claimant.';\n} else {\n  out.claimStatus = 'UnknownRequestSource';\n  out.explanation = 'Unrecognised requestSource: ' + src + '.';\n}\n\nreturn out;",
+                  "language": "javascript",
+                  "arguments": "${{ \"$context\": $context, \"$workflow\": $workflow, \"$input\": $input }}"
+                }
+              },
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Javascript_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "JsInvoke",
+                "displayName": "Resolve claims system response",
+                "fullName": "JsInvoke"
+              }
+            }
+          },
+          {
+            "Response_1": {
+              "response": "${$context.outputs.Javascript_1}",
+              "markJobAsFailed": false,
+              "then": "end",
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Response_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "Response",
+                "displayName": "Response",
+                "fullName": "Response"
+              }
+            }
+          }
+        ],
+        "metadata": {
+          "activityType": "Sequence",
+          "displayName": "Sequence",
+          "fullName": "Sequence"
+        }
+      }
+    }
+  ],
+  "evaluate": {
+    "mode": "strict",
+    "language": "javascript"
+  }
+}

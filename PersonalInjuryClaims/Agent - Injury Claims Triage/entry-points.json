@@ -1,0 +1,66 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "/content/agent.json",
+      "uniqueId": "6c66c141-f364-4e7d-964e-27ca180be107",
+      "type": "agent",
+      "input": {
+        "type": "object",
+        "required": [
+          "scenario",
+          "injuryTypeCode",
+          "independentLivingFlag",
+          "reserveGeneralDamages",
+          "litigationEventCode"
+        ],
+        "properties": {
+          "scenario": {
+            "type": "string",
+            "description": "Selects the deterministic journey this claim follows, so the run is reproducible."
+          },
+          "injuryTypeCode": {
+            "type": "string",
+            "description": "The injury reported at notification, such as whiplash, soft tissue, fracture, head injury or psychological."
+          },
+          "independentLivingFlag": {
+            "type": "boolean",
+            "description": "Whether the claimant can still live independently without care support."
+          },
+          "reserveGeneralDamages": {
+            "type": "number",
+            "description": "The general damages reserve for pain and suffering set at registration."
+          },
+          "litigationEventCode": {
+            "type": "string",
+            "description": "Litigation trigger identifier when proceedings or a pre-action protocol step are live on the claim. Empty when no litigation trigger applies."
+          }
+        }
+      },
+      "output": {
+        "type": "object",
+        "required": [
+          "claimStatus",
+          "agentRationale"
+        ],
+        "properties": {
+          "claimStatus": {
+            "type": "string",
+            "description": "The handling track for this claim. Must be exactly one of: \"Desktop\", \"Field\", \"Specialist\", \"CAT Surge\". The case routes on this value, so it must never contain any other value.",
+            "enum": [
+              "Desktop",
+              "Field",
+              "Specialist",
+              "CAT Surge"
+            ]
+          },
+          "agentRationale": {
+            "type": "string",
+            "description": "The reasoning behind the handling track, kept separate from the decision itself. This is what a person reads."
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,302 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "PersonalInjuryClaims",
+    "kind": "process",
+    "type": "caseManagement",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "5c1f9b31-1f13-43f4-adb2-395517558c75",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "kind": "package",
+        "name": "PersonalInjuryClaims"
+      }
+    ],
+    "runtimeDependencies": [
+      {
+        "bindingType": "Connection",
+        "bindingKey": "080f3ca9-b976-46d2-a5ed-454a628e6214",
+        "bindingValues": {
+          "connectionId": {
+            "defaultValue": "080f3ca9-b976-46d2-a5ed-454a628e6214",
+            "isExpression": false
+          },
+          "folderKey": {
+            "defaultValue": "359ef0ed-2404-4636-bf92-310ccdeea2dc",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {
+          "connector": "uipath-uipath-dataservice"
+        },
+        "resourceKind": "Connection",
+        "resourceType": "uipath-uipath-dataservice",
+        "resourceKey": "080f3ca9-b976-46d2-a5ed-454a628e6214",
+        "resourceName": "Data Fabric - Robert Love",
+        "folderKey": "359ef0ed-2404-4636-bf92-310ccdeea2dc"
+      },
+      {
+        "bindingType": "app",
+        "bindingKey": "Shared.injury-claims-console",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "injury-claims-console",
+            "isExpression": false
+          },
+          "folderPath": {
+            "defaultValue": "Shared",
+            "isExpression": false
+          }
+        },
+        "resourceKind": "App",
+        "resourceKey": "dcb50731-078a-4fb2-a754-ece8be29fe06",
+        "resourceName": "injury-claims-console_1",
+        "folderKey": "359ef0ed-2404-4636-bf92-310ccdeea2dc"
+      },
+      {
+        "bindingType": "process",
+        "bindingKey": "solution_folder.API - Injury Claims Gateway",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "API - Injury Claims Gateway",
+            "isExpression": false
+          },
+          "folderPath": {
+            "defaultValue": "solution_folder",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {},
+        "resourceKind": "Process"
+      },
+      {
+        "bindingType": "process",
+        "bindingKey": "solution_folder.API - Injury Policy Gateway",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "API - Injury Policy Gateway",
+            "isExpression": false
+          },
+          "folderPath": {
+            "defaultValue": "solution_folder",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {},
+        "resourceKind": "Process"
+      },
+      {
+        "bindingType": "process",
+        "bindingKey": "solution_folder.API - Injury Provider Network Gateway",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "API - Injury Provider Network Gateway",
+            "isExpression": false
+          },
+          "folderPath": {
+            "defaultValue": "solution_folder",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {},
+        "resourceKind": "Process"
+      },
+      {
+        "bindingType": "process",
+        "bindingKey": "solution_folder.API - Injury Rules",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "API - Injury Rules",
+            "isExpression": false
+          },
+          "folderPath": {
+            "defaultValue": "solution_folder",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {},
+        "resourceKind": "Process"
+      },
+      {
+        "bindingType": "process",
+        "bindingKey": "solution_folder.API - Injury Screening and Bureau Gateway",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "API - Injury Screening and Bureau Gateway",
+            "isExpression": false
+          },
+          "folderPath": {
+            "defaultValue": "solution_folder",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {},
+        "resourceKind": "Process"
+      },
+      {
+        "bindingType": "process",
+        "bindingKey": "solution_folder.API - Injury Severity Data Gateway",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "API - Injury Severity Data Gateway",
+            "isExpression": false
+          },
+          "folderPath": {
+            "defaultValue": "solution_folder",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {},
+        "resourceKind": "Process"
+      },
+      {
+        "bindingType": "process",
+        "bindingKey": "solution_folder.Agent - Injury Claims Case Agent",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "Agent - Injury Claims Case Agent",
+            "isExpression": false
+          },
+          "folderPath": {
+            "defaultValue": "solution_folder",
+            "isExpression": false
+          }
+        },
+        "resourceKind": "Process"
+      },
+      {
+        "bindingType": "process",
+        "bindingKey": "solution_folder.Agent - Injury Claims Triage",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "Agent - Injury Claims Triage",
+            "isExpression": false
+          },
+          "folderPath": {
+            "defaultValue": "solution_folder",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {},
+        "resourceKind": "Process"
+      },
+      {
+        "bindingType": "process",
+        "bindingKey": "solution_folder.Agent - Liability Assessment",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "Agent - Liability Assessment",
+            "isExpression": false
+          },
+          "folderPath": {
+            "defaultValue": "solution_folder",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {},
+        "resourceKind": "Process"
+      },
+      {
+        "bindingType": "process",
+        "bindingKey": "solution_folder.Agent - Subrogation Assessment",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "Agent - Subrogation Assessment",
+            "isExpression": false
+          },
+          "folderPath": {
+            "defaultValue": "solution_folder",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {},
+        "resourceKind": "Process"
+      },
+      {
+        "bindingType": "process",
+        "bindingKey": "solution_folder.BPMN-Early-Intervention-Dispatch",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "BPMN-Early-Intervention-Dispatch",
+            "isExpression": false
+          },
+          "folderPath": {
+            "defaultValue": "solution_folder",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {},
+        "resourceKind": "Process"
+      },
+      {
+        "bindingType": "process",
+        "bindingKey": "solution_folder.BPMN-Quantum-And-Settlement-Assembly",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "BPMN-Quantum-And-Settlement-Assembly",
+            "isExpression": false
+          },
+          "folderPath": {
+            "defaultValue": "solution_folder",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {},
+        "resourceKind": "Process"
+      },
+      {
+        "bindingType": "process",
+        "bindingKey": "solution_folder.BPMN-Subrogation-Recovery",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "BPMN-Subrogation-Recovery",
+            "isExpression": false
+          },
+          "folderPath": {
+            "defaultValue": "solution_folder",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {},
+        "resourceKind": "Process"
+      },
+      {
+        "bindingType": "process",
+        "bindingKey": "solution_folder.Flow-Threshold-Injury-Assessment",
+        "bindingValues": {
+          "name": {
+            "defaultValue": "Flow-Threshold-Injury-Assessment",
+            "isExpression": false
+          },
+          "folderPath": {
+            "defaultValue": "solution_folder",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {},
+        "resourceKind": "Process"
+      }
+    ],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "CaseManagement",
+      "name": "PersonalInjuryClaims",
+      "package": {
+        "key": "5eccdbb4-16dd-4cd3-aee5-f255d56ae4ba"
+      },
+      "targetFrameworkValue": "Portable",
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180
+    },
+    "locks": [],
+    "key": "917cd626-5053-45f2-9651-091e8eabc9ad",
+    "files": []
+  }
+}

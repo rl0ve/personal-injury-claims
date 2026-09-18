@@ -1,0 +1,61 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "API - Fetch File",
+    "kind": "process",
+    "type": "api",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "45d3b970-780f-4d67-8493-91c6444431d1",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "kind": "package",
+        "name": "API - Fetch File"
+      }
+    ],
+    "runtimeDependencies": [
+      {
+        "bindingType": "Connection",
+        "bindingKey": "080f3ca9-b976-46d2-a5ed-454a628e6214",
+        "bindingValues": {
+          "connectionId": {
+            "defaultValue": "080f3ca9-b976-46d2-a5ed-454a628e6214",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {
+          "activityName": "Download File from Record Field",
+          "bindingsVersion": "2.2",
+          "solutionsSupport": "true",
+          "connector": "uipath-uipath-dataservice",
+          "useConnectionService": "true"
+        },
+        "resourceKind": "Connection",
+        "resourceType": "uipath-uipath-dataservice",
+        "resourceKey": "080f3ca9-b976-46d2-a5ed-454a628e6214",
+        "resourceName": "Data Fabric - Robert Love",
+        "folderKey": "359ef0ed-2404-4636-bf92-310ccdeea2dc"
+      }
+    ],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "Api",
+      "name": "API - Fetch File",
+      "package": {
+        "key": "6f5c8cdd-1111-4fd7-8ac3-419640ef7066"
+      },
+      "targetFrameworkValue": "Portable",
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180
+    },
+    "locks": [],
+    "key": "742122d0-6c8c-46e8-a1e6-39cd2a5e2915",
+    "files": []
+  }
+}

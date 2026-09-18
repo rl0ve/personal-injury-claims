@@ -1,0 +1,55 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "/content/agent.json",
+      "uniqueId": "8ec5f6dc-57a0-47eb-b3f7-a25cb9625192",
+      "type": "agent",
+      "input": {
+        "type": "object",
+        "required": [
+          "scenario",
+          "liabilityBasisCode",
+          "subrogationPotentialFlag",
+          "estimatedCost"
+        ],
+        "properties": {
+          "scenario": {
+            "type": "string",
+            "description": "Selects the deterministic journey this claim follows, so the run is reproducible."
+          },
+          "liabilityBasisCode": {
+            "type": "string",
+            "description": "The liability position determined at assessment."
+          },
+          "subrogationPotentialFlag": {
+            "type": "boolean",
+            "description": "The subrogation recovery potential proposed at assessment — a candidate flag, not yet a pursuit decision."
+          },
+          "estimatedCost": {
+            "type": "number",
+            "description": "Estimated settlement value of the claim, general and special damages together, the basis for weighing pursuit against the minimum pursuit value."
+          }
+        }
+      },
+      "output": {
+        "type": "object",
+        "required": [
+          "subrogationPotentialFlag",
+          "agentRationale"
+        ],
+        "properties": {
+          "subrogationPotentialFlag": {
+            "type": "boolean",
+            "description": "Whether subrogation recovery is worth pursuing against the at-fault third party. This is the decision the case routes on — a real boolean, never a string."
+          },
+          "agentRationale": {
+            "type": "string",
+            "description": "The reasoning behind the pursuit decision, kept separate from the decision itself. This is what a person reads."
+          }
+        }
+      }
+    }
+  ]
+}

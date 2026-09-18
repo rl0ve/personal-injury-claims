@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "API - Injury Policy Gateway",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "4eb485f2-2293-4b51-9395-257699c7127b",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "API - Injury Policy Gateway"
+    },
+    "locks": [],
+    "key": "ce80e841-eab5-45da-83c1-93cb622312c2",
+    "files": []
+  }
+}

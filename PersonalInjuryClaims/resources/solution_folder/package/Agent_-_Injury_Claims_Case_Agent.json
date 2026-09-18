@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Agent - Injury Claims Case Agent",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "b020111b-2d10-4ff4-8ca6-845e9e24b51d",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "Agent - Injury Claims Case Agent"
+    },
+    "locks": [],
+    "key": "216d09fd-2c98-422a-bd2e-cf5da0e309bf",
+    "files": []
+  }
+}

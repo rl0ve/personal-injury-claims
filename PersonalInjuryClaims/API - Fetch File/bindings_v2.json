@@ -1,0 +1,24 @@
+{
+  "version": "2.0",
+  "resources": [
+    {
+      "resource": "Connection",
+      "key": "080f3ca9-b976-46d2-a5ed-454a628e6214",
+      "activityId": "Download_File_from_Record_Field_1",
+      "activityDisplayName": "Download File from Record Field",
+      "value": {
+        "ConnectionId": {
+          "defaultValue": "080f3ca9-b976-46d2-a5ed-454a628e6214",
+          "isExpression": false
+        }
+      },
+      "metadata": {
+        "UseConnectionService": "true",
+        "Connector": "uipath-uipath-dataservice",
+        "ActivityName": "Download File from Record Field",
+        "BindingsVersion": "2.2",
+        "SolutionsSupport": "true"
+      }
+    }
+  ]
+}

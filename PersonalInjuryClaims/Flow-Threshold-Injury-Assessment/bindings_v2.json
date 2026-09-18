@@ -1,0 +1,77 @@
+{
+  "version": "2.0",
+  "resources": [
+    {
+      "resource": "process",
+      "key": "Shared/Personal Injury Claims Demo.Agent - Injury Claims Triage",
+      "id": "processShared/Personal Injury Claims Demo.Agent - Injury Claims Triage",
+      "value": {
+        "folderPath": {
+          "defaultValue": "Shared/Personal Injury Claims Demo",
+          "isExpression": false,
+          "displayName": "Folder path"
+        },
+        "name": {
+          "defaultValue": "Agent - Injury Claims Triage",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "Analyze medical report",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true",
+        "subType": "Agent"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "Shared/Personal Injury Claims Demo.Agent - Liability Assessment",
+      "id": "processShared/Personal Injury Claims Demo.Agent - Liability Assessment",
+      "value": {
+        "folderPath": {
+          "defaultValue": "Shared/Personal Injury Claims Demo",
+          "isExpression": false,
+          "displayName": "Folder path"
+        },
+        "name": {
+          "defaultValue": "Agent - Liability Assessment",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "Analyze medical report",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true",
+        "subType": "Agent"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "Shared/Personal Injury Claims Demo.Agent - Subrogation Assessment",
+      "id": "processShared/Personal Injury Claims Demo.Agent - Subrogation Assessment",
+      "value": {
+        "folderPath": {
+          "defaultValue": "Shared/Personal Injury Claims Demo",
+          "isExpression": false,
+          "displayName": "Folder path"
+        },
+        "name": {
+          "defaultValue": "Agent - Subrogation Assessment",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "Analyze medical report",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true",
+        "subType": "Agent"
+      }
+    }
+  ]
+}

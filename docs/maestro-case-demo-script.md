@@ -1,4 +1,4 @@
-# Maestro Case demo — agentic claims for a top ANZ insurer (~9 min)
+# Maestro Case demo — agentic claims for a top ANZ insurer (~9:45)
 
 ---
 
@@ -52,11 +52,21 @@ Walk the journey out loud:
 
 ---
 
-## 4:00 — Under the hood: Maestro Case (≈1:00)
+## 4:00 — Where the case comes from: the case plan (≈35s)
+
+**[ON SCREEN — VS Code, the case plan open]**
+
+> "Now, before we watch this claim run, let me show you where it comes from. This is the **case plan** for a personal-injury claim. It's the design of the whole thing: the stages a claim moves through, and inside each stage the tasks, the rules, and who or what does each piece of work — an agent, an automation, a person, or an outside party."
+
+> "A business analyst designs the claim here, and **Maestro runs it.** And the app Dana was just working in is **already built on this same case plan** — same stages, same tasks. So when she submitted those records a moment ago, she was writing straight into the case we're about to open."
+
+---
+
+## 4:35 — Under the hood: Maestro Case (≈45s)
 
 **[ON SCREEN — switch to Maestro Case → this claim]**
 
-> "This is the same claim in **Maestro Case**. It takes that chaotic, situational process and turns it into one orchestrated, *observable* system — spanning **multiple stages**, and within each stage the **agents, automations and people** doing the work — from first filing all the way to settlement."
+> "And here's that same claim, running, in **Maestro Case**. This is what takes a chaotic, situational process and turns it into one orchestrated, *observable* system — from first filing all the way to settlement."
 
 > "And it's the **single source of truth** for the claim: what's happened so far, what we're waiting on now, and what should happen next."
 
@@ -64,7 +74,7 @@ Walk the journey out loud:
 
 ---
 
-## 5:00 — The Case Manager Agent (≈1:45) — the heart of the demo
+## 5:20 — The Case Manager Agent (≈1:45) — the heart of the demo
 
 **[Point to the Case Manager Agent sitting over the case]**
 
@@ -79,7 +89,7 @@ Walk the journey out loud:
 
 ---
 
-## 6:45 — …and all the way down to the task (≈1:00)
+## 7:05 — …and all the way down to the task (≈1:00)
 
 **[Open a task — Threshold Injury Assessment]**
 
@@ -89,7 +99,7 @@ Walk the journey out loud:
 
 ---
 
-## 7:45 — Governed and in control (≈1:00)
+## 8:05 — Governed and in control (≈1:00)
 
 **[Scroll the execution trail; then the live-instance controls — pause / resume / retry / migrate]**
 
@@ -103,7 +113,7 @@ Walk the journey out loud:
 
 ---
 
-## 8:35 — Close (≈40s)
+## 9:05 — Close (≈40s)
 
 **[Stay in Maestro Case — or cut to the Maestro end card]**
 
@@ -117,7 +127,7 @@ Walk the journey out loud:
 
 ## Presenter cheat-sheet
 
-**Say:** Maestro Case · the case · **Case Manager Agent** (reads the context, decides what runs next) · **context-driven activation** ("the right task at the right time") · AI at the process level *and* the task level · stages · agents/automations/people/external parties · events / "always listening" · inside the business's rules · execution trail / auditable / on the record · live-instance controls (pause / resume / retry / migrate).
+**Say:** Maestro Case · the case · the **case plan** (designed once, run by Maestro) · **Case Manager Agent** (reads the context, decides what runs next) · **context-driven activation** ("the right task at the right time") · AI at the process level *and* the task level · stages · agents/automations/people/external parties · events / "always listening" · inside the business's rules · execution trail / auditable / on the record · live-instance controls (pause / resume / retry / migrate).
 
 **Don't say:** coded app / how the app is built · TypeScript SDK · "no lines connecting" / edges / arrows / gateways.
 *(Note: there's **no separate "router"** — the Case Manager Agent itself reads the context and decides what runs next. And avoid the BPMN edges/arrows/gateways framing.)*
@@ -127,6 +137,6 @@ Walk the journey out loud:
 2. **Agent-led orchestration** — the **Case Manager Agent** listens for events and decides what runs next (context-driven), with **agents and automations doing the work in each task**. Intelligence runs process → task.
 3. **Governed + human** — the case runs **inside the business's rules**, Dana only handles what needs **judgement** (**41 → 3**), and everything's on the record in the execution trail.
 
-**If asked "is this real?":** live agents (LangChain, Google Vertex, UiPath) and real human/external tasks running on Maestro Case; the claim data is demo data.
+**If asked "is this real?":** the case, the Case Manager Agent, the agents and automations in each task, and the human tasks are all really running on Maestro Case; the claim data is demo data.
 
-**Strongest moment:** the **Case Manager Agent activating** when Dana submits the records (§5:00) — slow down there. If short on time, compress §2.
+**Strongest moment:** the **Case Manager Agent activating** when Dana submits the records (§5:20) — slow down there. If short on time, compress §2.

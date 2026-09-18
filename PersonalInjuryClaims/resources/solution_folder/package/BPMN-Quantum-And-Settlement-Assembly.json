@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "BPMN-Quantum-And-Settlement-Assembly",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "3e1b0081-e9ed-4b81-bc27-a02acab7bd5a",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "BPMN-Quantum-And-Settlement-Assembly"
+    },
+    "locks": [],
+    "key": "56282d6f-32f2-46b3-a4d1-4cf4c2d87824",
+    "files": []
+  }
+}

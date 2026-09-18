@@ -1,0 +1,38 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "BPMN-Quantum-And-Settlement-Assembly",
+    "kind": "process",
+    "type": "processOrchestration",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "3e1b0081-e9ed-4b81-bc27-a02acab7bd5a",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "kind": "package",
+        "name": "BPMN-Quantum-And-Settlement-Assembly"
+      }
+    ],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "ProcessOrchestration",
+      "name": "BPMN-Quantum-And-Settlement-Assembly",
+      "package": {
+        "key": "56282d6f-32f2-46b3-a4d1-4cf4c2d87824"
+      },
+      "targetFrameworkValue": "Portable",
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180
+    },
+    "locks": [],
+    "key": "42caa4df-448b-45d5-a8f4-5d24cbf0428f",
+    "files": []
+  }
+}

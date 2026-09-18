@@ -1,0 +1,200 @@
+{
+  "document": {
+    "dsl": "1.0.0",
+    "name": "Workflow",
+    "tags": {
+      "projectId": "3901850c-797b-460a-aa2b-65d570f5abab"
+    },
+    "version": "0.0.1",
+    "namespace": "default",
+    "metadata": {
+      "variables": []
+    }
+  },
+  "input": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "title": "Inputs",
+        "properties": {
+          "requestSource": {
+            "type": "string",
+            "default": "AssignClaimsHandler"
+          },
+          "scenario": {
+            "type": "string",
+            "default": "Standard"
+          },
+          "runId": {
+            "type": "string",
+            "default": "RUN-0001"
+          },
+          "claimReference": {
+            "type": "string",
+            "default": ""
+          },
+          "claimStatus": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  "output": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "title": "Outputs",
+        "properties": {
+          "claimStatus": {
+            "type": "string"
+          },
+          "hiddenDamageFound": {
+            "type": "boolean"
+          },
+          "reserveCareAndRehab": {
+            "type": "number"
+          },
+          "explanation": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "do": [
+    {
+      "Sequence_1": {
+        "do": [
+          {
+            "WorkflowStart": {
+              "set": "${ { ...Object.entries($workflow.definition?.document?.metadata?.variables?.schema?.document?.properties || {}).reduce((acc, [name, def]) => ({ ...acc, [name]: def?.default }), {}), ...($workflow.input || {}) } }",
+              "output": {
+                "as": "${$input}"
+              },
+              "export": {
+                "as": "{ ...$context, variables: { ...$context.variables, ...$output } }"
+              },
+              "metadata": {
+                "activityType": "Assign",
+                "displayName": "Workflow start",
+                "fullName": "Assign",
+                "isTransparent": true
+              }
+            }
+          },
+          {
+            "If_1#Wrapper": {
+              "do": [
+                {
+                  "If_1": {
+                    "switch": [
+                      {
+                        "case": {
+                          "when": "${$workflow.input.requestSource === 'AuthoriseTreatmentPlan'}",
+                          "then": "If_1#Then"
+                        }
+                      },
+                      {
+                        "default": {
+                          "then": "If_1#Else"
+                        }
+                      }
+                    ],
+                    "metadata": {
+                      "displayName": "Treatment plan authorisation route"
+                    }
+                  }
+                },
+                {
+                  "If_1#Then": {
+                    "do": [
+                      {
+                        "Wait_1": {
+                          "wait": {
+                            "minutes": 0,
+                            "seconds": 15,
+                            "milliseconds": 0
+                          },
+                          "export": {
+                            "as": "{ ...$context, outputs: { ...$context?.outputs, \"Wait_1\": $output } }"
+                          },
+                          "metadata": {
+                            "activityType": "Wait",
+                            "displayName": "Await provider network confirmation",
+                            "fullName": "Wait"
+                          }
+                        }
+                      }
+                    ],
+                    "then": "exit"
+                  }
+                },
+                {
+                  "If_1#Else": {
+                    "do": [],
+                    "then": "exit"
+                  }
+                }
+              ],
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"If_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "If",
+                "displayName": "If",
+                "fullName": "If"
+              }
+            }
+          },
+          {
+            "Javascript_1": {
+              "run": {
+                "script": {
+                  "code": "const inp = $workflow.input || {};\nconst src = inp.requestSource || 'AssignClaimsHandler';\nconst scenario = inp.scenario || 'Standard';\nconst claimReference = inp.claimReference || '';\n\nconst CASE_MANAGERS = {\n  Standard: 'Sarah Whitmore, Northfield Rehabilitation Case Management',\n  Displaced: 'Kevin Marsh, Apex Major Injury Case Management',\n  Underinsured: 'Rebecca Nolan, Northfield Rehabilitation Case Management',\n  Investigated: 'Ian Prescott, Meridian Medico-Legal Services',\n  Declined: 'Sarah Whitmore, Northfield Rehabilitation Case Management',\n  Reopened: 'Rebecca Nolan, Northfield Rehabilitation Case Management'\n};\n\nconst TREATMENT_PROVIDERS = {\n  Standard: 'Clearwater Physiotherapy Ltd',\n  Displaced: 'Redline Neurorehabilitation Ltd',\n  Underinsured: 'Clearwater Physiotherapy Ltd',\n  Investigated: 'Clearwater Physiotherapy Ltd',\n  Reopened: 'Ashgrove Orthopaedic Rehabilitation Group',\n  Declined: 'Clearwater Physiotherapy Ltd'\n};\n\nconst CARE_PACKAGE = {\n  Standard: 0,\n  Displaced: 4500,\n  Underinsured: 0,\n  Investigated: 0,\n  Declined: 0,\n  Reopened: 0\n};\n\nconst caseManager = CASE_MANAGERS[scenario] || CASE_MANAGERS.Standard;\nconst treatmentProvider = TREATMENT_PROVIDERS[scenario] || TREATMENT_PROVIDERS.Standard;\nconst carePackageAmount = (CARE_PACKAGE[scenario] !== undefined) ? CARE_PACKAGE[scenario] : CARE_PACKAGE.Standard;\nconst hiddenDamageFound = (scenario === 'Reopened');\n\nconst out = {\n  claimStatus: '',\n  hiddenDamageFound: false,\n  reserveCareAndRehab: 0,\n  explanation: ''\n};\n\nif (src === 'AssignClaimsHandler') {\n  out.claimStatus = 'Case Manager Allocated - ' + caseManager;\n  out.explanation = 'Rehabilitation case manager ' + caseManager + ' allocated to claim ' + (claimReference || '(unspecified)') + '.';\n} else if (src === 'AuthoriseTreatmentPlan') {\n  out.claimStatus = 'Treatment Authorised - ' + treatmentProvider;\n  out.explanation = 'Initial treatment plan authorised and ' + treatmentProvider + ' instructed on claim ' + (claimReference || '(unspecified)') + '.';\n} else if (src === 'HiddenDamageInspection') {\n  out.hiddenDamageFound = hiddenDamageFound;\n  out.claimStatus = hiddenDamageFound ? 'Further Injury Identified - Re-assessment Required' : 'Medical Examination Clear';\n  out.explanation = hiddenDamageFound ? 'The independent medical examination identified an injury not covered by the original prognosis; the claim is being sent back for re-assessment of quantum.' : 'The independent medical examination found no injury beyond the original prognosis; recovery is on track.';\n} else if (src === 'AssignRehabProvider') {\n  out.claimStatus = 'Medical Examiner Allocated - ' + treatmentProvider;\n  out.explanation = treatmentProvider + ' instructed to provide the independent medical examination and treatment for claim ' + (claimReference || '(unspecified)') + '.';\n} else if (src === 'ArrangeCareSupport') {\n  out.reserveCareAndRehab = carePackageAmount;\n  out.claimStatus = (carePackageAmount > 0) ? 'Care Package Arranged' : 'Care Package Not Required';\n  out.explanation = (carePackageAmount > 0) ? ('Daily care and support package arranged with a reserve of ' + carePackageAmount + '.') : 'The claimant can manage unaided, so no care package was arranged.';\n} else {\n  out.claimStatus = 'UnknownRequestSource';\n  out.explanation = 'Unrecognised requestSource: ' + src + '.';\n}\n\nreturn out;",
+                  "language": "javascript",
+                  "arguments": "${{ \"$context\": $context, \"$workflow\": $workflow, \"$input\": $input }}"
+                }
+              },
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Javascript_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "JsInvoke",
+                "displayName": "Resolve vendor network response",
+                "fullName": "JsInvoke"
+              }
+            }
+          },
+          {
+            "Response_1": {
+              "response": "${$context.outputs.Javascript_1}",
+              "markJobAsFailed": false,
+              "then": "end",
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Response_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "Response",
+                "displayName": "Response",
+                "fullName": "Response"
+              }
+            }
+          }
+        ],
+        "metadata": {
+          "activityType": "Sequence",
+          "displayName": "Sequence",
+          "fullName": "Sequence"
+        }
+      }
+    }
+  ],
+  "evaluate": {
+    "mode": "strict",
+    "language": "javascript"
+  }
+}

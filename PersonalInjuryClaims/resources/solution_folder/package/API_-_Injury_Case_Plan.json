@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "API - Injury Case Plan",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "4ec9a7bf-9dee-4c2c-9436-16704292313f",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "API - Injury Case Plan"
+    },
+    "locks": [],
+    "key": "4ec4e2a1-bfa4-4eed-b49b-7d1a74762d47",
+    "files": []
+  }
+}

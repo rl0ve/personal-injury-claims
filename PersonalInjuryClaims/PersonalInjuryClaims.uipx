@@ -1,0 +1,92 @@
+{
+  "DocVersion": "1.0.0",
+  "StudioMinVersion": "2025.10.0",
+  "SolutionId": "dbf7785c-845a-40a9-006f-08df14ddbfdf",
+  "Projects": [
+    {
+      "Type": "Api",
+      "ProjectRelativePath": "API - Injury Case Plan/project.uiproj",
+      "Id": "4ec9a7bf-9dee-4c2c-9436-16704292313f"
+    },
+    {
+      "Type": "Api",
+      "ProjectRelativePath": "API - Injury Claims Gateway/project.uiproj",
+      "Id": "7eb6f9a8-3157-4b0a-a2d5-1912caf9c49f"
+    },
+    {
+      "Type": "Api",
+      "ProjectRelativePath": "API - Injury Policy Gateway/project.uiproj",
+      "Id": "4eb485f2-2293-4b51-9395-257699c7127b"
+    },
+    {
+      "Type": "Api",
+      "ProjectRelativePath": "API - Injury Provider Network Gateway/project.uiproj",
+      "Id": "9ab5a6cf-a74a-494d-892b-6e9add04e2e1"
+    },
+    {
+      "Type": "Api",
+      "ProjectRelativePath": "API - Injury Rules/project.uiproj",
+      "Id": "3b80a9b7-5fd8-4fc4-b189-fa011b013fc7"
+    },
+    {
+      "Type": "Api",
+      "ProjectRelativePath": "API - Injury Screening and Bureau Gateway/project.uiproj",
+      "Id": "0bab20aa-8359-4eab-8f58-2c3af44e9726"
+    },
+    {
+      "Type": "Api",
+      "ProjectRelativePath": "API - Injury Severity Data Gateway/project.uiproj",
+      "Id": "2191eddb-eb76-4b4d-ae99-436ec24a5669"
+    },
+    {
+      "Type": "Agent",
+      "ProjectRelativePath": "Agent - Injury Claims Case Agent/project.uiproj",
+      "Id": "b020111b-2d10-4ff4-8ca6-845e9e24b51d"
+    },
+    {
+      "Type": "Agent",
+      "ProjectRelativePath": "Agent - Injury Claims Triage/project.uiproj",
+      "Id": "497a7a11-2a8b-488b-9b8d-80a3a112c760"
+    },
+    {
+      "Type": "Agent",
+      "ProjectRelativePath": "Agent - Liability Assessment/project.uiproj",
+      "Id": "2fe83978-d0d1-43a4-9fd0-2e00e980c20b"
+    },
+    {
+      "Type": "Agent",
+      "ProjectRelativePath": "Agent - Subrogation Assessment/project.uiproj",
+      "Id": "9ec92b4a-c3a4-4b45-b9c3-d61323773083"
+    },
+    {
+      "Type": "processOrchestration",
+      "ProjectRelativePath": "BPMN-Early-Intervention-Dispatch/project.uiproj",
+      "Id": "ca14ea98-3ae0-4fd2-9857-bcc64f5ed913"
+    },
+    {
+      "Type": "processOrchestration",
+      "ProjectRelativePath": "BPMN-Quantum-And-Settlement-Assembly/project.uiproj",
+      "Id": "3e1b0081-e9ed-4b81-bc27-a02acab7bd5a"
+    },
+    {
+      "Type": "processOrchestration",
+      "ProjectRelativePath": "BPMN-Subrogation-Recovery/project.uiproj",
+      "Id": "eb39a685-e177-48d6-973a-dedd74fb9e22"
+    },
+    {
+      "Type": "CaseManagement",
+      "ProjectRelativePath": "PersonalInjuryClaims/project.uiproj",
+      "Id": "5c1f9b31-1f13-43f4-adb2-395517558c75"
+    },
+    {
+      "Type": "Flow",
+      "ProjectRelativePath": "Flow-Threshold-Injury-Assessment/project.uiproj",
+      "Id": "85d35194-3010-49a8-9d21-fa916f67c715"
+    },
+    {
+      "Type": "Api",
+      "ProjectRelativePath": "API - Fetch File/project.uiproj",
+      "Id": "45d3b970-780f-4d67-8493-91c6444431d1"
+    }
+  ]
+}

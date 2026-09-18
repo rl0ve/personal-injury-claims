@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "PersonalInjuryClaims",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "5c1f9b31-1f13-43f4-adb2-395517558c75",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "PersonalInjuryClaims"
+    },
+    "locks": [],
+    "key": "5eccdbb4-16dd-4cd3-aee5-f255d56ae4ba",
+    "files": []
+  }
+}

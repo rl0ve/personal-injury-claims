@@ -1,0 +1,113 @@
+{
+  "document": {
+    "dsl": "1.0.0",
+    "name": "Workflow",
+    "tags": {
+      "projectId": "aeadb325-dfca-4a34-a103-31fba18f9894"
+    },
+    "version": "0.0.1",
+    "namespace": "default",
+    "metadata": {
+      "variables": []
+    }
+  },
+  "input": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "title": "Inputs",
+        "properties": {
+          "requestSource": { "type": "string", "default": "FraudAndBureauScreen" },
+          "scenario": { "type": "string", "default": "Standard" },
+          "runId": { "type": "string", "default": "RUN-0001" },
+          "claimReference": { "type": "string", "default": "" }
+        }
+      }
+    }
+  },
+  "output": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "title": "Outputs",
+        "properties": {
+          "fraudScore": { "type": "integer" },
+          "litigationEventCode": { "type": "string" },
+          "claimStatus": { "type": "string" },
+          "decisionRationale": { "type": "string" },
+          "explanation": { "type": "string" }
+        }
+      }
+    }
+  },
+  "do": [
+    {
+      "Sequence_1": {
+        "do": [
+          {
+            "WorkflowStart": {
+              "set": "${ { ...Object.entries($workflow.definition?.document?.metadata?.variables?.schema?.document?.properties || {}).reduce((acc, [name, def]) => ({ ...acc, [name]: def?.default }), {}), ...($workflow.input || {}) } }",
+              "output": {
+                "as": "${$input}"
+              },
+              "export": {
+                "as": "{ ...$context, variables: { ...$context.variables, ...$output } }"
+              },
+              "metadata": {
+                "activityType": "Assign",
+                "displayName": "Workflow start",
+                "fullName": "Assign",
+                "isTransparent": true
+              }
+            }
+          },
+          {
+            "Javascript_1": {
+              "run": {
+                "script": {
+                  "code": "const inp = $workflow.input || {};\nconst src = inp.requestSource || 'FraudAndBureauScreen';\nconst scenario = inp.scenario || 'Standard';\nconst runId = inp.runId || 'RUN-0001';\nconst claimReference = inp.claimReference || '';\n\nconst FRAUD_SCORES = {\n  Standard: 20,\n  Displaced: 25,\n  Underinsured: 22,\n  Investigated: 82,\n  Declined: 24,\n  Reopened: 20\n};\n\nconst fraudScore = (FRAUD_SCORES[scenario] !== undefined) ? FRAUD_SCORES[scenario] : FRAUD_SCORES.Standard;\n\nconst out = {\n  fraudScore: 0,\n  litigationEventCode: '',\n  claimStatus: '',\n  decisionRationale: '',\n  explanation: ''\n};\n\nif (src === 'FraudAndBureauScreen') {\n  out.fraudScore = fraudScore;\n  out.litigationEventCode = '';\n  out.explanation = 'Claims register and injury bureau screen returned a score of ' + fraudScore + (fraudScore >= 75 ? '; the claim is referred to the investigation lane.' : '; no referral required.');\n} else if (src === 'CompileScreeningEvidence') {\n  out.decisionRationale = (scenario === 'Investigated')\n    ? 'Evidence pack compiled for claim ' + (claimReference || '(unspecified)') + ': screening score 82, notification filed nine days after the accident, a lost earnings claim far exceeding the medical evidence, and no supporting police report on record.'\n    : 'Evidence pack compiled for claim ' + (claimReference || '(unspecified)') + ': no adverse screening indicators identified.';\n  out.explanation = out.decisionRationale;\n} else if (src === 'ApplyLitigationEventCode') {\n  out.litigationEventCode = 'LIT-' + runId;\n  out.claimStatus = 'Litigation Event Recorded';\n  out.explanation = 'Litigation event ' + out.litigationEventCode + ' recorded against claim ' + (claimReference || '(unspecified)') + ' following notice that proceedings have been issued.';\n} else {\n  out.explanation = 'Unrecognised requestSource: ' + src + '.';\n}\n\nreturn out;",
+                  "language": "javascript",
+                  "arguments": "${{ \"$context\": $context, \"$workflow\": $workflow, \"$input\": $input }}"
+                }
+              },
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Javascript_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "JsInvoke",
+                "displayName": "Resolve screening and bureau response",
+                "fullName": "JsInvoke"
+              }
+            }
+          },
+          {
+            "Response_1": {
+              "response": "${$context.outputs.Javascript_1}",
+              "markJobAsFailed": false,
+              "then": "end",
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Response_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "Response",
+                "displayName": "Response",
+                "fullName": "Response"
+              }
+            }
+          }
+        ],
+        "metadata": {
+          "activityType": "Sequence",
+          "displayName": "Sequence",
+          "fullName": "Sequence"
+        }
+      }
+    }
+  ],
+  "evaluate": {
+    "mode": "strict",
+    "language": "javascript"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "API - Injury Rules",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "3b80a9b7-5fd8-4fc4-b189-fa011b013fc7",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "API - Injury Rules"
+    },
+    "locks": [],
+    "key": "fd2e2d8f-eec4-40ce-8732-784d1b48bc30",
+    "files": []
+  }
+}

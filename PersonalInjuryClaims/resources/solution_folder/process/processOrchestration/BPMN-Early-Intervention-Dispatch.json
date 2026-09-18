@@ -1,0 +1,38 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "BPMN-Early-Intervention-Dispatch",
+    "kind": "process",
+    "type": "processOrchestration",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "ca14ea98-3ae0-4fd2-9857-bcc64f5ed913",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "kind": "package",
+        "name": "BPMN-Early-Intervention-Dispatch"
+      }
+    ],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "ProcessOrchestration",
+      "name": "BPMN-Early-Intervention-Dispatch",
+      "package": {
+        "key": "c1f1e883-2b5d-4e9d-b30e-a291c42ede6e"
+      },
+      "targetFrameworkValue": "Portable",
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180
+    },
+    "locks": [],
+    "key": "f694a763-d8e3-42c9-8eae-3e78dc28f0a3",
+    "files": []
+  }
+}

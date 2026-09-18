@@ -1,0 +1,1679 @@
+{
+    "id": "case-ZguptzNomq",
+    "version": "27.0.0",
+    "name": "PersonalPropertyClaims",
+    "description": "Manages a personal-lines property insurance claim from first notice of loss through settlement and closure. Covers buildings, contents and alternative accommodation across the standard peril set, with interrupting lanes for emergency mitigation, fraud investigation, coverage decline, hidden damage, authority escalation, complaints and catastrophe surge.",
+    "metadata": {
+        "caseIdentifier": "PC",
+        "caseIdentifierType": "constant",
+        "caseAppEnabled": true,
+        "publishVersion": 2,
+        "caseUnifiedSchemaEnabled": true,
+        "caseDirectlyPassTaskOutputs": true,
+        "intsvcActivityConfig": "v2",
+        "slaRules": [
+            {
+                "id": "slaRoot0001",
+                "displayName": "Property Claim Cycle SLA",
+                "expression": "=js:true",
+                "count": 180,
+                "unit": "d",
+                "escalationRule": [
+                    {
+                        "id": "esc_Rt0001",
+                        "displayName": "Property Claim Cycle At Risk",
+                        "triggerInfo": { "type": "at-risk", "atRiskPercentage": 70 },
+                        "action": {
+                            "type": "notification",
+                            "recipients": [
+                                { "scope": "User", "target": "354b6df6-3e7a-4a12-96ed-0b67afaa1bce", "value": "robert.love@uipath.com" }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "esc_Rt0002",
+                        "displayName": "Property Claim Cycle Breached",
+                        "triggerInfo": { "type": "sla-breached" },
+                        "action": {
+                            "type": "notification",
+                            "recipients": [
+                                { "scope": "UserGroup", "target": "35551807-06b1-4cda-90a1-2fb84851eee7", "value": "administrators" }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ],
+        "caseExitRules": [
+            {
+                "id": "Condition_CxRt01",
+                "displayName": "Claim settled and closed",
+                "rules": [
+                    [{ "rule": "required-stages-completed", "id": "Rule_CxRt01" }]
+                ],
+                "marksCaseComplete": true
+            },
+            {
+                "id": "Condition_CxRt02",
+                "displayName": "Claim declined",
+                "rules": [
+                    [{ "rule": "selected-stage-completed", "id": "Rule_CxRt02", "selectedStageId": "Stage_Decl11" }]
+                ],
+                "marksCaseComplete": false
+            },
+            {
+                "id": "Condition_CxRt03",
+                "displayName": "Claim denied for fraud",
+                "rules": [
+                    [{ "rule": "selected-stage-completed", "id": "Rule_CxRt03", "selectedStageId": "Stage_Siu010", "conditionExpression": "=js:vars.restrictionOutcome === 'Authorised'" }]
+                ],
+                "marksCaseComplete": false
+            }
+        ]
+    },
+    "bindings": [
+        { "id": "bCLM00001", "name": "name", "type": "string", "resource": "process", "resourceSubType": "Api", "resourceKey": "solution_folder.API - Claims Management Gateway", "default": "API - Claims Management Gateway", "propertyAttribute": "name" },
+        { "id": "bCLM00002", "name": "folderPath", "type": "string", "resource": "process", "resourceSubType": "Api", "resourceKey": "solution_folder.API - Claims Management Gateway", "default": "", "propertyAttribute": "folderPath" },
+        { "id": "bPOL00001", "name": "name", "type": "string", "resource": "process", "resourceSubType": "Api", "resourceKey": "solution_folder.API - Policy Administration Gateway", "default": "API - Policy Administration Gateway", "propertyAttribute": "name" },
+        { "id": "bPOL00002", "name": "folderPath", "type": "string", "resource": "process", "resourceSubType": "Api", "resourceKey": "solution_folder.API - Policy Administration Gateway", "default": "", "propertyAttribute": "folderPath" },
+        { "id": "bPRD00001", "name": "name", "type": "string", "resource": "process", "resourceSubType": "Api", "resourceKey": "solution_folder.API - Property Risk Data Gateway", "default": "API - Property Risk Data Gateway", "propertyAttribute": "name" },
+        { "id": "bPRD00002", "name": "folderPath", "type": "string", "resource": "process", "resourceSubType": "Api", "resourceKey": "solution_folder.API - Property Risk Data Gateway", "default": "", "propertyAttribute": "folderPath" },
+        { "id": "bVND00001", "name": "name", "type": "string", "resource": "process", "resourceSubType": "Api", "resourceKey": "solution_folder.API - Vendor Network Gateway", "default": "API - Vendor Network Gateway", "propertyAttribute": "name" },
+        { "id": "bVND00002", "name": "folderPath", "type": "string", "resource": "process", "resourceSubType": "Api", "resourceKey": "solution_folder.API - Vendor Network Gateway", "default": "", "propertyAttribute": "folderPath" },
+        { "id": "bSCR00001", "name": "name", "type": "string", "resource": "process", "resourceSubType": "Api", "resourceKey": "solution_folder.API - Screening and Bureau Gateway", "default": "API - Screening and Bureau Gateway", "propertyAttribute": "name" },
+        { "id": "bSCR00002", "name": "folderPath", "type": "string", "resource": "process", "resourceSubType": "Api", "resourceKey": "solution_folder.API - Screening and Bureau Gateway", "default": "", "propertyAttribute": "folderPath" },
+        { "id": "bRUL00001", "name": "name", "type": "string", "resource": "process", "resourceSubType": "Api", "resourceKey": "solution_folder.API - Rules", "default": "API - Rules", "propertyAttribute": "name" },
+        { "id": "bRUL00002", "name": "folderPath", "type": "string", "resource": "process", "resourceSubType": "Api", "resourceKey": "solution_folder.API - Rules", "default": "", "propertyAttribute": "folderPath" },
+        { "id": "bEMG00001", "name": "name", "type": "string", "resource": "process", "resourceSubType": "ProcessOrchestration", "resourceKey": "solution_folder.BPMN-Emergency-Mitigation-Dispatch", "default": "BPMN-Emergency-Mitigation-Dispatch", "propertyAttribute": "name" },
+        { "id": "bEMG00002", "name": "folderPath", "type": "string", "resource": "process", "resourceSubType": "ProcessOrchestration", "resourceKey": "solution_folder.BPMN-Emergency-Mitigation-Dispatch", "default": "", "propertyAttribute": "folderPath" },
+        { "id": "bSCP00001", "name": "name", "type": "string", "resource": "process", "resourceSubType": "ProcessOrchestration", "resourceKey": "solution_folder.BPMN-Scope-And-Settlement-Assembly", "default": "BPMN-Scope-And-Settlement-Assembly", "propertyAttribute": "name" },
+        { "id": "bSCP00002", "name": "folderPath", "type": "string", "resource": "process", "resourceSubType": "ProcessOrchestration", "resourceKey": "solution_folder.BPMN-Scope-And-Settlement-Assembly", "default": "", "propertyAttribute": "folderPath" },
+        { "id": "bREC00001", "name": "name", "type": "string", "resource": "process", "resourceSubType": "ProcessOrchestration", "resourceKey": "solution_folder.BPMN-Recoveries-And-Salvage", "default": "BPMN-Recoveries-And-Salvage", "propertyAttribute": "name" },
+        { "id": "bREC00002", "name": "folderPath", "type": "string", "resource": "process", "resourceSubType": "ProcessOrchestration", "resourceKey": "solution_folder.BPMN-Recoveries-And-Salvage", "default": "", "propertyAttribute": "folderPath" },
+        { "id": "bTRI00001", "name": "name", "type": "string", "resource": "process", "resourceSubType": "Agent", "resourceKey": "solution_folder.Agent - Claims Triage", "default": "Agent - Claims Triage", "propertyAttribute": "name" },
+        { "id": "bTRI00002", "name": "folderPath", "type": "string", "resource": "process", "resourceSubType": "Agent", "resourceKey": "solution_folder.Agent - Claims Triage", "default": "", "propertyAttribute": "folderPath" },
+        { "id": "bCOL00001", "name": "name", "type": "string", "resource": "process", "resourceSubType": "Agent", "resourceKey": "solution_folder.Agent - Cause of Loss Analysis", "default": "Agent - Cause of Loss Analysis", "propertyAttribute": "name" },
+        { "id": "bCOL00002", "name": "folderPath", "type": "string", "resource": "process", "resourceSubType": "Agent", "resourceKey": "solution_folder.Agent - Cause of Loss Analysis", "default": "", "propertyAttribute": "folderPath" },
+        { "id": "bRCV00001", "name": "name", "type": "string", "resource": "process", "resourceSubType": "Agent", "resourceKey": "solution_folder.Agent - Recovery Assessment", "default": "Agent - Recovery Assessment", "propertyAttribute": "name" },
+        { "id": "bRCV00002", "name": "folderPath", "type": "string", "resource": "process", "resourceSubType": "Agent", "resourceKey": "solution_folder.Agent - Recovery Assessment", "default": "", "propertyAttribute": "folderPath" },
+        { "id": "bAPP00001", "name": "name", "type": "string", "resource": "app", "resourceKey": "Shared.property-claims-console", "default": "property-claims-console", "propertyAttribute": "name" },
+        { "id": "bAPP00002", "name": "folderPath", "type": "string", "resource": "app", "resourceKey": "Shared.property-claims-console", "default": "Shared", "propertyAttribute": "folderPath" }
+    ],
+    "variables": {
+        "inputs": [
+            { "id": "vScen0001", "name": "scenario", "type": "string", "default": "Standard", "elementId": "trigger_Start1" },
+            { "id": "vRunI0001", "name": "runId", "type": "string", "default": "PC-RUN-0001", "elementId": "trigger_Start1" },
+            { "id": "vOwnr0001", "name": "ownerEmail", "type": "string", "default": "robert.love@uipath.com", "elementId": "trigger_Start1" }
+        ],
+        "outputs": [
+            { "id": "vOutc0001", "name": "caseOutcome", "type": "string", "var": "caseOutcome" },
+            { "id": "vClos0001", "name": "closureReasonCode", "type": "string", "var": "closureReasonCode" }
+        ],
+        "inputOutputs": [
+            { "id": "scenario", "name": "scenario", "type": "string", "elementId": "trigger_Start1" },
+            { "id": "runId", "name": "runId", "type": "string", "elementId": "trigger_Start1" },
+            { "id": "ownerEmail", "name": "ownerEmail", "type": "string", "elementId": "trigger_Start1" },
+            { "id": "caseOutcome", "name": "caseOutcome", "type": "string", "default": "", "elementId": "root" },
+            { "id": "closureReasonCode", "name": "closureReasonCode", "type": "string", "default": "", "elementId": "root" },
+            { "id": "claimReference", "name": "claimReference", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "policyNumber", "name": "policyNumber", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "insuredName", "name": "insuredName", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "riskAddress", "name": "riskAddress", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "perilCode", "name": "perilCode", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "coverType", "name": "coverType", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "habitableFlag", "name": "habitableFlag", "type": "boolean", "custom": true, "elementId": "root", "default": "true" },
+            { "id": "activeDamageFlag", "name": "activeDamageFlag", "type": "boolean", "custom": true, "elementId": "root", "default": "false" },
+            { "id": "vulnerableCustomerFlag", "name": "vulnerableCustomerFlag", "type": "boolean", "custom": true, "elementId": "root", "default": "false" },
+            { "id": "catEventCode", "name": "catEventCode", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "fraudScore", "name": "fraudScore", "type": "integer", "custom": true, "elementId": "root", "default": "0" },
+            { "id": "claimStatus", "name": "claimStatus", "type": "string", "custom": true, "elementId": "root", "default": "Open" },
+            { "id": "sumInsuredBuildings", "name": "sumInsuredBuildings", "type": "double", "custom": true, "elementId": "root", "default": "0" },
+            { "id": "sumInsuredContents", "name": "sumInsuredContents", "type": "double", "custom": true, "elementId": "root", "default": "0" },
+            { "id": "reserveBuildings", "name": "reserveBuildings", "type": "double", "custom": true, "elementId": "root", "default": "0" },
+            { "id": "reserveContents", "name": "reserveContents", "type": "double", "custom": true, "elementId": "root", "default": "0" },
+            { "id": "reserveAccommodation", "name": "reserveAccommodation", "type": "double", "custom": true, "elementId": "root", "default": "0" },
+            { "id": "averageAppliedFlag", "name": "averageAppliedFlag", "type": "boolean", "custom": true, "elementId": "root", "default": "false" },
+            { "id": "causeOfLossCode", "name": "causeOfLossCode", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "vacancyDays", "name": "vacancyDays", "type": "integer", "custom": true, "elementId": "root", "default": "0" },
+            { "id": "floodCoverInForce", "name": "floodCoverInForce", "type": "boolean", "custom": true, "elementId": "root", "default": "true" },
+            { "id": "coverageOutcome", "name": "coverageOutcome", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "settlementOutcome", "name": "settlementOutcome", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "settlementBasis", "name": "settlementBasis", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "settlementPath", "name": "settlementPath", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "estimatedCost", "name": "estimatedCost", "type": "double", "custom": true, "elementId": "root", "default": "0" },
+            { "id": "authorityLimit", "name": "authorityLimit", "type": "double", "custom": true, "elementId": "root", "default": "0" },
+            { "id": "hiddenDamageFound", "name": "hiddenDamageFound", "type": "boolean", "custom": true, "elementId": "root", "default": "false" },
+            { "id": "supplementalScopeOutcome", "name": "supplementalScopeOutcome", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "restrictionOutcome", "name": "restrictionOutcome", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "closureOutcome", "name": "closureOutcome", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "subrogationPotentialFlag", "name": "subrogationPotentialFlag", "type": "boolean", "custom": true, "elementId": "root", "default": "false" },
+            { "id": "recoveryAmountReceived", "name": "recoveryAmountReceived", "type": "double", "custom": true, "elementId": "root", "default": "0" },
+            { "id": "complaintRef", "name": "complaintRef", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "decisionRationale", "name": "decisionRationale", "type": "string", "custom": true, "elementId": "root", "default": "" },
+            { "id": "agentRationale", "name": "agentRationale", "type": "string", "custom": true, "elementId": "root", "default": "" }
+        ]
+    },
+    "nodes": [
+        {
+            "id": "trigger_Start1",
+            "type": "uipath.case.trigger",
+            "data": {
+                "parentElement": { "id": "root", "type": "case-management:root" },
+                "description": "A handler or the claims console starts the case when a property loss is reported, selecting the journey to run and the owning handler.",
+                "typeVersion": "1.0.0",
+                "display": { "label": "Report a property loss" },
+                "inputs": {
+                    "serviceType": "None",
+                    "outputs": [
+                        { "name": "scenario", "type": "string", "source": "=vars.vScen0001", "var": "scenario" },
+                        { "name": "runId", "type": "string", "source": "=vars.vRunI0001", "var": "runId" },
+                        { "name": "ownerEmail", "type": "string", "source": "=vars.vOwnr0001", "var": "ownerEmail" }
+                    ]
+                }
+            }
+        },
+        {
+            "id": "Stage_Fnol01",
+            "type": "case-management:Stage",
+            "data": {
+                "label": "FNOL & Claim Registration",
+                "description": "Captures a complete first notice of loss, verifies policy and cover, screens for fraud and prior claims, and registers the claim with opening reserves.",
+                "isRequired": true,
+                "parentElement": { "id": "root", "type": "case-management:root" },
+                "isInvalidDropTarget": false,
+                "isPendingParent": false,
+                "entryConditions": [
+                    {
+                        "id": "Condition_Fn0101",
+                        "displayName": "Loss reported",
+                        "rules": [[{ "rule": "case-entered", "id": "Rule_Fn0101" }]],
+                        "isInterrupting": false
+                    }
+                ],
+                "exitConditions": [
+                    {
+                        "id": "Condition_Fn0102",
+                        "displayName": "Claim registered",
+                        "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Fn0102" }]],
+                        "type": "exit-only",
+                        "marksStageComplete": true
+                    }
+                ],
+                "slaRules": [
+                    {
+                        "id": "slaFnol0001",
+                        "displayName": "FNOL Registration SLA",
+                        "expression": "=js:true",
+                        "count": 1,
+                        "unit": "h",
+                        "escalationRule": [
+                            {
+                                "id": "esc_Fn0001",
+                                "displayName": "FNOL Registration At Risk",
+                                "triggerInfo": { "type": "at-risk", "atRiskPercentage": 70 },
+                                "action": { "type": "notification", "recipients": [{ "scope": "User", "target": "354b6df6-3e7a-4a12-96ed-0b67afaa1bce", "value": "robert.love@uipath.com" }] }
+                            },
+                            {
+                                "id": "esc_Fn0002",
+                                "displayName": "FNOL Registration Breached",
+                                "triggerInfo": { "type": "sla-breached" },
+                                "action": { "type": "notification", "recipients": [{ "scope": "UserGroup", "target": "35551807-06b1-4cda-90a1-2fb84851eee7", "value": "administrators" }] }
+                            }
+                        ]
+                    }
+                ],
+                "tasks": [
+                    [
+                        {
+                            "id": "tFN010001",
+                            "type": "api-workflow",
+                            "displayName": "Create claim shell",
+                            "elementId": "Stage_Fnol01-tFN010001",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": true,
+                            "entryConditions": [
+                                { "id": "cFN010001", "displayName": "Case started", "rules": [[{ "rule": "runs-sequentially", "id": "rFN010001" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bCLM00001",
+                                "folderPath": "=bindings.bCLM00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iFN010101", "var": "requestSource", "elementId": "Stage_Fnol01-tFN010001", "value": "CreateClaimShell" },
+                                    { "name": "scenario", "type": "string", "id": "iFN010102", "var": "scenario", "elementId": "Stage_Fnol01-tFN010001", "value": "=vars.scenario" },
+                                    { "name": "runId", "type": "string", "id": "iFN010103", "var": "runId", "elementId": "Stage_Fnol01-tFN010001", "value": "=vars.runId" }
+                                ],
+                                "outputs": [
+                                    { "name": "claimReference", "type": "string", "id": "claimReference", "var": "claimReference", "originalVar": "claimReference", "value": "claimReference", "source": "=claimReference", "target": "=claimReference", "elementId": "Stage_Fnol01-tFN010001" },
+                                    { "name": "insuredName", "type": "string", "id": "insuredName", "var": "insuredName", "originalVar": "insuredName", "value": "insuredName", "source": "=insuredName", "target": "=insuredName", "elementId": "Stage_Fnol01-tFN010001" },
+                                    { "name": "riskAddress", "type": "string", "id": "riskAddress", "var": "riskAddress", "originalVar": "riskAddress", "value": "riskAddress", "source": "=riskAddress", "target": "=riskAddress", "elementId": "Stage_Fnol01-tFN010001" },
+                                    { "name": "perilCode", "type": "string", "id": "perilCode", "var": "perilCode", "originalVar": "perilCode", "value": "perilCode", "source": "=perilCode", "target": "=perilCode", "elementId": "Stage_Fnol01-tFN010001" },
+                                    { "name": "claimStatus", "type": "string", "id": "claimStatus", "var": "claimStatus", "originalVar": "claimStatus", "value": "claimStatus", "source": "=claimStatus", "target": "=claimStatus", "elementId": "Stage_Fnol01-tFN010001" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tFN010002",
+                            "type": "api-workflow",
+                            "displayName": "Verify policy and cover",
+                            "elementId": "Stage_Fnol01-tFN010002",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cFN010002", "displayName": "Policy workstream opens", "rules": [[{ "rule": "current-stage-entered", "id": "rFN010002" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bPOL00001",
+                                "folderPath": "=bindings.bPOL00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iFN010201", "var": "requestSource2", "elementId": "Stage_Fnol01-tFN010002", "value": "PolicyInForceCheck" },
+                                    { "name": "scenario", "type": "string", "id": "iFN010202", "var": "scenario2", "elementId": "Stage_Fnol01-tFN010002", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iFN010203", "var": "claimReference2", "elementId": "Stage_Fnol01-tFN010002", "value": "=vars.claimReference" }
+                                ],
+                                "outputs": [
+                                    { "name": "policyNumber", "type": "string", "id": "policyNumber", "var": "policyNumber", "originalVar": "policyNumber", "value": "policyNumber", "source": "=policyNumber", "target": "=policyNumber", "elementId": "Stage_Fnol01-tFN010002" },
+                                    { "name": "coverType", "type": "string", "id": "coverType", "var": "coverType", "originalVar": "coverType", "value": "coverType", "source": "=coverType", "target": "=coverType", "elementId": "Stage_Fnol01-tFN010002" },
+                                    { "name": "sumInsuredBuildings", "type": "double", "id": "sumInsuredBuildings", "var": "sumInsuredBuildings", "originalVar": "sumInsuredBuildings", "value": "sumInsuredBuildings", "source": "=sumInsuredBuildings", "target": "=sumInsuredBuildings", "elementId": "Stage_Fnol01-tFN010002" },
+                                    { "name": "sumInsuredContents", "type": "double", "id": "sumInsuredContents", "var": "sumInsuredContents", "originalVar": "sumInsuredContents", "value": "sumInsuredContents", "source": "=sumInsuredContents", "target": "=sumInsuredContents", "elementId": "Stage_Fnol01-tFN010002" },
+                                    { "name": "vacancyDays", "type": "integer", "id": "vacancyDays", "var": "vacancyDays", "originalVar": "vacancyDays", "value": "vacancyDays", "source": "=vacancyDays", "target": "=vacancyDays", "elementId": "Stage_Fnol01-tFN010002" },
+                                    { "name": "floodCoverInForce", "type": "boolean", "id": "floodCoverInForce", "var": "floodCoverInForce", "originalVar": "floodCoverInForce", "value": "floodCoverInForce", "source": "=floodCoverInForce", "target": "=floodCoverInForce", "elementId": "Stage_Fnol01-tFN010002" }
+                                ]
+                            }
+                        },
+                        {
+                            "id": "tFN010003",
+                            "type": "api-workflow",
+                            "displayName": "Capture peril and damage detail",
+                            "elementId": "Stage_Fnol01-tFN010003",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cFN010003", "displayName": "Loss detail workstream opens", "rules": [[{ "rule": "current-stage-entered", "id": "rFN010003" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bCLM00001",
+                                "folderPath": "=bindings.bCLM00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iFN010301", "var": "requestSource3", "elementId": "Stage_Fnol01-tFN010003", "value": "CaptureLossDetail" },
+                                    { "name": "scenario", "type": "string", "id": "iFN010302", "var": "scenario3", "elementId": "Stage_Fnol01-tFN010003", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iFN010303", "var": "claimReference3", "elementId": "Stage_Fnol01-tFN010003", "value": "=vars.claimReference" }
+                                ],
+                                "outputs": [
+                                    { "name": "habitableFlag", "type": "boolean", "id": "habitableFlag", "var": "habitableFlag", "originalVar": "habitableFlag", "value": "habitableFlag", "source": "=habitableFlag", "target": "=habitableFlag", "elementId": "Stage_Fnol01-tFN010003" },
+                                    { "name": "activeDamageFlag", "type": "boolean", "id": "activeDamageFlag", "var": "activeDamageFlag", "originalVar": "activeDamageFlag", "value": "activeDamageFlag", "source": "=activeDamageFlag", "target": "=activeDamageFlag", "elementId": "Stage_Fnol01-tFN010003" },
+                                    { "name": "vulnerableCustomerFlag", "type": "boolean", "id": "vulnerableCustomerFlag", "var": "vulnerableCustomerFlag", "originalVar": "vulnerableCustomerFlag", "value": "vulnerableCustomerFlag", "source": "=vulnerableCustomerFlag", "target": "=vulnerableCustomerFlag", "elementId": "Stage_Fnol01-tFN010003" }
+                                ]
+                            }
+                        },
+                        {
+                            "id": "tFN010004",
+                            "type": "api-workflow",
+                            "displayName": "Screen for fraud and prior claims",
+                            "elementId": "Stage_Fnol01-tFN010004",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cFN010004", "displayName": "Screening workstream opens", "rules": [[{ "rule": "current-stage-entered", "id": "rFN010004" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bSCR00001",
+                                "folderPath": "=bindings.bSCR00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iFN010401", "var": "requestSource4", "elementId": "Stage_Fnol01-tFN010004", "value": "FraudAndBureauScreen" },
+                                    { "name": "scenario", "type": "string", "id": "iFN010402", "var": "scenario4", "elementId": "Stage_Fnol01-tFN010004", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iFN010403", "var": "claimReference4", "elementId": "Stage_Fnol01-tFN010004", "value": "=vars.claimReference" }
+                                ],
+                                "outputs": [
+                                    { "name": "fraudScore", "type": "integer", "id": "fraudScore", "var": "fraudScore", "originalVar": "fraudScore", "value": "fraudScore", "source": "=fraudScore", "target": "=fraudScore", "elementId": "Stage_Fnol01-tFN010004" },
+                                    { "name": "catEventCode", "type": "string", "id": "catEventCode", "var": "catEventCode", "originalVar": "catEventCode", "value": "catEventCode", "source": "=catEventCode", "target": "=catEventCode", "elementId": "Stage_Fnol01-tFN010004" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tFN010005",
+                            "type": "api-workflow",
+                            "displayName": "Confirm registration and set reserves",
+                            "elementId": "Stage_Fnol01-tFN010005",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cFN010005", "displayName": "All workstreams reported", "rules": [[{ "rule": "selected-tasks-completed", "id": "rFN010005", "selectedTasksIds": ["tFN010002", "tFN010003", "tFN010004"] }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bCLM00001",
+                                "folderPath": "=bindings.bCLM00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iFN010501", "var": "requestSource5", "elementId": "Stage_Fnol01-tFN010005", "value": "ConfirmRegistration" },
+                                    { "name": "scenario", "type": "string", "id": "iFN010502", "var": "scenario5", "elementId": "Stage_Fnol01-tFN010005", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iFN010503", "var": "claimReference5", "elementId": "Stage_Fnol01-tFN010005", "value": "=vars.claimReference" },
+                                    { "name": "perilCode", "type": "string", "id": "iFN010504", "var": "perilCode2", "elementId": "Stage_Fnol01-tFN010005", "value": "=vars.perilCode" },
+                                    { "name": "habitableFlag", "type": "boolean", "id": "iFN010505", "var": "habitableFlag2", "elementId": "Stage_Fnol01-tFN010005", "value": "=vars.habitableFlag" }
+                                ],
+                                "outputs": [
+                                    { "name": "reserveBuildings", "type": "double", "id": "reserveBuildings", "var": "reserveBuildings", "originalVar": "reserveBuildings", "value": "reserveBuildings", "source": "=reserveBuildings", "target": "=reserveBuildings", "elementId": "Stage_Fnol01-tFN010005" },
+                                    { "name": "reserveContents", "type": "double", "id": "reserveContents", "var": "reserveContents", "originalVar": "reserveContents", "value": "reserveContents", "source": "=reserveContents", "target": "=reserveContents", "elementId": "Stage_Fnol01-tFN010005" },
+                                    { "name": "reserveAccommodation", "type": "double", "id": "reserveAccommodation", "var": "reserveAccommodation", "originalVar": "reserveAccommodation", "value": "reserveAccommodation", "source": "=reserveAccommodation", "target": "=reserveAccommodation", "elementId": "Stage_Fnol01-tFN010005" },
+                                    { "name": "claimStatus", "type": "string", "id": "claimStatus2", "var": "claimStatus", "originalVar": "claimStatus2", "value": "claimStatus", "source": "=claimStatus", "target": "=claimStatus2", "elementId": "Stage_Fnol01-tFN010005" }
+                                ]
+                            }
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "Stage_Trge02",
+            "type": "case-management:Stage",
+            "data": {
+                "label": "Triage & Loss Adjuster Instruction",
+                "description": "Assigns the handling track, allocates a loss adjuster, and makes first proactive contact with the insured.",
+                "isRequired": true,
+                "parentElement": { "id": "root", "type": "case-management:root" },
+                "isInvalidDropTarget": false,
+                "isPendingParent": false,
+                "entryConditions": [
+                    { "id": "Condition_Tr0201", "displayName": "Registration complete", "rules": [[{ "rule": "selected-stage-completed", "id": "Rule_Tr0201", "selectedStageId": "Stage_Fnol01" }]], "isInterrupting": false }
+                ],
+                "exitConditions": [
+                    { "id": "Condition_Tr0202", "displayName": "Triage complete", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Tr0202" }]], "type": "exit-only", "marksStageComplete": true }
+                ],
+                "slaRules": [
+                    {
+                        "id": "slaTrge0001",
+                        "displayName": "Triage and Instruction SLA",
+                        "expression": "=js:true",
+                        "count": 1,
+                        "unit": "d",
+                        "escalationRule": [
+                            { "id": "esc_Tr0001", "displayName": "Triage At Risk", "triggerInfo": { "type": "at-risk", "atRiskPercentage": 70 }, "action": { "type": "notification", "recipients": [{ "scope": "User", "target": "354b6df6-3e7a-4a12-96ed-0b67afaa1bce", "value": "robert.love@uipath.com" }] } },
+                            { "id": "esc_Tr0002", "displayName": "Triage Breached", "triggerInfo": { "type": "sla-breached" }, "action": { "type": "notification", "recipients": [{ "scope": "UserGroup", "target": "35551807-06b1-4cda-90a1-2fb84851eee7", "value": "administrators" }] } }
+                        ]
+                    }
+                ],
+                "tasks": [
+                    [
+                        {
+                            "id": "tTR020001",
+                            "type": "agent",
+                            "displayName": "Assign handling track",
+                            "elementId": "Stage_Trge02-tTR020001",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cTR020001", "displayName": "Triage opens", "rules": [[{ "rule": "runs-sequentially", "id": "rTR020001" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bTRI00001",
+                                "folderPath": "=bindings.bTRI00002",
+                                "inputs": [
+                                    { "name": "scenario", "type": "string", "id": "iTR020101", "var": "scenario6", "elementId": "Stage_Trge02-tTR020001", "value": "=vars.scenario" },
+                                    { "name": "perilCode", "type": "string", "id": "iTR020102", "var": "perilCode3", "elementId": "Stage_Trge02-tTR020001", "value": "=vars.perilCode" },
+                                    { "name": "habitableFlag", "type": "boolean", "id": "iTR020103", "var": "habitableFlag3", "elementId": "Stage_Trge02-tTR020001", "value": "=vars.habitableFlag" },
+                                    { "name": "reserveBuildings", "type": "double", "id": "iTR020104", "var": "reserveBuildings3", "elementId": "Stage_Trge02-tTR020001", "value": "=vars.reserveBuildings" },
+                                    { "name": "catEventCode", "type": "string", "id": "iTR020105", "var": "catEventCode3", "elementId": "Stage_Trge02-tTR020001", "value": "=vars.catEventCode" }
+                                ],
+                                "outputs": [
+                                    { "name": "claimStatus", "type": "string", "id": "claimStatus3", "var": "claimStatus", "originalVar": "claimStatus3", "value": "claimStatus", "source": "=claimStatus", "target": "=claimStatus3", "elementId": "Stage_Trge02-tTR020001" },
+                                    { "name": "agentRationale", "type": "string", "id": "agentRationale", "var": "agentRationale", "originalVar": "agentRationale", "value": "agentRationale", "source": "=agentRationale", "target": "=agentRationale", "elementId": "Stage_Trge02-tTR020001" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tTR020002",
+                            "type": "api-workflow",
+                            "displayName": "Allocate loss adjuster",
+                            "elementId": "Stage_Trge02-tTR020002",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cTR020002", "displayName": "Track assigned", "rules": [[{ "rule": "runs-sequentially", "id": "rTR020002" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bVND00001",
+                                "folderPath": "=bindings.bVND00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iTR020201", "var": "requestSource6", "elementId": "Stage_Trge02-tTR020002", "value": "AllocateLossAdjuster" },
+                                    { "name": "scenario", "type": "string", "id": "iTR020202", "var": "scenario7", "elementId": "Stage_Trge02-tTR020002", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iTR020203", "var": "claimReference6", "elementId": "Stage_Trge02-tTR020002", "value": "=vars.claimReference" },
+                                    { "name": "claimStatus", "type": "string", "id": "iTR020204", "var": "claimStatus16", "elementId": "Stage_Trge02-tTR020002", "value": "=vars.claimStatus" }
+                                ],
+                                "outputs": [
+                                    { "name": "claimStatus", "type": "string", "id": "claimStatus4", "var": "claimStatus", "originalVar": "claimStatus4", "value": "claimStatus", "source": "=claimStatus", "target": "=claimStatus4", "elementId": "Stage_Trge02-tTR020002" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tTR020003",
+                            "type": "api-workflow",
+                            "displayName": "Request supplementary evidence",
+                            "elementId": "Stage_Trge02-tTR020003",
+                            "isRequired": false,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cTR020003", "displayName": "Handler requests evidence", "rules": [[{ "rule": "adhoc", "id": "rTR020003" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bCLM00001",
+                                "folderPath": "=bindings.bCLM00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iTR020301", "var": "requestSource7", "elementId": "Stage_Trge02-tTR020003", "value": "RequestEvidence" },
+                                    { "name": "scenario", "type": "string", "id": "iTR020302", "var": "scenario8", "elementId": "Stage_Trge02-tTR020003", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iTR020303", "var": "claimReference7", "elementId": "Stage_Trge02-tTR020003", "value": "=vars.claimReference" }
+                                ],
+                                "outputs": [
+                                    { "name": "claimStatus", "type": "string", "id": "claimStatus5", "var": "claimStatus", "originalVar": "claimStatus5", "value": "claimStatus", "source": "=claimStatus", "target": "=claimStatus5", "elementId": "Stage_Trge02-tTR020003" }
+                                ]
+                            }
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "Stage_Invs03",
+            "type": "case-management:Stage",
+            "data": {
+                "label": "Investigation & Cause-of-Loss",
+                "description": "Inspects the property, determines cause of loss, and tests sum-insured adequacy.",
+                "isRequired": true,
+                "parentElement": { "id": "root", "type": "case-management:root" },
+                "isInvalidDropTarget": false,
+                "isPendingParent": false,
+                "entryConditions": [
+                    { "id": "Condition_In0301", "displayName": "Adjuster instructed", "rules": [[{ "rule": "selected-stage-completed", "id": "Rule_In0301", "selectedStageId": "Stage_Trge02" }]], "isInterrupting": false },
+                    { "id": "Condition_In0303", "displayName": "Returned from investigation", "rules": [[{ "rule": "selected-stage-completed", "id": "Rule_In0303", "selectedStageId": "Stage_Siu010", "conditionExpression": "=js:vars.restrictionOutcome !== 'Authorised'" }]], "isInterrupting": false }
+                ],
+                "exitConditions": [
+                    { "id": "Condition_In0302", "displayName": "Investigation concluded", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_In0302", "conditionExpression": "=js:vars.fraudScore < 75" }]], "type": "exit-only", "marksStageComplete": true },
+                    { "id": "Condition_In0304", "displayName": "Referred to investigation", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_In0304", "conditionExpression": "=js:vars.fraudScore >= 75" }]], "type": "exit-only", "marksStageComplete": false }
+                ],
+                "slaRules": [
+                    {
+                        "id": "slaInvs0001",
+                        "displayName": "Investigation SLA",
+                        "expression": "=js:true",
+                        "count": 5,
+                        "unit": "d",
+                        "escalationRule": [
+                            { "id": "esc_In0001", "displayName": "Investigation At Risk", "triggerInfo": { "type": "at-risk", "atRiskPercentage": 70 }, "action": { "type": "notification", "recipients": [{ "scope": "User", "target": "354b6df6-3e7a-4a12-96ed-0b67afaa1bce", "value": "robert.love@uipath.com" }] } },
+                            { "id": "esc_In0002", "displayName": "Investigation Breached", "triggerInfo": { "type": "sla-breached" }, "action": { "type": "notification", "recipients": [{ "scope": "UserGroup", "target": "35551807-06b1-4cda-90a1-2fb84851eee7", "value": "administrators" }] } }
+                        ]
+                    }
+                ],
+                "tasks": [
+                    [
+                        {
+                            "id": "tIN030001",
+                            "type": "api-workflow",
+                            "displayName": "Retrieve property risk data",
+                            "elementId": "Stage_Invs03-tIN030001",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cIN030001", "displayName": "Investigation opens", "rules": [[{ "rule": "runs-sequentially", "id": "rIN030001" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bPRD00001",
+                                "folderPath": "=bindings.bPRD00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iIN030101", "var": "requestSource8", "elementId": "Stage_Invs03-tIN030001", "value": "PropertyRiskLookup" },
+                                    { "name": "scenario", "type": "string", "id": "iIN030102", "var": "scenario9", "elementId": "Stage_Invs03-tIN030001", "value": "=vars.scenario" },
+                                    { "name": "riskAddress", "type": "string", "id": "iIN030103", "var": "riskAddress2", "elementId": "Stage_Invs03-tIN030001", "value": "=vars.riskAddress" }
+                                ],
+                                "outputs": [
+                                    { "name": "vacancyDays", "type": "integer", "id": "vacancyDays2", "var": "vacancyDays", "originalVar": "vacancyDays2", "value": "vacancyDays", "source": "=vacancyDays", "target": "=vacancyDays2", "elementId": "Stage_Invs03-tIN030001" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tIN030002",
+                            "type": "agent",
+                            "displayName": "Determine cause of loss",
+                            "elementId": "Stage_Invs03-tIN030002",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cIN030002", "displayName": "Risk data retrieved", "rules": [[{ "rule": "runs-sequentially", "id": "rIN030002" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bCOL00001",
+                                "folderPath": "=bindings.bCOL00002",
+                                "inputs": [
+                                    { "name": "scenario", "type": "string", "id": "iIN030201", "var": "scenario10", "elementId": "Stage_Invs03-tIN030002", "value": "=vars.scenario" },
+                                    { "name": "perilCode", "type": "string", "id": "iIN030202", "var": "perilCode4", "elementId": "Stage_Invs03-tIN030002", "value": "=vars.perilCode" },
+                                    { "name": "vacancyDays", "type": "integer", "id": "iIN030203", "var": "vacancyDays3", "elementId": "Stage_Invs03-tIN030002", "value": "=vars.vacancyDays" },
+                                    { "name": "floodCoverInForce", "type": "boolean", "id": "iIN030204", "var": "floodCoverInForce2", "elementId": "Stage_Invs03-tIN030002", "value": "=vars.floodCoverInForce" }
+                                ],
+                                "outputs": [
+                                    { "name": "causeOfLossCode", "type": "string", "id": "causeOfLossCode", "var": "causeOfLossCode", "originalVar": "causeOfLossCode", "value": "causeOfLossCode", "source": "=causeOfLossCode", "target": "=causeOfLossCode", "elementId": "Stage_Invs03-tIN030002" },
+                                    { "name": "subrogationPotentialFlag", "type": "boolean", "id": "subrogationPotentialFlag", "var": "subrogationPotentialFlag", "originalVar": "subrogationPotentialFlag", "value": "subrogationPotentialFlag", "source": "=subrogationPotentialFlag", "target": "=subrogationPotentialFlag", "elementId": "Stage_Invs03-tIN030002" },
+                                    { "name": "agentRationale", "type": "string", "id": "agentRationale2", "var": "agentRationale", "originalVar": "agentRationale2", "value": "agentRationale", "source": "=agentRationale", "target": "=agentRationale2", "elementId": "Stage_Invs03-tIN030002" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tIN030003",
+                            "type": "api-workflow",
+                            "displayName": "Assess sum insured and average",
+                            "elementId": "Stage_Invs03-tIN030003",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cIN030003", "displayName": "Cause determined", "rules": [[{ "rule": "runs-sequentially", "id": "rIN030003" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bRUL00001",
+                                "folderPath": "=bindings.bRUL00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iIN030301", "var": "requestSource9", "elementId": "Stage_Invs03-tIN030003", "value": "AverageAssessment" },
+                                    { "name": "scenario", "type": "string", "id": "iIN030302", "var": "scenario11", "elementId": "Stage_Invs03-tIN030003", "value": "=vars.scenario" },
+                                    { "name": "sumInsuredBuildings", "type": "double", "id": "iIN030303", "var": "sumInsuredBuildings2", "elementId": "Stage_Invs03-tIN030003", "value": "=vars.sumInsuredBuildings" },
+                                    { "name": "sumInsuredContents", "type": "double", "id": "iIN030304", "var": "sumInsuredContents2", "elementId": "Stage_Invs03-tIN030003", "value": "=vars.sumInsuredContents" }
+                                ],
+                                "outputs": [
+                                    { "name": "averageAppliedFlag", "type": "boolean", "id": "averageAppliedFlag", "var": "averageAppliedFlag", "originalVar": "averageAppliedFlag", "value": "averageAppliedFlag", "source": "=averageAppliedFlag", "target": "=averageAppliedFlag", "elementId": "Stage_Invs03-tIN030003" },
+                                    { "name": "authorityLimit", "type": "double", "id": "authorityLimit", "var": "authorityLimit", "originalVar": "authorityLimit", "value": "authorityLimit", "source": "=authorityLimit", "target": "=authorityLimit", "elementId": "Stage_Invs03-tIN030003" }
+                                ]
+                            }
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "Stage_Covr04",
+            "type": "case-management:Stage",
+            "data": {
+                "label": "Coverage & Scope Assessment",
+                "description": "Assembles the scope of works and settlement figures, takes the coverage decision and the settlement authorisation, and records both.",
+                "isRequired": true,
+                "parentElement": { "id": "root", "type": "case-management:root" },
+                "isInvalidDropTarget": false,
+                "isPendingParent": false,
+                "entryConditions": [
+                    { "id": "Condition_Cv0401", "displayName": "Investigation complete", "rules": [[{ "rule": "selected-stage-completed", "id": "Rule_Cv0401", "selectedStageId": "Stage_Invs03" }]], "isInterrupting": false },
+                    { "id": "Condition_Cv0403", "displayName": "Re-scoped after hidden damage", "rules": [[{ "rule": "selected-stage-completed", "id": "Rule_Cv0403", "selectedStageId": "Stage_Hidn12" }]], "isInterrupting": false }
+                ],
+                "exitConditions": [
+                    { "id": "Condition_Cv0402", "displayName": "Coverage position confirmed", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Cv0402", "conditionExpression": "=js:vars.coverageOutcome !== 'Declined'" }]], "type": "exit-only", "marksStageComplete": true },
+                    { "id": "Condition_Cv0404", "displayName": "Coverage position declined", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Cv0404", "conditionExpression": "=js:vars.coverageOutcome === 'Declined'" }]], "type": "exit-only", "marksStageComplete": false }
+                ],
+                "slaRules": [
+                    {
+                        "id": "slaCovr0001",
+                        "displayName": "Coverage and Scope SLA",
+                        "expression": "=js:true",
+                        "count": 10,
+                        "unit": "d",
+                        "escalationRule": [
+                            { "id": "esc_Cv0001", "displayName": "Coverage Decision At Risk", "triggerInfo": { "type": "at-risk", "atRiskPercentage": 70 }, "action": { "type": "notification", "recipients": [{ "scope": "User", "target": "354b6df6-3e7a-4a12-96ed-0b67afaa1bce", "value": "robert.love@uipath.com" }] } }
+                        ]
+                    }
+                ],
+                "tasks": [
+                    [
+                        {
+                            "id": "tCV040001",
+                            "type": "process",
+                            "displayName": "Assemble scope and settlement figures",
+                            "elementId": "Stage_Covr04-tCV040001",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cCV040001", "displayName": "Assessment opens", "rules": [[{ "rule": "runs-sequentially", "id": "rCV040001" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bSCP00001",
+                                "folderPath": "=bindings.bSCP00002",
+                                "inputs": [
+                                    { "name": "scenario", "type": "string", "id": "iCV040101", "var": "scenario12", "elementId": "Stage_Covr04-tCV040001", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iCV040102", "var": "claimReference8", "elementId": "Stage_Covr04-tCV040001", "value": "=vars.claimReference" },
+                                    { "name": "causeOfLossCode", "type": "string", "id": "iCV040103", "var": "causeOfLossCode2", "elementId": "Stage_Covr04-tCV040001", "value": "=vars.causeOfLossCode" },
+                                    { "name": "averageAppliedFlag", "type": "boolean", "id": "iCV040104", "var": "averageAppliedFlag2", "elementId": "Stage_Covr04-tCV040001", "value": "=vars.averageAppliedFlag" }
+                                ],
+                                "outputs": [
+                                    { "name": "estimatedCost", "type": "double", "id": "estimatedCost", "var": "estimatedCost", "originalVar": "estimatedCost", "value": "estimatedCost", "source": "=estimatedCost", "target": "=estimatedCost", "elementId": "Stage_Covr04-tCV040001" },
+                                    { "name": "settlementBasis", "type": "string", "id": "settlementBasis", "var": "settlementBasis", "originalVar": "settlementBasis", "value": "settlementBasis", "source": "=settlementBasis", "target": "=settlementBasis", "elementId": "Stage_Covr04-tCV040001" },
+                                    { "name": "settlementPath", "type": "string", "id": "settlementPath", "var": "settlementPath", "originalVar": "settlementPath", "value": "settlementPath", "source": "=settlementPath", "target": "=settlementPath", "elementId": "Stage_Covr04-tCV040001" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tCV040002",
+                            "type": "action",
+                            "displayName": "Confirm coverage position",
+                            "elementId": "Stage_Covr04-tCV040002",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cCV040002", "displayName": "Scope ready for decision", "rules": [[{ "rule": "runs-sequentially", "id": "rCV040002" }]] }
+                            ],
+                            "data": {
+                                "taskTitle": "Confirm the coverage position on this claim",
+                                "priority": "High",
+                                "recipient": { "Type": 3, "Value": "=vars.ownerEmail" },
+                                "labels": "coverage,decision",
+                                "name": "=bindings.bAPP00001",
+                                "folderPath": "=bindings.bAPP00002",
+                                "inputs": [
+                                    { "name": "actionType", "type": "string", "id": "aCV040201", "var": "actionType", "elementId": "Stage_Covr04-tCV040002", "value": "ConfirmCoveragePosition" },
+                                    { "name": "claimReference", "type": "string", "id": "aCV040202", "var": "claimReference24", "elementId": "Stage_Covr04-tCV040002", "value": "=vars.claimReference" },
+                                    { "name": "insuredName", "type": "string", "id": "aCV040203", "var": "insuredName2", "elementId": "Stage_Covr04-tCV040002", "value": "=vars.insuredName" },
+                                    { "name": "riskAddress", "type": "string", "id": "aCV040204", "var": "riskAddress5", "elementId": "Stage_Covr04-tCV040002", "value": "=vars.riskAddress" },
+                                    { "name": "perilCode", "type": "string", "id": "aCV040205", "var": "perilCode5", "elementId": "Stage_Covr04-tCV040002", "value": "=vars.perilCode" },
+                                    { "name": "causeOfLossCode", "type": "string", "id": "aCV040206", "var": "causeOfLossCode6", "elementId": "Stage_Covr04-tCV040002", "value": "=vars.causeOfLossCode" },
+                                    { "name": "vacancyDays", "type": "integer", "id": "aCV040207", "var": "vacancyDays4", "elementId": "Stage_Covr04-tCV040002", "value": "=vars.vacancyDays" },
+                                    { "name": "floodCoverInForce", "type": "boolean", "id": "aCV040208", "var": "floodCoverInForce3", "elementId": "Stage_Covr04-tCV040002", "value": "=vars.floodCoverInForce" },
+                                    { "name": "averageAppliedFlag", "type": "boolean", "id": "aCV040209", "var": "averageAppliedFlag3", "elementId": "Stage_Covr04-tCV040002", "value": "=vars.averageAppliedFlag" },
+                                    { "name": "estimatedCost", "type": "number", "id": "aCV040210", "var": "estimatedCost6", "elementId": "Stage_Covr04-tCV040002", "value": "=vars.estimatedCost" },
+                                    { "name": "agentRationale", "type": "string", "id": "aCV040211", "var": "agentRationale4", "elementId": "Stage_Covr04-tCV040002", "value": "=vars.agentRationale" }
+                                ],
+                                "outputs": [
+                                    { "name": "Action", "type": "string", "id": "coverageOutcome", "var": "coverageOutcome", "originalVar": "coverageOutcome", "value": "coverageOutcome", "source": "=Action", "target": "=coverageOutcome", "elementId": "Stage_Covr04-tCV040002" },
+                                    { "name": "decisionRationale", "type": "string", "id": "decisionRationale3", "var": "decisionRationale", "originalVar": "decisionRationale3", "value": "decisionRationale", "source": "=decisionRationale", "target": "=decisionRationale3", "elementId": "Stage_Covr04-tCV040002" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tCV040003",
+                            "type": "action",
+                            "displayName": "Authorise settlement",
+                            "elementId": "Stage_Covr04-tCV040003",
+                            "isRequired": false,
+                            "shouldRunOnlyOnce": false,
+                            "skipCondition": "=js:vars.coverageOutcome === 'Declined' || vars.estimatedCost <= vars.authorityLimit",
+                            "entryConditions": [
+                                { "id": "cCV040003", "displayName": "Coverage confirmed", "rules": [[{ "rule": "selected-tasks-completed", "id": "rCV040003", "selectedTasksIds": ["tCV040002"], "conditionExpression": "=js:vars.coverageOutcome !== 'Declined' && vars.estimatedCost > vars.authorityLimit" }]] }
+                            ],
+                            "data": {
+                                "taskTitle": "Authorise the settlement on this claim",
+                                "priority": "High",
+                                "recipient": { "Type": 1, "Value": "35551807-06b1-4cda-90a1-2fb84851eee7" },
+                                "labels": "settlement,authority",
+                                "name": "=bindings.bAPP00001",
+                                "folderPath": "=bindings.bAPP00002",
+                                "inputs": [
+                                    { "name": "actionType", "type": "string", "id": "aCV040301", "var": "actionType2", "elementId": "Stage_Covr04-tCV040003", "value": "AuthoriseSettlement" },
+                                    { "name": "claimReference", "type": "string", "id": "aCV040302", "var": "claimReference25", "elementId": "Stage_Covr04-tCV040003", "value": "=vars.claimReference" },
+                                    { "name": "coverageOutcome", "type": "string", "id": "aCV040303", "var": "coverageOutcome3", "elementId": "Stage_Covr04-tCV040003", "value": "=vars.coverageOutcome" },
+                                    { "name": "settlementBasis", "type": "string", "id": "aCV040304", "var": "settlementBasis3", "elementId": "Stage_Covr04-tCV040003", "value": "=vars.settlementBasis" },
+                                    { "name": "settlementPath", "type": "string", "id": "aCV040305", "var": "settlementPath3", "elementId": "Stage_Covr04-tCV040003", "value": "=vars.settlementPath" },
+                                    { "name": "estimatedCost", "type": "number", "id": "aCV040306", "var": "estimatedCost7", "elementId": "Stage_Covr04-tCV040003", "value": "=vars.estimatedCost" },
+                                    { "name": "authorityLimit", "type": "number", "id": "aCV040307", "var": "authorityLimit3", "elementId": "Stage_Covr04-tCV040003", "value": "=vars.authorityLimit" },
+                                    { "name": "decisionRationale", "type": "string", "id": "aCV040308", "var": "decisionRationale4", "elementId": "Stage_Covr04-tCV040003", "value": "=vars.decisionRationale" }
+                                ],
+                                "outputs": [
+                                    { "name": "Action", "type": "string", "id": "settlementOutcome", "var": "settlementOutcome", "originalVar": "settlementOutcome", "value": "settlementOutcome", "source": "=Action", "target": "=settlementOutcome", "elementId": "Stage_Covr04-tCV040003" },
+                                    { "name": "decisionRationale", "type": "string", "id": "decisionRationale5", "var": "decisionRationale", "originalVar": "decisionRationale5", "value": "decisionRationale", "source": "=decisionRationale", "target": "=decisionRationale5", "elementId": "Stage_Covr04-tCV040003" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tCV040004",
+                            "type": "api-workflow",
+                            "displayName": "Record coverage and settlement decision",
+                            "elementId": "Stage_Covr04-tCV040004",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cCV040004", "displayName": "Decision taken", "rules": [[{ "rule": "selected-tasks-completed", "id": "rCV040004", "selectedTasksIds": ["tCV040002"] }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bCLM00001",
+                                "folderPath": "=bindings.bCLM00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iCV040401", "var": "requestSource10", "elementId": "Stage_Covr04-tCV040004", "value": "RecordCoverageDecision" },
+                                    { "name": "scenario", "type": "string", "id": "iCV040402", "var": "scenario13", "elementId": "Stage_Covr04-tCV040004", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iCV040403", "var": "claimReference9", "elementId": "Stage_Covr04-tCV040004", "value": "=vars.claimReference" },
+                                    { "name": "coverageOutcome", "type": "string", "id": "iCV040404", "var": "coverageOutcome2", "elementId": "Stage_Covr04-tCV040004", "value": "=vars.coverageOutcome" },
+                                    { "name": "settlementOutcome", "type": "string", "id": "iCV040405", "var": "settlementOutcome2", "elementId": "Stage_Covr04-tCV040004", "value": "=vars.settlementOutcome" }
+                                ],
+                                "outputs": [
+                                    { "name": "claimStatus", "type": "string", "id": "claimStatus6", "var": "claimStatus", "originalVar": "claimStatus6", "value": "claimStatus", "source": "=claimStatus", "target": "=claimStatus6", "elementId": "Stage_Covr04-tCV040004" }
+                                ]
+                            }
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "Stage_Mitg05",
+            "type": "case-management:Stage",
+            "data": {
+                "label": "Mitigation & Restoration",
+                "description": "Authorises strip-out, runs the drying programme to a target moisture content, and inspects for damage that was not visible at first scope.",
+                "isRequired": true,
+                "parentElement": { "id": "root", "type": "case-management:root" },
+                "isInvalidDropTarget": false,
+                "isPendingParent": false,
+                "entryConditions": [
+                    { "id": "Condition_Mt0501", "displayName": "Scope agreed", "rules": [[{ "rule": "selected-stage-completed", "id": "Rule_Mt0501", "selectedStageId": "Stage_Covr04" }]], "isInterrupting": false }
+                ],
+                "exitConditions": [
+                    { "id": "Condition_Mt0502", "displayName": "Property dried and stable", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Mt0502", "conditionExpression": "=js:vars.hiddenDamageFound !== true" }]], "type": "exit-only", "marksStageComplete": true },
+                    { "id": "Condition_Mt0504", "displayName": "Hidden damage found", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Mt0504", "conditionExpression": "=js:vars.hiddenDamageFound === true" }]], "type": "exit-only", "marksStageComplete": false }
+                ],
+                "slaRules": [
+                    {
+                        "id": "slaMitg0001",
+                        "displayName": "Mitigation and Drying SLA",
+                        "expression": "=js:true",
+                        "count": 8,
+                        "unit": "w",
+                        "escalationRule": [
+                            { "id": "esc_Mt0001", "displayName": "Drying Programme At Risk", "triggerInfo": { "type": "at-risk", "atRiskPercentage": 70 }, "action": { "type": "notification", "recipients": [{ "scope": "User", "target": "354b6df6-3e7a-4a12-96ed-0b67afaa1bce", "value": "robert.love@uipath.com" }] } },
+                            { "id": "esc_Mt0002", "displayName": "Drying Programme Breached", "triggerInfo": { "type": "sla-breached" }, "action": { "type": "notification", "recipients": [{ "scope": "UserGroup", "target": "35551807-06b1-4cda-90a1-2fb84851eee7", "value": "administrators" }] } }
+                        ]
+                    }
+                ],
+                "tasks": [
+                    [
+                        {
+                            "id": "tMT050001",
+                            "type": "api-workflow",
+                            "displayName": "Authorise strip-out and dispatch restorer",
+                            "elementId": "Stage_Mitg05-tMT050001",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cMT050001", "displayName": "Mitigation opens", "rules": [[{ "rule": "runs-sequentially", "id": "rMT050001" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bVND00001",
+                                "folderPath": "=bindings.bVND00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iMT050101", "var": "requestSource11", "elementId": "Stage_Mitg05-tMT050001", "value": "AuthoriseStripOut" },
+                                    { "name": "scenario", "type": "string", "id": "iMT050102", "var": "scenario14", "elementId": "Stage_Mitg05-tMT050001", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iMT050103", "var": "claimReference10", "elementId": "Stage_Mitg05-tMT050001", "value": "=vars.claimReference" },
+                                    { "name": "settlementPath", "type": "string", "id": "iMT050104", "var": "settlementPath2", "elementId": "Stage_Mitg05-tMT050001", "value": "=vars.settlementPath" }
+                                ],
+                                "outputs": [
+                                    { "name": "claimStatus", "type": "string", "id": "claimStatus7", "var": "claimStatus", "originalVar": "claimStatus7", "value": "claimStatus", "source": "=claimStatus", "target": "=claimStatus7", "elementId": "Stage_Mitg05-tMT050001" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tMT050002",
+                            "type": "wait-for-timer",
+                            "displayName": "Run drying programme",
+                            "elementId": "Stage_Mitg05-tMT050002",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cMT050002", "displayName": "Restorer on site", "rules": [[{ "rule": "runs-sequentially", "id": "rMT050002" }]] }
+                            ],
+                            "data": {
+                                "timerType": "timeDuration",
+                                "timeDuration": "PT2M"
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tMT050003",
+                            "type": "api-workflow",
+                            "displayName": "Inspect for hidden damage",
+                            "elementId": "Stage_Mitg05-tMT050003",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cMT050003", "displayName": "Drying complete", "rules": [[{ "rule": "runs-sequentially", "id": "rMT050003" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bVND00001",
+                                "folderPath": "=bindings.bVND00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iMT050301", "var": "requestSource12", "elementId": "Stage_Mitg05-tMT050003", "value": "HiddenDamageInspection" },
+                                    { "name": "scenario", "type": "string", "id": "iMT050302", "var": "scenario15", "elementId": "Stage_Mitg05-tMT050003", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iMT050303", "var": "claimReference11", "elementId": "Stage_Mitg05-tMT050003", "value": "=vars.claimReference" }
+                                ],
+                                "outputs": [
+                                    { "name": "hiddenDamageFound", "type": "boolean", "id": "hiddenDamageFound", "var": "hiddenDamageFound", "originalVar": "hiddenDamageFound", "value": "hiddenDamageFound", "source": "=hiddenDamageFound", "target": "=hiddenDamageFound", "elementId": "Stage_Mitg05-tMT050003" },
+                                    { "name": "claimStatus", "type": "string", "id": "claimStatus8", "var": "claimStatus", "originalVar": "claimStatus8", "value": "claimStatus", "source": "=claimStatus", "target": "=claimStatus8", "elementId": "Stage_Mitg05-tMT050003" }
+                                ]
+                            }
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "Stage_Rein06",
+            "type": "case-management:Stage",
+            "data": {
+                "label": "Reinstatement / Settlement Execution",
+                "description": "Allocates the reinstatement contractor, records the works, and reconciles contractor invoices against the authorisation.",
+                "isRequired": true,
+                "parentElement": { "id": "root", "type": "case-management:root" },
+                "isInvalidDropTarget": false,
+                "isPendingParent": false,
+                "entryConditions": [
+                    { "id": "Condition_Ri0601", "displayName": "Property dried", "rules": [[{ "rule": "selected-stage-completed", "id": "Rule_Ri0601", "selectedStageId": "Stage_Mitg05" }]], "isInterrupting": false }
+                ],
+                "exitConditions": [
+                    { "id": "Condition_Ri0602", "displayName": "Reinstatement finished", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Ri0602" }]], "type": "exit-only", "marksStageComplete": true }
+                ],
+                "slaRules": [
+                    {
+                        "id": "slaRein0001",
+                        "displayName": "Reinstatement SLA",
+                        "expression": "=js:true",
+                        "count": 12,
+                        "unit": "w",
+                        "escalationRule": [
+                            { "id": "esc_Ri0001", "displayName": "Reinstatement At Risk", "triggerInfo": { "type": "at-risk", "atRiskPercentage": 70 }, "action": { "type": "notification", "recipients": [{ "scope": "User", "target": "354b6df6-3e7a-4a12-96ed-0b67afaa1bce", "value": "robert.love@uipath.com" }] } },
+                            { "id": "esc_Ri0002", "displayName": "Reinstatement Breached", "triggerInfo": { "type": "sla-breached" }, "action": { "type": "notification", "recipients": [{ "scope": "UserGroup", "target": "35551807-06b1-4cda-90a1-2fb84851eee7", "value": "administrators" }] } }
+                        ]
+                    }
+                ],
+                "tasks": [
+                    [
+                        {
+                            "id": "tRI060001",
+                            "type": "api-workflow",
+                            "displayName": "Allocate reinstatement contractor",
+                            "elementId": "Stage_Rein06-tRI060001",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cRI060001", "displayName": "Reinstatement opens", "rules": [[{ "rule": "runs-sequentially", "id": "rRI060001" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bVND00001",
+                                "folderPath": "=bindings.bVND00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iRI060101", "var": "requestSource13", "elementId": "Stage_Rein06-tRI060001", "value": "AllocateContractor" },
+                                    { "name": "scenario", "type": "string", "id": "iRI060102", "var": "scenario16", "elementId": "Stage_Rein06-tRI060001", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iRI060103", "var": "claimReference12", "elementId": "Stage_Rein06-tRI060001", "value": "=vars.claimReference" },
+                                    { "name": "estimatedCost", "type": "double", "id": "iRI060104", "var": "estimatedCost2", "elementId": "Stage_Rein06-tRI060001", "value": "=vars.estimatedCost" }
+                                ],
+                                "outputs": [
+                                    { "name": "claimStatus", "type": "string", "id": "claimStatus9", "var": "claimStatus", "originalVar": "claimStatus9", "value": "claimStatus", "source": "=claimStatus", "target": "=claimStatus9", "elementId": "Stage_Rein06-tRI060001" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tRI060002",
+                            "type": "rpa",
+                            "displayName": "Record works in adjuster portal",
+                            "elementId": "Stage_Rein06-tRI060002",
+                            "isRequired": false,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cRI060002", "displayName": "Contractor allocated", "rules": [[{ "rule": "runs-sequentially", "id": "rRI060002" }]] }
+                            ],
+                            "data": {}
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tRI060003",
+                            "type": "api-workflow",
+                            "displayName": "Reconcile contractor invoices",
+                            "elementId": "Stage_Rein06-tRI060003",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cRI060003", "displayName": "Works recorded", "rules": [[{ "rule": "runs-sequentially", "id": "rRI060003" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bCLM00001",
+                                "folderPath": "=bindings.bCLM00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iRI060301", "var": "requestSource14", "elementId": "Stage_Rein06-tRI060003", "value": "ReconcileInvoices" },
+                                    { "name": "scenario", "type": "string", "id": "iRI060302", "var": "scenario17", "elementId": "Stage_Rein06-tRI060003", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iRI060303", "var": "claimReference13", "elementId": "Stage_Rein06-tRI060003", "value": "=vars.claimReference" },
+                                    { "name": "estimatedCost", "type": "double", "id": "iRI060304", "var": "estimatedCost3", "elementId": "Stage_Rein06-tRI060003", "value": "=vars.estimatedCost" }
+                                ],
+                                "outputs": [
+                                    { "name": "claimStatus", "type": "string", "id": "claimStatus10", "var": "claimStatus", "originalVar": "claimStatus10", "value": "claimStatus", "source": "=claimStatus", "target": "=claimStatus10", "elementId": "Stage_Rein06-tRI060003" }
+                                ]
+                            }
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "Stage_Recv07",
+            "type": "case-management:Stage",
+            "data": {
+                "label": "Recoveries, Salvage & Subrogation",
+                "description": "Assesses recovery potential, pursues salvage and subrogation, and reconciles receipts against the paid claim.",
+                "isRequired": true,
+                "parentElement": { "id": "root", "type": "case-management:root" },
+                "isInvalidDropTarget": false,
+                "isPendingParent": false,
+                "entryConditions": [
+                    { "id": "Condition_Rc0701", "displayName": "Reinstatement complete", "rules": [[{ "rule": "selected-stage-completed", "id": "Rule_Rc0701", "selectedStageId": "Stage_Rein06" }]], "isInterrupting": false }
+                ],
+                "exitConditions": [
+                    { "id": "Condition_Rc0702", "displayName": "Recoveries finished", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Rc0702" }]], "type": "exit-only", "marksStageComplete": true }
+                ],
+                "slaRules": [
+                    {
+                        "id": "slaRecv0001",
+                        "displayName": "Recoveries SLA",
+                        "expression": "=js:true",
+                        "count": 20,
+                        "unit": "d",
+                        "escalationRule": [
+                            { "id": "esc_Rc0001", "displayName": "Recoveries At Risk", "triggerInfo": { "type": "at-risk", "atRiskPercentage": 70 }, "action": { "type": "notification", "recipients": [{ "scope": "User", "target": "354b6df6-3e7a-4a12-96ed-0b67afaa1bce", "value": "robert.love@uipath.com" }] } },
+                            { "id": "esc_Rc0002", "displayName": "Recoveries Breached", "triggerInfo": { "type": "sla-breached" }, "action": { "type": "notification", "recipients": [{ "scope": "UserGroup", "target": "35551807-06b1-4cda-90a1-2fb84851eee7", "value": "administrators" }] } }
+                        ]
+                    }
+                ],
+                "tasks": [
+                    [
+                        {
+                            "id": "tRC070001",
+                            "type": "agent",
+                            "displayName": "Assess recovery potential",
+                            "elementId": "Stage_Recv07-tRC070001",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cRC070001", "displayName": "Recoveries open", "rules": [[{ "rule": "runs-sequentially", "id": "rRC070001" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bRCV00001",
+                                "folderPath": "=bindings.bRCV00002",
+                                "inputs": [
+                                    { "name": "scenario", "type": "string", "id": "iRC070101", "var": "scenario18", "elementId": "Stage_Recv07-tRC070001", "value": "=vars.scenario" },
+                                    { "name": "causeOfLossCode", "type": "string", "id": "iRC070102", "var": "causeOfLossCode3", "elementId": "Stage_Recv07-tRC070001", "value": "=vars.causeOfLossCode" },
+                                    { "name": "subrogationPotentialFlag", "type": "boolean", "id": "iRC070103", "var": "subrogationPotentialFlag3", "elementId": "Stage_Recv07-tRC070001", "value": "=vars.subrogationPotentialFlag" },
+                                    { "name": "estimatedCost", "type": "double", "id": "iRC070104", "var": "estimatedCost4", "elementId": "Stage_Recv07-tRC070001", "value": "=vars.estimatedCost" }
+                                ],
+                                "outputs": [
+                                    { "name": "subrogationPotentialFlag", "type": "boolean", "id": "subrogationPotentialFlag2", "var": "subrogationPotentialFlag", "originalVar": "subrogationPotentialFlag2", "value": "subrogationPotentialFlag", "source": "=subrogationPotentialFlag", "target": "=subrogationPotentialFlag2", "elementId": "Stage_Recv07-tRC070001" },
+                                    { "name": "agentRationale", "type": "string", "id": "agentRationale3", "var": "agentRationale", "originalVar": "agentRationale3", "value": "agentRationale", "source": "=agentRationale", "target": "=agentRationale3", "elementId": "Stage_Recv07-tRC070001" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tRC070002",
+                            "type": "process",
+                            "displayName": "Pursue recoveries and salvage",
+                            "elementId": "Stage_Recv07-tRC070002",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "skipCondition": "=js:vars.subrogationPotentialFlag !== true",
+                            "entryConditions": [
+                                { "id": "cRC070002", "displayName": "Recovery assessed", "rules": [[{ "rule": "selected-tasks-completed", "id": "rRC070002", "selectedTasksIds": ["tRC070001"] }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bREC00001",
+                                "folderPath": "=bindings.bREC00002",
+                                "inputs": [
+                                    { "name": "scenario", "type": "string", "id": "iRC070201", "var": "scenario19", "elementId": "Stage_Recv07-tRC070002", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iRC070202", "var": "claimReference14", "elementId": "Stage_Recv07-tRC070002", "value": "=vars.claimReference" },
+                                    { "name": "causeOfLossCode", "type": "string", "id": "iRC070203", "var": "causeOfLossCode4", "elementId": "Stage_Recv07-tRC070002", "value": "=vars.causeOfLossCode" }
+                                ],
+                                "outputs": [
+                                    { "name": "recoveryAmountReceived", "type": "double", "id": "recoveryAmountReceived", "var": "recoveryAmountReceived", "originalVar": "recoveryAmountReceived", "value": "recoveryAmountReceived", "source": "=recoveryAmountReceived", "target": "=recoveryAmountReceived", "elementId": "Stage_Recv07-tRC070002" },
+                                    { "name": "claimStatus", "type": "string", "id": "claimStatus11", "var": "claimStatus", "originalVar": "claimStatus11", "value": "claimStatus", "source": "=claimStatus", "target": "=claimStatus11", "elementId": "Stage_Recv07-tRC070002" }
+                                ]
+                            }
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "Stage_Clos08",
+            "type": "case-management:Stage",
+            "data": {
+                "label": "Settlement & Closure",
+                "description": "Confirms every open item is resolved, takes the closure confirmation, and archives the file with its retention metadata.",
+                "isRequired": true,
+                "parentElement": { "id": "root", "type": "case-management:root" },
+                "isInvalidDropTarget": false,
+                "isPendingParent": false,
+                "entryConditions": [
+                    { "id": "Condition_Cl0801", "displayName": "Recoveries concluded", "rules": [[{ "rule": "selected-stage-completed", "id": "Rule_Cl0801", "selectedStageId": "Stage_Recv07" }]], "isInterrupting": false }
+                ],
+                "exitConditions": [
+                    { "id": "Condition_Cl0802", "displayName": "Claim closed", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Cl0802" }]], "type": "exit-only", "marksStageComplete": true }
+                ],
+                "slaRules": [
+                    {
+                        "id": "slaClos0001",
+                        "displayName": "Closure SLA",
+                        "expression": "=js:true",
+                        "count": 5,
+                        "unit": "d",
+                        "escalationRule": [
+                            { "id": "esc_Cl0001", "displayName": "Closure At Risk", "triggerInfo": { "type": "at-risk", "atRiskPercentage": 70 }, "action": { "type": "notification", "recipients": [{ "scope": "User", "target": "354b6df6-3e7a-4a12-96ed-0b67afaa1bce", "value": "robert.love@uipath.com" }] } },
+                            { "id": "esc_Cl0002", "displayName": "Closure Breached", "triggerInfo": { "type": "sla-breached" }, "action": { "type": "notification", "recipients": [{ "scope": "UserGroup", "target": "35551807-06b1-4cda-90a1-2fb84851eee7", "value": "administrators" }] } }
+                        ]
+                    }
+                ],
+                "tasks": [
+                    [
+                        {
+                            "id": "tCL080001",
+                            "type": "api-workflow",
+                            "displayName": "Check open subjectivities",
+                            "elementId": "Stage_Clos08-tCL080001",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cCL080001", "displayName": "Closure opens", "rules": [[{ "rule": "runs-sequentially", "id": "rCL080001" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bCLM00001",
+                                "folderPath": "=bindings.bCLM00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iCL080101", "var": "requestSource15", "elementId": "Stage_Clos08-tCL080001", "value": "CheckSubjectivities" },
+                                    { "name": "scenario", "type": "string", "id": "iCL080102", "var": "scenario20", "elementId": "Stage_Clos08-tCL080001", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iCL080103", "var": "claimReference15", "elementId": "Stage_Clos08-tCL080001", "value": "=vars.claimReference" },
+                                    { "name": "recoveryAmountReceived", "type": "double", "id": "iCL080104", "var": "recoveryAmountReceived2", "elementId": "Stage_Clos08-tCL080001", "value": "=vars.recoveryAmountReceived" }
+                                ],
+                                "outputs": [
+                                    { "name": "closureReasonCode", "type": "string", "id": "closureReasonCode", "var": "closureReasonCode", "originalVar": "closureReasonCode", "value": "closureReasonCode", "source": "=closureReasonCode", "target": "=closureReasonCode", "elementId": "Stage_Clos08-tCL080001" },
+                                    { "name": "claimStatus", "type": "string", "id": "claimStatus12", "var": "claimStatus", "originalVar": "claimStatus12", "value": "claimStatus", "source": "=claimStatus", "target": "=claimStatus12", "elementId": "Stage_Clos08-tCL080001" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tCL080002",
+                            "type": "action",
+                            "displayName": "Confirm closure",
+                            "elementId": "Stage_Clos08-tCL080002",
+                            "isRequired": false,
+                            "shouldRunOnlyOnce": false,
+                            "skipCondition": "=js:vars.closureReasonCode === 'CLEAR'",
+                            "entryConditions": [
+                                { "id": "cCL080002", "displayName": "Subjectivities checked", "rules": [[{ "rule": "runs-sequentially", "id": "rCL080002" }]] }
+                            ],
+                            "data": {
+                                "taskTitle": "Confirm this claim can be closed",
+                                "priority": "Medium",
+                                "recipient": { "Type": 3, "Value": "=vars.ownerEmail" },
+                                "labels": "closure",
+                                "name": "=bindings.bAPP00001",
+                                "folderPath": "=bindings.bAPP00002",
+                                "inputs": [
+                                    { "name": "actionType", "type": "string", "id": "aCL080201", "var": "actionType3", "elementId": "Stage_Clos08-tCL080002", "value": "ConfirmClosure" },
+                                    { "name": "claimReference", "type": "string", "id": "aCL080202", "var": "claimReference26", "elementId": "Stage_Clos08-tCL080002", "value": "=vars.claimReference" },
+                                    { "name": "coverageOutcome", "type": "string", "id": "aCL080203", "var": "coverageOutcome4", "elementId": "Stage_Clos08-tCL080002", "value": "=vars.coverageOutcome" },
+                                    { "name": "settlementOutcome", "type": "string", "id": "aCL080204", "var": "settlementOutcome3", "elementId": "Stage_Clos08-tCL080002", "value": "=vars.settlementOutcome" },
+                                    { "name": "closureReasonCode", "type": "string", "id": "aCL080205", "var": "closureReasonCode4", "elementId": "Stage_Clos08-tCL080002", "value": "=vars.closureReasonCode" },
+                                    { "name": "recoveryAmountReceived", "type": "number", "id": "aCL080206", "var": "recoveryAmountReceived3", "elementId": "Stage_Clos08-tCL080002", "value": "=vars.recoveryAmountReceived" }
+                                ],
+                                "outputs": [
+                                    { "name": "Action", "type": "string", "id": "closureOutcome", "var": "closureOutcome", "originalVar": "closureOutcome", "value": "closureOutcome", "source": "=Action", "target": "=closureOutcome", "elementId": "Stage_Clos08-tCL080002" },
+                                    { "name": "decisionRationale", "type": "string", "id": "decisionRationale6", "var": "decisionRationale", "originalVar": "decisionRationale6", "value": "decisionRationale", "source": "=decisionRationale", "target": "=decisionRationale6", "elementId": "Stage_Clos08-tCL080002" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tCL080003",
+                            "type": "api-workflow",
+                            "displayName": "Archive claim file",
+                            "elementId": "Stage_Clos08-tCL080003",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "skipCondition": "=js:vars.closureOutcome === 'ReturnedForReview'",
+                            "entryConditions": [
+                                { "id": "cCL080003", "displayName": "Ready to archive", "rules": [[{ "rule": "runs-sequentially", "id": "rCL080003" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bCLM00001",
+                                "folderPath": "=bindings.bCLM00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iCL080301", "var": "requestSource16", "elementId": "Stage_Clos08-tCL080003", "value": "ArchiveClaim" },
+                                    { "name": "scenario", "type": "string", "id": "iCL080302", "var": "scenario21", "elementId": "Stage_Clos08-tCL080003", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iCL080303", "var": "claimReference16", "elementId": "Stage_Clos08-tCL080003", "value": "=vars.claimReference" },
+                                    { "name": "closureReasonCode", "type": "string", "id": "iCL080304", "var": "closureReasonCode3", "elementId": "Stage_Clos08-tCL080003", "value": "=vars.closureReasonCode" }
+                                ],
+                                "outputs": [
+                                    { "name": "claimStatus", "type": "string", "id": "claimStatus13", "var": "claimStatus", "originalVar": "claimStatus13", "value": "claimStatus", "source": "=claimStatus", "target": "=claimStatus13", "elementId": "Stage_Clos08-tCL080003" },
+                                    { "name": "caseOutcome", "type": "string", "id": "caseOutcome2", "var": "caseOutcome", "originalVar": "caseOutcome2", "value": "caseOutcome", "source": "=caseOutcome", "target": "=caseOutcome2", "elementId": "Stage_Clos08-tCL080003" }
+                                ]
+                            }
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "Stage_Emrg09",
+            "type": "case-management:Stage",
+            "data": {
+                "stageType": "secondary",
+                "label": "Emergency Response & Alternative Accommodation",
+                "description": "Dispatches emergency make-safe and mitigation, and books alternative accommodation where the property is uninhabitable.",
+                "isRequired": false,
+                "parentElement": { "id": "root", "type": "case-management:root" },
+                "isInvalidDropTarget": false,
+                "isPendingParent": false,
+                "entryConditions": [
+                    { "id": "Condition_Em0901", "displayName": "Active damage or displacement", "rules": [[{ "rule": "selected-stage-completed", "id": "Rule_Em0901", "selectedStageId": "Stage_Fnol01", "conditionExpression": "=js:vars.activeDamageFlag === true || vars.habitableFlag === false" }]], "isInterrupting": true }
+                ],
+                "exitConditions": [
+                    { "id": "Condition_Em0902", "displayName": "Property made safe", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Em0902" }]], "type": "return-to-origin", "marksStageComplete": true }
+                ],
+                "slaRules": [
+                    {
+                        "id": "slaEmrg0001",
+                        "displayName": "Emergency Response SLA",
+                        "expression": "=js:true",
+                        "count": 4,
+                        "unit": "h",
+                        "escalationRule": [
+                            { "id": "esc_Em0001", "displayName": "Emergency Response At Risk", "triggerInfo": { "type": "at-risk", "atRiskPercentage": 70 }, "action": { "type": "notification", "recipients": [{ "scope": "User", "target": "354b6df6-3e7a-4a12-96ed-0b67afaa1bce", "value": "robert.love@uipath.com" }] } },
+                            { "id": "esc_Em0002", "displayName": "Emergency Response Breached", "triggerInfo": { "type": "sla-breached" }, "action": { "type": "notification", "recipients": [{ "scope": "UserGroup", "target": "35551807-06b1-4cda-90a1-2fb84851eee7", "value": "administrators" }] } }
+                        ]
+                    }
+                ],
+                "tasks": [
+                    [
+                        {
+                            "id": "tEM090001",
+                            "type": "process",
+                            "displayName": "Dispatch emergency mitigation",
+                            "elementId": "Stage_Emrg09-tEM090001",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cEM090001", "displayName": "Emergency lane opens", "rules": [[{ "rule": "current-stage-entered", "id": "rEM090001" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bEMG00001",
+                                "folderPath": "=bindings.bEMG00002",
+                                "inputs": [
+                                    { "name": "scenario", "type": "string", "id": "iEM090101", "var": "scenario22", "elementId": "Stage_Emrg09-tEM090001", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iEM090102", "var": "claimReference17", "elementId": "Stage_Emrg09-tEM090001", "value": "=vars.claimReference" },
+                                    { "name": "riskAddress", "type": "string", "id": "iEM090103", "var": "riskAddress3", "elementId": "Stage_Emrg09-tEM090001", "value": "=vars.riskAddress" },
+                                    { "name": "vulnerableCustomerFlag", "type": "boolean", "id": "iEM090104", "var": "vulnerableCustomerFlag2", "elementId": "Stage_Emrg09-tEM090001", "value": "=vars.vulnerableCustomerFlag" }
+                                ],
+                                "outputs": [
+                                    { "name": "claimStatus", "type": "string", "id": "claimStatus14", "var": "claimStatus", "originalVar": "claimStatus14", "value": "claimStatus", "source": "=claimStatus", "target": "=claimStatus14", "elementId": "Stage_Emrg09-tEM090001" }
+                                ]
+                            }
+                        },
+                        {
+                            "id": "tEM090002",
+                            "type": "api-workflow",
+                            "displayName": "Book alternative accommodation",
+                            "elementId": "Stage_Emrg09-tEM090002",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "skipCondition": "=js:vars.habitableFlag === true",
+                            "entryConditions": [
+                                { "id": "cEM090002", "displayName": "Accommodation needed", "rules": [[{ "rule": "current-stage-entered", "id": "rEM090002" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bVND00001",
+                                "folderPath": "=bindings.bVND00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iEM090201", "var": "requestSource17", "elementId": "Stage_Emrg09-tEM090002", "value": "BookAccommodation" },
+                                    { "name": "scenario", "type": "string", "id": "iEM090202", "var": "scenario23", "elementId": "Stage_Emrg09-tEM090002", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iEM090203", "var": "claimReference18", "elementId": "Stage_Emrg09-tEM090002", "value": "=vars.claimReference" },
+                                    { "name": "vulnerableCustomerFlag", "type": "boolean", "id": "iEM090204", "var": "vulnerableCustomerFlag3", "elementId": "Stage_Emrg09-tEM090002", "value": "=vars.vulnerableCustomerFlag" }
+                                ],
+                                "outputs": [
+                                    { "name": "reserveAccommodation", "type": "double", "id": "reserveAccommodation2", "var": "reserveAccommodation", "originalVar": "reserveAccommodation2", "value": "reserveAccommodation", "source": "=reserveAccommodation", "target": "=reserveAccommodation2", "elementId": "Stage_Emrg09-tEM090002" }
+                                ]
+                            }
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "Stage_Siu010",
+            "type": "case-management:Stage",
+            "data": {
+                "stageType": "secondary",
+                "label": "SIU & Investigative Restriction",
+                "description": "Compiles the screening evidence and takes a named human authorisation before any restriction is applied.",
+                "isRequired": false,
+                "parentElement": { "id": "root", "type": "case-management:root" },
+                "isInvalidDropTarget": false,
+                "isPendingParent": false,
+                "entryConditions": [
+                    { "id": "Condition_Si1001", "displayName": "Screening threshold crossed", "rules": [[{ "rule": "selected-stage-exited", "id": "Rule_Si1001", "selectedStageId": "Stage_Invs03", "conditionExpression": "=js:vars.fraudScore >= 75" }]], "isInterrupting": true }
+                ],
+                "exitConditions": [
+                    { "id": "Condition_Si1002", "displayName": "Claim cleared", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Si1002", "conditionExpression": "=js:vars.restrictionOutcome !== 'Authorised'" }]], "type": "return-to-origin", "marksStageComplete": true },
+                    { "id": "Condition_Si1003", "displayName": "Fraud confirmed", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Si1003", "conditionExpression": "=js:vars.restrictionOutcome === 'Authorised'" }]], "type": "exit-only", "marksStageComplete": true }
+                ],
+                "slaRules": [
+                    {
+                        "id": "slaSiur0001",
+                        "displayName": "Investigation Referral SLA",
+                        "expression": "=js:true",
+                        "count": 10,
+                        "unit": "d",
+                        "escalationRule": [
+                            { "id": "esc_Si0001", "displayName": "Investigation Referral At Risk", "triggerInfo": { "type": "at-risk", "atRiskPercentage": 70 }, "action": { "type": "notification", "recipients": [{ "scope": "User", "target": "354b6df6-3e7a-4a12-96ed-0b67afaa1bce", "value": "robert.love@uipath.com" }] } },
+                            { "id": "esc_Si0002", "displayName": "Investigation Referral Breached", "triggerInfo": { "type": "sla-breached" }, "action": { "type": "notification", "recipients": [{ "scope": "UserGroup", "target": "35551807-06b1-4cda-90a1-2fb84851eee7", "value": "administrators" }] } }
+                        ]
+                    }
+                ],
+                "tasks": [
+                    [
+                        {
+                            "id": "tSI100001",
+                            "type": "api-workflow",
+                            "displayName": "Compile screening evidence",
+                            "elementId": "Stage_Siu010-tSI100001",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cSI100001", "displayName": "Referral opens", "rules": [[{ "rule": "runs-sequentially", "id": "rSI100001" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bSCR00001",
+                                "folderPath": "=bindings.bSCR00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iSI100101", "var": "requestSource18", "elementId": "Stage_Siu010-tSI100001", "value": "CompileScreeningEvidence" },
+                                    { "name": "scenario", "type": "string", "id": "iSI100102", "var": "scenario24", "elementId": "Stage_Siu010-tSI100001", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iSI100103", "var": "claimReference19", "elementId": "Stage_Siu010-tSI100001", "value": "=vars.claimReference" },
+                                    { "name": "fraudScore", "type": "integer", "id": "iSI100104", "var": "fraudScore2", "elementId": "Stage_Siu010-tSI100001", "value": "=vars.fraudScore" }
+                                ],
+                                "outputs": [
+                                    { "name": "decisionRationale", "type": "string", "id": "decisionRationale", "var": "decisionRationale", "originalVar": "decisionRationale", "value": "decisionRationale", "source": "=decisionRationale", "target": "=decisionRationale", "elementId": "Stage_Siu010-tSI100001" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tSI100002",
+                            "type": "action",
+                            "displayName": "Authorise investigative restriction",
+                            "elementId": "Stage_Siu010-tSI100002",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cSI100002", "displayName": "Evidence compiled", "rules": [[{ "rule": "runs-sequentially", "id": "rSI100002" }]] }
+                            ],
+                            "data": {
+                                "taskTitle": "Authorise or refuse an investigative restriction",
+                                "priority": "Critical",
+                                "recipient": { "Type": 1, "Value": "35551807-06b1-4cda-90a1-2fb84851eee7" },
+                                "labels": "investigation,authority",
+                                "name": "=bindings.bAPP00001",
+                                "folderPath": "=bindings.bAPP00002",
+                                "inputs": [
+                                    { "name": "actionType", "type": "string", "id": "aSI100201", "var": "actionType4", "elementId": "Stage_Siu010-tSI100002", "value": "AuthoriseInvestigativeRestriction" },
+                                    { "name": "claimReference", "type": "string", "id": "aSI100202", "var": "claimReference27", "elementId": "Stage_Siu010-tSI100002", "value": "=vars.claimReference" },
+                                    { "name": "perilCode", "type": "string", "id": "aSI100203", "var": "perilCode6", "elementId": "Stage_Siu010-tSI100002", "value": "=vars.perilCode" },
+                                    { "name": "causeOfLossCode", "type": "string", "id": "aSI100204", "var": "causeOfLossCode7", "elementId": "Stage_Siu010-tSI100002", "value": "=vars.causeOfLossCode" },
+                                    { "name": "fraudScore", "type": "integer", "id": "aSI100205", "var": "fraudScore3", "elementId": "Stage_Siu010-tSI100002", "value": "=vars.fraudScore" },
+                                    { "name": "decisionRationale", "type": "string", "id": "aSI100206", "var": "decisionRationale7", "elementId": "Stage_Siu010-tSI100002", "value": "=vars.decisionRationale" }
+                                ],
+                                "outputs": [
+                                    { "name": "Action", "type": "string", "id": "restrictionOutcome", "var": "restrictionOutcome", "originalVar": "restrictionOutcome", "value": "restrictionOutcome", "source": "=Action", "target": "=restrictionOutcome", "elementId": "Stage_Siu010-tSI100002" },
+                                    { "name": "decisionRationale", "type": "string", "id": "decisionRationale8", "var": "decisionRationale", "originalVar": "decisionRationale8", "value": "decisionRationale", "source": "=decisionRationale", "target": "=decisionRationale8", "elementId": "Stage_Siu010-tSI100002" }
+                                ]
+                            }
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "Stage_Decl11",
+            "type": "case-management:Stage",
+            "data": {
+                "stageType": "secondary",
+                "label": "Coverage Decline & Adverse Decision",
+                "description": "Issues the adverse decision with its policy citation and the customer's external dispute-resolution rights.",
+                "isRequired": false,
+                "parentElement": { "id": "root", "type": "case-management:root" },
+                "isInvalidDropTarget": false,
+                "isPendingParent": false,
+                "entryConditions": [
+                    { "id": "Condition_Dc1101", "displayName": "Coverage declined", "rules": [[{ "rule": "selected-stage-exited", "id": "Rule_Dc1101", "selectedStageId": "Stage_Covr04", "conditionExpression": "=js:vars.coverageOutcome === 'Declined'" }]], "isInterrupting": true }
+                ],
+                "exitConditions": [
+                    { "id": "Condition_Dc1102", "displayName": "Decline issued", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Dc1102" }]], "type": "exit-only", "marksStageComplete": true }
+                ],
+                "tasks": [
+                    [
+                        {
+                            "id": "tDC110001",
+                            "type": "api-workflow",
+                            "displayName": "Issue adverse decision notice",
+                            "elementId": "Stage_Decl11-tDC110001",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": true,
+                            "entryConditions": [
+                                { "id": "cDC110001", "displayName": "Decline lane opens", "rules": [[{ "rule": "runs-sequentially", "id": "rDC110001" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bCLM00001",
+                                "folderPath": "=bindings.bCLM00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iDC110101", "var": "requestSource19", "elementId": "Stage_Decl11-tDC110001", "value": "IssueAdverseDecision" },
+                                    { "name": "scenario", "type": "string", "id": "iDC110102", "var": "scenario25", "elementId": "Stage_Decl11-tDC110001", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iDC110103", "var": "claimReference20", "elementId": "Stage_Decl11-tDC110001", "value": "=vars.claimReference" },
+                                    { "name": "causeOfLossCode", "type": "string", "id": "iDC110104", "var": "causeOfLossCode5", "elementId": "Stage_Decl11-tDC110001", "value": "=vars.causeOfLossCode" },
+                                    { "name": "decisionRationale", "type": "string", "id": "iDC110105", "var": "decisionRationale2", "elementId": "Stage_Decl11-tDC110001", "value": "=vars.decisionRationale" }
+                                ],
+                                "outputs": [
+                                    { "name": "closureReasonCode", "type": "string", "id": "closureReasonCode2", "var": "closureReasonCode", "originalVar": "closureReasonCode2", "value": "closureReasonCode", "source": "=closureReasonCode", "target": "=closureReasonCode2", "elementId": "Stage_Decl11-tDC110001" },
+                                    { "name": "caseOutcome", "type": "string", "id": "caseOutcome3", "var": "caseOutcome", "originalVar": "caseOutcome3", "value": "caseOutcome", "source": "=caseOutcome", "target": "=caseOutcome3", "elementId": "Stage_Decl11-tDC110001" }
+                                ]
+                            }
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "Stage_Hidn12",
+            "type": "case-management:Stage",
+            "data": {
+                "stageType": "secondary",
+                "label": "Hidden Damage & Supplemental Scope",
+                "description": "Authorises the supplemental scope uncovered during strip-out and updates the reserve before the claim is re-scoped.",
+                "isRequired": false,
+                "parentElement": { "id": "root", "type": "case-management:root" },
+                "isInvalidDropTarget": false,
+                "isPendingParent": false,
+                "entryConditions": [
+                    { "id": "Condition_Hd1201", "displayName": "Hidden damage uncovered", "rules": [[{ "rule": "selected-stage-exited", "id": "Rule_Hd1201", "selectedStageId": "Stage_Mitg05", "conditionExpression": "=js:vars.hiddenDamageFound === true" }]], "isInterrupting": true }
+                ],
+                "exitConditions": [
+                    { "id": "Condition_Hd1202", "displayName": "Supplemental scope resolved", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Hd1202" }]], "type": "exit-only", "marksStageComplete": true }
+                ],
+                "slaRules": [
+                    {
+                        "id": "slaHidn0001",
+                        "displayName": "Supplemental Scope SLA",
+                        "expression": "=js:true",
+                        "count": 3,
+                        "unit": "d",
+                        "escalationRule": [
+                            { "id": "esc_Hd0001", "displayName": "Supplemental Scope At Risk", "triggerInfo": { "type": "at-risk", "atRiskPercentage": 70 }, "action": { "type": "notification", "recipients": [{ "scope": "User", "target": "354b6df6-3e7a-4a12-96ed-0b67afaa1bce", "value": "robert.love@uipath.com" }] } },
+                            { "id": "esc_Hd0002", "displayName": "Supplemental Scope Breached", "triggerInfo": { "type": "sla-breached" }, "action": { "type": "notification", "recipients": [{ "scope": "UserGroup", "target": "35551807-06b1-4cda-90a1-2fb84851eee7", "value": "administrators" }] } }
+                        ]
+                    }
+                ],
+                "tasks": [
+                    [
+                        {
+                            "id": "tHD120001",
+                            "type": "action",
+                            "displayName": "Authorise supplemental scope",
+                            "elementId": "Stage_Hidn12-tHD120001",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cHD120001", "displayName": "Supplemental lane opens", "rules": [[{ "rule": "runs-sequentially", "id": "rHD120001" }]] }
+                            ],
+                            "data": {
+                                "taskTitle": "Authorise the supplemental scope on this claim",
+                                "priority": "High",
+                                "recipient": { "Type": 3, "Value": "=vars.ownerEmail" },
+                                "labels": "scope,authority",
+                                "name": "=bindings.bAPP00001",
+                                "folderPath": "=bindings.bAPP00002",
+                                "inputs": [
+                                    { "name": "actionType", "type": "string", "id": "aHD120101", "var": "actionType5", "elementId": "Stage_Hidn12-tHD120001", "value": "AuthoriseSupplementalScope" },
+                                    { "name": "claimReference", "type": "string", "id": "aHD120102", "var": "claimReference28", "elementId": "Stage_Hidn12-tHD120001", "value": "=vars.claimReference" },
+                                    { "name": "estimatedCost", "type": "number", "id": "aHD120103", "var": "estimatedCost8", "elementId": "Stage_Hidn12-tHD120001", "value": "=vars.estimatedCost" },
+                                    { "name": "authorityLimit", "type": "number", "id": "aHD120104", "var": "authorityLimit4", "elementId": "Stage_Hidn12-tHD120001", "value": "=vars.authorityLimit" },
+                                    { "name": "settlementBasis", "type": "string", "id": "aHD120105", "var": "settlementBasis4", "elementId": "Stage_Hidn12-tHD120001", "value": "=vars.settlementBasis" }
+                                ],
+                                "outputs": [
+                                    { "name": "Action", "type": "string", "id": "supplementalScopeOutcome", "var": "supplementalScopeOutcome", "originalVar": "supplementalScopeOutcome", "value": "supplementalScopeOutcome", "source": "=Action", "target": "=supplementalScopeOutcome", "elementId": "Stage_Hidn12-tHD120001" },
+                                    { "name": "decisionRationale", "type": "string", "id": "decisionRationale9", "var": "decisionRationale", "originalVar": "decisionRationale9", "value": "decisionRationale", "source": "=decisionRationale", "target": "=decisionRationale9", "elementId": "Stage_Hidn12-tHD120001" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tHD120002",
+                            "type": "api-workflow",
+                            "displayName": "Update reserve for supplemental scope",
+                            "elementId": "Stage_Hidn12-tHD120002",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cHD120002", "displayName": "Scope decided", "rules": [[{ "rule": "selected-tasks-completed", "id": "rHD120002", "selectedTasksIds": ["tHD120001"] }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bCLM00001",
+                                "folderPath": "=bindings.bCLM00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iHD120201", "var": "requestSource20", "elementId": "Stage_Hidn12-tHD120002", "value": "UpdateSupplementalReserve" },
+                                    { "name": "scenario", "type": "string", "id": "iHD120202", "var": "scenario26", "elementId": "Stage_Hidn12-tHD120002", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iHD120203", "var": "claimReference21", "elementId": "Stage_Hidn12-tHD120002", "value": "=vars.claimReference" },
+                                    { "name": "supplementalScopeOutcome", "type": "string", "id": "iHD120204", "var": "supplementalScopeOutcome2", "elementId": "Stage_Hidn12-tHD120002", "value": "=vars.supplementalScopeOutcome" }
+                                ],
+                                "outputs": [
+                                    { "name": "reserveBuildings", "type": "double", "id": "reserveBuildings2", "var": "reserveBuildings", "originalVar": "reserveBuildings2", "value": "reserveBuildings", "source": "=reserveBuildings", "target": "=reserveBuildings2", "elementId": "Stage_Hidn12-tHD120002" },
+                                    { "name": "hiddenDamageFound", "type": "boolean", "id": "hiddenDamageFound2", "var": "hiddenDamageFound", "originalVar": "hiddenDamageFound2", "value": "hiddenDamageFound", "source": "=hiddenDamageCleared", "target": "=hiddenDamageFound2", "elementId": "Stage_Hidn12-tHD120002" }
+                                ]
+                            }
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "Stage_Escl13",
+            "type": "case-management:Stage",
+            "data": {
+                "stageType": "secondary",
+                "label": "Escalation & Authority Referral",
+                "description": "Looks up the delegated authority available and puts the stalled decision in front of someone who holds it.",
+                "isRequired": false,
+                "parentElement": { "id": "root", "type": "case-management:root" },
+                "isInvalidDropTarget": false,
+                "isPendingParent": false,
+                "entryConditions": [
+                    { "id": "Condition_Es1301", "displayName": "Coverage decision breached", "rules": [[{ "rule": "sla-status-change", "id": "Rule_Es1301", "slaId": "slaCovr0001" }]], "isInterrupting": true }
+                ],
+                "exitConditions": [
+                    { "id": "Condition_Es1302", "displayName": "Escalation resolved", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Es1302" }]], "type": "return-to-origin", "marksStageComplete": true }
+                ],
+                "tasks": [
+                    [
+                        {
+                            "id": "tES130001",
+                            "type": "api-workflow",
+                            "displayName": "Look up delegated authority",
+                            "elementId": "Stage_Escl13-tES130001",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cES130001", "displayName": "Escalation lane opens", "rules": [[{ "rule": "runs-sequentially", "id": "rES130001" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bRUL00001",
+                                "folderPath": "=bindings.bRUL00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iES130101", "var": "requestSource21", "elementId": "Stage_Escl13-tES130001", "value": "DelegatedAuthorityLookup" },
+                                    { "name": "scenario", "type": "string", "id": "iES130102", "var": "scenario27", "elementId": "Stage_Escl13-tES130001", "value": "=vars.scenario" },
+                                    { "name": "estimatedCost", "type": "double", "id": "iES130103", "var": "estimatedCost5", "elementId": "Stage_Escl13-tES130001", "value": "=vars.estimatedCost" }
+                                ],
+                                "outputs": [
+                                    { "name": "authorityLimit", "type": "double", "id": "authorityLimit2", "var": "authorityLimit", "originalVar": "authorityLimit2", "value": "authorityLimit", "source": "=authorityLimit", "target": "=authorityLimit2", "elementId": "Stage_Escl13-tES130001" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "id": "tES130002",
+                            "type": "action",
+                            "displayName": "Authorise at manager level",
+                            "elementId": "Stage_Escl13-tES130002",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cES130002", "displayName": "Authority known", "rules": [[{ "rule": "runs-sequentially", "id": "rES130002" }]] }
+                            ],
+                            "data": {
+                                "taskTitle": "Escalated: authorise this settlement",
+                                "priority": "Critical",
+                                "recipient": { "Type": 1, "Value": "35551807-06b1-4cda-90a1-2fb84851eee7" },
+                                "labels": "settlement,escalation",
+                                "name": "=bindings.bAPP00001",
+                                "folderPath": "=bindings.bAPP00002",
+                                "inputs": [
+                                    { "name": "actionType", "type": "string", "id": "aES130201", "var": "actionType6", "elementId": "Stage_Escl13-tES130002", "value": "AuthoriseSettlement" },
+                                    { "name": "claimReference", "type": "string", "id": "aES130202", "var": "claimReference29", "elementId": "Stage_Escl13-tES130002", "value": "=vars.claimReference" },
+                                    { "name": "coverageOutcome", "type": "string", "id": "aES130203", "var": "coverageOutcome5", "elementId": "Stage_Escl13-tES130002", "value": "=vars.coverageOutcome" },
+                                    { "name": "estimatedCost", "type": "number", "id": "aES130204", "var": "estimatedCost9", "elementId": "Stage_Escl13-tES130002", "value": "=vars.estimatedCost" },
+                                    { "name": "authorityLimit", "type": "number", "id": "aES130205", "var": "authorityLimit5", "elementId": "Stage_Escl13-tES130002", "value": "=vars.authorityLimit" },
+                                    { "name": "agentRationale", "type": "string", "id": "aES130206", "var": "agentRationale5", "elementId": "Stage_Escl13-tES130002", "value": "=vars.agentRationale" }
+                                ],
+                                "outputs": [
+                                    { "name": "Action", "type": "string", "id": "settlementOutcome4", "var": "settlementOutcome", "originalVar": "settlementOutcome4", "value": "settlementOutcome", "source": "=Action", "target": "=settlementOutcome4", "elementId": "Stage_Escl13-tES130002" },
+                                    { "name": "decisionRationale", "type": "string", "id": "decisionRationale10", "var": "decisionRationale", "originalVar": "decisionRationale10", "value": "decisionRationale", "source": "=decisionRationale", "target": "=decisionRationale10", "elementId": "Stage_Escl13-tES130002" }
+                                ]
+                            }
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "Stage_Cmpl14",
+            "type": "case-management:Stage",
+            "data": {
+                "stageType": "secondary",
+                "label": "Complaint & Ombudsman Referral",
+                "description": "Logs a complaint against the live claim and records its outcome and any ombudsman referral.",
+                "isRequired": false,
+                "parentElement": { "id": "root", "type": "case-management:root" },
+                "isInvalidDropTarget": false,
+                "isPendingParent": false,
+                "entryConditions": [
+                    { "id": "Condition_Cm1401", "displayName": "Claim cycle SLA breached", "rules": [[{ "rule": "sla-status-change", "id": "Rule_Cm1401", "slaId": "slaRoot0001" }]], "isInterrupting": true }
+                ],
+                "exitConditions": [
+                    { "id": "Condition_Cm1402", "displayName": "Complaint resolved", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Cm1402" }]], "type": "return-to-origin", "marksStageComplete": true }
+                ],
+                "slaRules": [
+                    {
+                        "id": "slaCmpl0001",
+                        "displayName": "Complaint Handling SLA",
+                        "expression": "=js:true",
+                        "count": 8,
+                        "unit": "w",
+                        "escalationRule": [
+                            { "id": "esc_Cm0001", "displayName": "Complaint At Risk", "triggerInfo": { "type": "at-risk", "atRiskPercentage": 70 }, "action": { "type": "notification", "recipients": [{ "scope": "User", "target": "354b6df6-3e7a-4a12-96ed-0b67afaa1bce", "value": "robert.love@uipath.com" }] } },
+                            { "id": "esc_Cm0002", "displayName": "Complaint Breached", "triggerInfo": { "type": "sla-breached" }, "action": { "type": "notification", "recipients": [{ "scope": "UserGroup", "target": "35551807-06b1-4cda-90a1-2fb84851eee7", "value": "administrators" }] } }
+                        ]
+                    }
+                ],
+                "tasks": [
+                    [
+                        {
+                            "id": "tCM140001",
+                            "type": "api-workflow",
+                            "displayName": "Log complaint and referral rights",
+                            "elementId": "Stage_Cmpl14-tCM140001",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": false,
+                            "entryConditions": [
+                                { "id": "cCM140001", "displayName": "Handler logs the complaint", "rules": [[{ "rule": "adhoc", "id": "rCM140001" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bCLM00001",
+                                "folderPath": "=bindings.bCLM00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iCM140101", "var": "requestSource22", "elementId": "Stage_Cmpl14-tCM140001", "value": "LogComplaint" },
+                                    { "name": "scenario", "type": "string", "id": "iCM140102", "var": "scenario28", "elementId": "Stage_Cmpl14-tCM140001", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iCM140103", "var": "claimReference22", "elementId": "Stage_Cmpl14-tCM140001", "value": "=vars.claimReference" },
+                                    { "name": "vulnerableCustomerFlag", "type": "boolean", "id": "iCM140104", "var": "vulnerableCustomerFlag4", "elementId": "Stage_Cmpl14-tCM140001", "value": "=vars.vulnerableCustomerFlag" }
+                                ],
+                                "outputs": [
+                                    { "name": "complaintRef", "type": "string", "id": "complaintRef", "var": "complaintRef", "originalVar": "complaintRef", "value": "complaintRef", "source": "=complaintRef", "target": "=complaintRef", "elementId": "Stage_Cmpl14-tCM140001" }
+                                ]
+                            }
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "Stage_Cats15",
+            "type": "case-management:Stage",
+            "data": {
+                "stageType": "secondary",
+                "label": "CAT Surge Handling",
+                "description": "Applies the catastrophe event code, switches the claim to surge handling and extends its SLA expectations.",
+                "isRequired": false,
+                "parentElement": { "id": "root", "type": "case-management:root" },
+                "isInvalidDropTarget": false,
+                "isPendingParent": false,
+                "entryConditions": [
+                    { "id": "Condition_Ct1501", "displayName": "Catastrophe declared", "rules": [[{ "rule": "selected-stage-completed", "id": "Rule_Ct1501", "selectedStageId": "Stage_Fnol01", "conditionExpression": "=js:vars.catEventCode !== ''" }]], "isInterrupting": true }
+                ],
+                "exitConditions": [
+                    { "id": "Condition_Ct1502", "displayName": "Surge handling applied", "rules": [[{ "rule": "required-tasks-completed", "id": "Rule_Ct1502" }]], "type": "return-to-origin", "marksStageComplete": true }
+                ],
+                "tasks": [
+                    [
+                        {
+                            "id": "tCT150001",
+                            "type": "api-workflow",
+                            "displayName": "Apply catastrophe event code",
+                            "elementId": "Stage_Cats15-tCT150001",
+                            "isRequired": true,
+                            "shouldRunOnlyOnce": true,
+                            "entryConditions": [
+                                { "id": "cCT150001", "displayName": "Surge lane opens", "rules": [[{ "rule": "current-stage-entered", "id": "rCT150001" }]] }
+                            ],
+                            "data": {
+                                "name": "=bindings.bSCR00001",
+                                "folderPath": "=bindings.bSCR00002",
+                                "inputs": [
+                                    { "name": "requestSource", "type": "string", "id": "iCT150101", "var": "requestSource23", "elementId": "Stage_Cats15-tCT150001", "value": "ApplyCatEventCode" },
+                                    { "name": "scenario", "type": "string", "id": "iCT150102", "var": "scenario29", "elementId": "Stage_Cats15-tCT150001", "value": "=vars.scenario" },
+                                    { "name": "claimReference", "type": "string", "id": "iCT150103", "var": "claimReference23", "elementId": "Stage_Cats15-tCT150001", "value": "=vars.claimReference" },
+                                    { "name": "riskAddress", "type": "string", "id": "iCT150104", "var": "riskAddress4", "elementId": "Stage_Cats15-tCT150001", "value": "=vars.riskAddress" }
+                                ],
+                                "outputs": [
+                                    { "name": "catEventCode", "type": "string", "id": "catEventCode2", "var": "catEventCode", "originalVar": "catEventCode2", "value": "catEventCode", "source": "=catEventCode", "target": "=catEventCode2", "elementId": "Stage_Cats15-tCT150001" },
+                                    { "name": "claimStatus", "type": "string", "id": "claimStatus15", "var": "claimStatus", "originalVar": "claimStatus15", "value": "claimStatus", "source": "=claimStatus", "target": "=claimStatus15", "elementId": "Stage_Cats15-tCT150001" }
+                                ]
+                            }
+                        }
+                    ]
+                ]
+            }
+        }
+    ],
+    "edges": [],
+    "layout": {}
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "/content/BPMN-Early-Intervention-Dispatch.bpmn#Event_start",
+      "uniqueId": "4e32495a-467c-4bfe-884b-5388945335cc",
+      "type": "ProcessOrchestration",
+      "input": {
+        "type": "object",
+        "properties": {
+          "scenario": {
+            "type": "string"
+          },
+          "claimReference": {
+            "type": "string"
+          },
+          "incidentLocation": {
+            "type": "string"
+          },
+          "vulnerableCustomerFlag": {
+            "type": "boolean"
+          }
+        }
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "claimStatus": {
+            "type": "string"
+          }
+        }
+      },
+      "displayName": "Manual trigger"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "API - Injury Claims Gateway",
+    "kind": "process",
+    "type": "api",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "7eb6f9a8-3157-4b0a-a2d5-1912caf9c49f",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "kind": "package",
+        "name": "API - Injury Claims Gateway"
+      }
+    ],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "Api",
+      "name": "API - Injury Claims Gateway",
+      "package": {
+        "key": "16a819be-dc18-4e6e-b170-2cf1dd26a53f"
+      },
+      "targetFrameworkValue": "Portable",
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180
+    },
+    "locks": [],
+    "key": "c116ce76-4ea1-4d0d-b60d-d76faaba2703",
+    "files": []
+  }
+}

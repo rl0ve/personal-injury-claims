@@ -1,0 +1,38 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "BPMN-Subrogation-Recovery",
+    "kind": "process",
+    "type": "processOrchestration",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "eb39a685-e177-48d6-973a-dedd74fb9e22",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "kind": "package",
+        "name": "BPMN-Subrogation-Recovery"
+      }
+    ],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "ProcessOrchestration",
+      "name": "BPMN-Subrogation-Recovery",
+      "package": {
+        "key": "69ff8d0e-4e91-4126-b926-975413f840d0"
+      },
+      "targetFrameworkValue": "Portable",
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180
+    },
+    "locks": [],
+    "key": "aa1cf09e-1420-4609-a0ca-f856907db728",
+    "files": []
+  }
+}

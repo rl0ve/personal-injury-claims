@@ -1,0 +1,38 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "API - Injury Policy Gateway",
+    "kind": "process",
+    "type": "api",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "4eb485f2-2293-4b51-9395-257699c7127b",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "kind": "package",
+        "name": "API - Injury Policy Gateway"
+      }
+    ],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "Api",
+      "name": "API - Injury Policy Gateway",
+      "package": {
+        "key": "ce80e841-eab5-45da-83c1-93cb622312c2"
+      },
+      "targetFrameworkValue": "Portable",
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180
+    },
+    "locks": [],
+    "key": "d19decc3-5621-4ce4-9040-aaebb4de17bd",
+    "files": []
+  }
+}

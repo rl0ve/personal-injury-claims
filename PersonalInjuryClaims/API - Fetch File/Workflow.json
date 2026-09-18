@@ -1,0 +1,173 @@
+{
+  "document": {
+    "dsl": "1.0.0",
+    "name": "Workflow",
+    "tags": {
+      "projectId": "a807d483-8b14-42da-906c-2f6319fe16ea",
+      "solutionId": "dbf7785c-845a-40a9-006f-08df14ddbfdf"
+    },
+    "version": "0.0.1",
+    "namespace": "default",
+    "metadata": {
+      "variables": []
+    }
+  },
+  "input": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "properties": {
+          "recordId": {
+            "type": "string"
+          }
+        },
+        "title": "Inputs"
+      }
+    }
+  },
+  "output": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "$ref": "#/definitions/job-attachment"
+          }
+        },
+        "title": "Outputs",
+        "definitions": {
+          "job-attachment": {
+            "type": "object",
+            "properties": {
+              "ID": {
+                "type": "string",
+                "description": "Orchestrator attachment key"
+              },
+              "FullName": {
+                "type": "string",
+                "description": "File name"
+              },
+              "MimeType": {
+                "type": "string",
+                "description": "The MIME type of the content, such as \"application/json\" or \"image/png\""
+              },
+              "Metadata": {
+                "type": "object",
+                "description": "Dictionary<string, string> of metadata",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "ID"
+            ],
+            "x-uipath-resource-kind": "JobAttachment"
+          }
+        }
+      }
+    }
+  },
+  "do": [
+    {
+      "Sequence_1": {
+        "do": [
+          {
+            "WorkflowStart": {
+              "set": "${Object.entries($workflow.definition?.document?.metadata?.variables?.schema?.document?.properties || {}).reduce((acc, [name, def]) => ({ ...acc, [name]: def?.default }), {}) }",
+              "output": {
+                "as": "${$input}"
+              },
+              "export": {
+                "as": "{ ...$context, variables: { ...$context.variables, ...$output } }"
+              },
+              "metadata": {
+                "activityType": "Assign",
+                "displayName": "Workflow start",
+                "fullName": "Assign",
+                "isTransparent": true
+              }
+            }
+          },
+          {
+            "Download_File_from_Record_Field_1": {
+              "call": "UiPath.IntSvc",
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"DownloadFileFromRecordFieldV2_1\": $output } }"
+              },
+              "with": {
+                "connector": "uipath-uipath-dataservice",
+                "connectionId": "080f3ca9-b976-46d2-a5ed-454a628e6214",
+                "connectionResourceId": "080f3ca9-b976-46d2-a5ed-454a628e6214",
+                "method": "POST",
+                "endpoint": "/v2/Attachment/{entityName}/DownloadFile",
+                "pathParameters": {
+                  "entityName": "InjuryClaimCaseEvent"
+                },
+                "queryParameters": {
+                  "recordId": "${$workflow.input.recordId}"
+                },
+                "bodyParameters": {
+                  "_fieldName": "File"
+                }
+              },
+              "metadata": {
+                "activityType": "Connector",
+                "configuration": "{\"essentialConfiguration\":{\"connectorVersion\":\"1.72.0\",\"customFieldsRequestDetails\":{\"objectActionName\":\"GenerateSchema\",\"parameterValues\":[[\"entityName\",\"InjuryClaimCaseEvent\"]]},\"instanceParameters\":{\"connectorKey\":\"uipath-uipath-dataservice\",\"objectName\":\"DownloadFileFromRecordFieldV2\",\"httpMethod\":\"POST\",\"activityType\":\"Curated\",\"version\":\"1.0.0\",\"supportsStreaming\":false,\"subType\":\"standard\"},\"objectName\":\"DownloadFileFromRecordFieldV2\",\"operation\":\"retrieve\",\"packageVersion\":\"1.0.0\",\"httpMethod\":\"POST\",\"path\":\"/v2/Attachment/{entityName}/DownloadFile\",\"unifiedTypesCompatible\":true},\"optionalConfiguration\":{\"_textBlocks\":[{\"name\":\"schemaAPIErrorMessage\",\"text\":\"Could not fetch file type fields for the chosen entity\",\"severity\":\"error\"}],\"objectActions\":[{\"actionType\":\"api\",\"rules\":[{\"type\":\"path\",\"refFieldName\":\"entityName\",\"refFieldValues\":[\"*\"],\"isCleared\":false,\"isVariable\":false}],\"name\":\"GenerateSchema\",\"apiConfiguration\":{\"url\":\"/standard-objects/{entityName}/DownloadFile/metadata\",\"method\":\"GET\"},\"onSuccess\":{\"type\":\"remap\",\"remapConfiguration\":{\"input\":\"replace\",\"output\":\"replace\"}},\"onFailure\":{\"type\":\"remap\",\"remapConfiguration\":{\"input\":\"noop\",\"output\":\"noop\"},\"actions\":[{\"actionType\":\"showMessages\",\"refFieldName\":\"entityName\",\"messages\":[\"schemaAPIErrorMessage\"]}]}},{\"actionType\":\"reset\",\"rules\":[{\"type\":\"path\",\"refFieldName\":\"entityName\",\"isCleared\":true,\"isVariable\":false}],\"name\":\"ClearContent\"}],\"connectorName\":\"UiPath Data Fabric\",\"agentIdentity\":null,\"maxPageSize\":null,\"jobArguments\":null,\"isAutopilotInvalidConfig\":false,\"additionalHeaders\":null,\"cachedLookupValues\":[[\"entityName\",[{\"id\":\"InjuryClaimCaseEvent\",\"displayColumns\":[\"InjuryClaimCaseEvent\"],\"stringFormatDisplayColumns\":\"\"}]]],\"cachedBrowserItems\":[],\"cachedPropertyMappings\":[],\"primaryKeys\":[],\"objectDisplayName\":\"Download File from Record Field\",\"eventMode\":null,\"eventOperation\":null,\"hasBreakingChanges\":false,\"fieldsContainer\":{\"outputTypeDefinition\":\"{\\\"Response\\\":octet-stream}\",\"outputJsonSchema\":{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"type\":\"object\",\"properties\":{\"Response\":{\"title\":\"Response\",\"$ref\":\"#/definitions/Response\"}},\"definitions\":{\"Response\":{\"type\":\"object\",\"properties\":{}}}},\"hasFileOutput\":true,\"populateOutputFields\":false,\"inputFields\":[{\"typeScriptDefinition\":null,\"useUrlInput\":false,\"id\":\"entityName\",\"name\":\"entityName\",\"displayName\":\"Entity\",\"description\":\"The entity name.\",\"type\":\"string\",\"sortOrder\":1,\"primaryKey\":false,\"lookup\":{\"objectName\":\"system\",\"lookupNames\":[\"displayName\"],\"lookupValue\":\"name\",\"path\":\"/standard-objects-hybrid\"},\"design\":{\"loadByDefault\":true,\"isMultiSelect\":false,\"enableUserOverride\":false,\"isHidden\":false,\"position\":\"primary\",\"validation\":false},\"fieldActions\":[],\"searchable\":false,\"searchableOperators\":null,\"searchableNames\":null,\"required\":true,\"request\":true,\"response\":false,\"responseCurated\":false,\"fieldLocation\":\"path\",\"onCanvas\":null,\"isJitField\":false,\"isFieldActionParent\":false,\"isMainResponseField\":false,\"isMethodParameter\":true,\"isBackgroundField\":false,\"filterTree\":null,\"filterNeedsRefresh\":null,\"arrayInputPaths\":null,\"clrType\":{\"_elementType\":null,\"_isNullable\":false,\"isArray\":false,\"genericTypeArguments\":[],\"fullName\":null,\"name\":\"String\",\"assemblyQualifiedName\":\"String\",\"isValueType\":true},\"forceExpressionEditor\":false,\"requiredGroups\":null,\"disableExpressions\":false,\"backingField\":null,\"searchableDisplayName\":null,\"selectedResourceId\":null},{\"typeScriptDefinition\":null,\"useUrlInput\":false,\"id\":\"_fieldName\",\"name\":\"_fieldName\",\"displayName\":\"Field\",\"type\":\"string\",\"sortOrder\":2,\"primaryKey\":false,\"enum\":[{\"name\":\"File\",\"value\":\"File\"}],\"design\":{\"isHidden\":false,\"position\":\"primary\"},\"fieldActions\":null,\"searchable\":false,\"searchableJoins\":null,\"required\":true,\"request\":true,\"response\":false,\"responseCurated\":false,\"fieldLocation\":\"body\",\"onCanvas\":null,\"isJitField\":false,\"isFieldActionParent\":false,\"isMainResponseField\":false,\"isMethodParameter\":false,\"isBackgroundField\":false,\"filterTree\":null,\"filterNeedsRefresh\":null,\"arrayInputPaths\":null,\"clrType\":{\"_elementType\":null,\"_isNullable\":false,\"isArray\":false,\"genericTypeArguments\":[],\"fullName\":null,\"name\":\"String\",\"assemblyQualifiedName\":\"String\",\"isValueType\":true},\"forceExpressionEditor\":false,\"requiredGroups\":null,\"disableExpressions\":false,\"backingField\":null,\"searchableDisplayName\":null,\"selectedResourceId\":null},{\"typeScriptDefinition\":null,\"useUrlInput\":false,\"id\":\"recordId\",\"name\":\"recordId\",\"displayName\":\"Record ID\",\"description\":\"Enter record ID to download the file from\",\"type\":\"string\",\"sortOrder\":3,\"primaryKey\":false,\"design\":{\"loadByDefault\":false,\"isMultiSelect\":false,\"enableUserOverride\":false,\"isHidden\":false,\"position\":\"primary\",\"validation\":false},\"fieldActions\":null,\"searchable\":false,\"searchableOperators\":null,\"searchableNames\":null,\"required\":true,\"request\":true,\"response\":false,\"responseCurated\":false,\"fieldLocation\":\"query\",\"onCanvas\":null,\"isJitField\":false,\"isFieldActionParent\":false,\"isMainResponseField\":false,\"isMethodParameter\":true,\"isBackgroundField\":false,\"filterTree\":null,\"filterNeedsRefresh\":null,\"arrayInputPaths\":null,\"clrType\":{\"_elementType\":null,\"_isNullable\":false,\"isArray\":false,\"genericTypeArguments\":[],\"fullName\":null,\"name\":\"String\",\"assemblyQualifiedName\":\"String\",\"isValueType\":true},\"forceExpressionEditor\":false,\"requiredGroups\":null,\"disableExpressions\":false,\"backingField\":null,\"searchableDisplayName\":null,\"selectedResourceId\":null}],\"outputFields\":[],\"jitTypeNeedsRefresh\":false,\"jitInputField\":null,\"inputMode\":null,\"searchableFields\":[],\"hasUnifiedTypes\":false,\"jitTypeHash\":null}}}",
+                "displayName": "Download File from Record Field",
+                "fullName": "Connector",
+                "uiPathActivityTypeId": "959ed8ed-4af5-3c7f-92e2-43c6b6c23b66",
+                "assemblyQualifiedName": "Connector"
+              }
+            }
+          },
+          {
+            "Javascript_1": {
+              "run": {
+                "script": {
+                  "code": "const mimeFromExt = ext => ({ jpg: \"image/jpeg\", jpeg: \"image/jpeg\", png: \"image/png\", gif: \"image/gif\", webp: \"image/webp\", svg: \"image/svg+xml\", pdf: \"application/pdf\", json: \"application/json\", txt: \"text/plain\", html: \"text/html\", css: \"text/css\", js: \"text/javascript\" }[ext.toLowerCase().replace(/^\\./, \"\")] ?? \"application/octet-stream\");\n\nreturn {\n    mimeType: mimeFromExt($context.outputs.DownloadFileFromRecordFieldV2_1.content.FullName?.split('.')?.[1])\n}",
+                  "language": "javascript",
+                  "arguments": "${{\n                        \"$context\": $context,\n                        \"$workflow\": $workflow,\n                        \"$input\": $input,\n                    }}"
+                }
+              },
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Javascript_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "JsInvoke",
+                "displayName": "Determine mime type",
+                "fullName": "JsInvoke"
+              }
+            }
+          },
+          {
+            "Response_1": {
+              "response": "${{\n  \"file\": {\n    ...$context.outputs.DownloadFileFromRecordFieldV2_1.content,\n    Metadata: {\n        ...$context.outputs.DownloadFileFromRecordFieldV2_1.content.Metadata,\n        Size: `${$context.outputs.DownloadFileFromRecordFieldV2_1.content.Metadata.Size}`\n    },\n    MimeType: $context.outputs.Javascript_1.mimeType\n  }\n}}",
+              "markJobAsFailed": false,
+              "then": "end",
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Response_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "Response",
+                "displayName": "Response",
+                "fullName": "Response"
+              }
+            }
+          }
+        ],
+        "metadata": {
+          "activityType": "Sequence",
+          "displayName": "Sequence",
+          "fullName": "Sequence"
+        }
+      }
+    }
+  ],
+  "evaluate": {
+    "mode": "strict",
+    "language": "javascript"
+  }
+}

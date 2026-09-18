@@ -1,0 +1,26 @@
+.app-shell {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-canvas);
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* The workspace owns the full viewport grid, so the shell must not add a
+   competing flex context or its own canvas colour. */
+.app-shell:has(.ws) {
+  display: block;
+  background: transparent;
+}
+
+/* The task screen (Form) matches the Action Center canvas: a light,
+   neutral grey rather than the console's tinted blue. */
+.app-shell:has(.task-app) {
+  background: #f4f5f7;
+}
+
+.app-shell.dark:has(.task-app) {
+  background: #0b0e14;
+}

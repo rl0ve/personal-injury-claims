@@ -1,0 +1,239 @@
+{
+  "version": "2.0",
+  "resources": [
+    {
+      "resource": "Connection",
+      "key": "080f3ca9-b976-46d2-a5ed-454a628e6214",
+      "value": {
+        "ConnectionId": {
+          "defaultValue": "080f3ca9-b976-46d2-a5ed-454a628e6214"
+        },
+        "folderKey": {
+          "defaultValue": "359ef0ed-2404-4636-bf92-310ccdeea2dc"
+        }
+      },
+      "metadata": {
+        "connector": "uipath-uipath-dataservice"
+      }
+    },
+    {
+      "resource": "app",
+      "key": "Shared.injury-claims-console",
+      "value": {
+        "name": {
+          "defaultValue": "injury-claims-console"
+        },
+        "folderPath": {
+          "defaultValue": "Shared"
+        }
+      }
+    },
+    {
+      "resource": "process",
+      "key": "solution_folder.API - Injury Claims Gateway",
+      "value": {
+        "name": {
+          "defaultValue": "API - Injury Claims Gateway"
+        },
+        "folderPath": {
+          "defaultValue": "solution_folder"
+        }
+      },
+      "metadata": {
+        "subType": "Api"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "solution_folder.API - Injury Policy Gateway",
+      "value": {
+        "name": {
+          "defaultValue": "API - Injury Policy Gateway"
+        },
+        "folderPath": {
+          "defaultValue": "solution_folder"
+        }
+      },
+      "metadata": {
+        "subType": "Api"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "solution_folder.API - Injury Provider Network Gateway",
+      "value": {
+        "name": {
+          "defaultValue": "API - Injury Provider Network Gateway"
+        },
+        "folderPath": {
+          "defaultValue": "solution_folder"
+        }
+      },
+      "metadata": {
+        "subType": "Api"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "solution_folder.API - Injury Rules",
+      "value": {
+        "name": {
+          "defaultValue": "API - Injury Rules"
+        },
+        "folderPath": {
+          "defaultValue": "solution_folder"
+        }
+      },
+      "metadata": {
+        "subType": "Api"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "solution_folder.API - Injury Screening and Bureau Gateway",
+      "value": {
+        "name": {
+          "defaultValue": "API - Injury Screening and Bureau Gateway"
+        },
+        "folderPath": {
+          "defaultValue": "solution_folder"
+        }
+      },
+      "metadata": {
+        "subType": "Api"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "solution_folder.API - Injury Severity Data Gateway",
+      "value": {
+        "name": {
+          "defaultValue": "API - Injury Severity Data Gateway"
+        },
+        "folderPath": {
+          "defaultValue": "solution_folder"
+        }
+      },
+      "metadata": {
+        "subType": "Api"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "solution_folder.Agent - Injury Claims Case Agent",
+      "value": {
+        "name": {
+          "defaultValue": "Agent - Injury Claims Case Agent"
+        },
+        "folderPath": {
+          "defaultValue": "solution_folder"
+        }
+      }
+    },
+    {
+      "resource": "process",
+      "key": "solution_folder.Agent - Injury Claims Triage",
+      "value": {
+        "name": {
+          "defaultValue": "Agent - Injury Claims Triage"
+        },
+        "folderPath": {
+          "defaultValue": "solution_folder"
+        }
+      },
+      "metadata": {
+        "subType": "Agent"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "solution_folder.Agent - Liability Assessment",
+      "value": {
+        "name": {
+          "defaultValue": "Agent - Liability Assessment"
+        },
+        "folderPath": {
+          "defaultValue": "solution_folder"
+        }
+      },
+      "metadata": {
+        "subType": "Agent"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "solution_folder.Agent - Subrogation Assessment",
+      "value": {
+        "name": {
+          "defaultValue": "Agent - Subrogation Assessment"
+        },
+        "folderPath": {
+          "defaultValue": "solution_folder"
+        }
+      },
+      "metadata": {
+        "subType": "Agent"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "solution_folder.BPMN-Early-Intervention-Dispatch",
+      "value": {
+        "name": {
+          "defaultValue": "BPMN-Early-Intervention-Dispatch"
+        },
+        "folderPath": {
+          "defaultValue": "solution_folder"
+        }
+      },
+      "metadata": {
+        "subType": "ProcessOrchestration"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "solution_folder.BPMN-Quantum-And-Settlement-Assembly",
+      "value": {
+        "name": {
+          "defaultValue": "BPMN-Quantum-And-Settlement-Assembly"
+        },
+        "folderPath": {
+          "defaultValue": "solution_folder"
+        }
+      },
+      "metadata": {
+        "subType": "ProcessOrchestration"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "solution_folder.BPMN-Subrogation-Recovery",
+      "value": {
+        "name": {
+          "defaultValue": "BPMN-Subrogation-Recovery"
+        },
+        "folderPath": {
+          "defaultValue": "solution_folder"
+        }
+      },
+      "metadata": {
+        "subType": "ProcessOrchestration"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "solution_folder.Flow-Threshold-Injury-Assessment",
+      "value": {
+        "name": {
+          "defaultValue": "Flow-Threshold-Injury-Assessment"
+        },
+        "folderPath": {
+          "defaultValue": "solution_folder"
+        }
+      },
+      "metadata": {
+        "subType": "Flow"
+      }
+    }
+  ]
+}

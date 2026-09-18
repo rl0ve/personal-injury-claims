@@ -1,0 +1,37 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "/content/BPMN-Subrogation-Recovery.bpmn#Event_start",
+      "uniqueId": "02feec65-7747-42e7-a022-dc014a66fda6",
+      "type": "ProcessOrchestration",
+      "input": {
+        "type": "object",
+        "properties": {
+          "scenario": {
+            "type": "string"
+          },
+          "claimReference": {
+            "type": "string"
+          },
+          "liabilityBasisCode": {
+            "type": "string"
+          }
+        }
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "recoveryAmountReceived": {
+            "type": "number"
+          },
+          "claimStatus": {
+            "type": "string"
+          }
+        }
+      },
+      "displayName": "Manual trigger"
+    }
+  ]
+}

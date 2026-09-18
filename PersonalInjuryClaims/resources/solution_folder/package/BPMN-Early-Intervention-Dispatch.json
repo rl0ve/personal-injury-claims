@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "BPMN-Early-Intervention-Dispatch",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "ca14ea98-3ae0-4fd2-9857-bcc64f5ed913",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "BPMN-Early-Intervention-Dispatch"
+    },
+    "locks": [],
+    "key": "c1f1e883-2b5d-4e9d-b30e-a291c42ede6e",
+    "files": []
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "/content/agent.json",
+      "uniqueId": "18f019a2-4167-4c09-941c-0b3029a515c9",
+      "type": "agent",
+      "input": {
+        "type": "object",
+        "required": [
+          "scenario",
+          "injuryTypeCode",
+          "notificationDelayDays",
+          "liabilityCoverInForce"
+        ],
+        "properties": {
+          "scenario": {
+            "type": "string",
+            "description": "Selects the deterministic journey this claim follows, so the run is reproducible."
+          },
+          "injuryTypeCode": {
+            "type": "string",
+            "description": "The injury reported at notification, before medical evidence is obtained."
+          },
+          "notificationDelayDays": {
+            "type": "integer",
+            "description": "Days between the incident and notification of the claim."
+          },
+          "liabilityCoverInForce": {
+            "type": "boolean",
+            "description": "Whether liability cover applies under the policy."
+          }
+        }
+      },
+      "output": {
+        "type": "object",
+        "required": [
+          "liabilityBasisCode",
+          "subrogationPotentialFlag",
+          "agentRationale"
+        ],
+        "properties": {
+          "liabilityBasisCode": {
+            "type": "string",
+            "description": "The liability position determined from the evidence gathered. Must be exactly one of the listed values — never a variant spelling and never any other value.",
+            "enum": [
+              "RearEndCollision",
+              "DriverInattention",
+              "UnsafePremises",
+              "DefectiveEquipment",
+              "ThirdPartyNegligence",
+              "FailureToGiveWay",
+              "PreExistingCondition",
+              "SharedFault"
+            ]
+          },
+          "subrogationPotentialFlag": {
+            "type": "boolean",
+            "description": "True when the evidence points to a third party whose fault could support a subrogation recovery. This is a proposal only — it never decides coverage or whether pursuit is worthwhile."
+          },
+          "agentRationale": {
+            "type": "string",
+            "description": "The reasoning behind the liability position, including whether the evidence is ambiguous enough to need an independent medical examination or accident reconstruction. Kept separate from the decision itself; this is what a person reads."
+          }
+        }
+      }
+    }
+  ]
+}

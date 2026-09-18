@@ -1,0 +1,28 @@
+# Dependencies and build output
+node_modules/
+dist/
+build/
+.vite/
+*.tsbuildinfo
+
+# uip CLI scratch: packed solutions and download/extract dirs
+out/
+out-v/
+out-check/
+out-fresh/
+out-verify/
+*.uis
+*.zip
+*.nupkg
+
+# Local CLI state
+userProfile/
+
+# macOS
+.DS_Store
+*.log
+
+# Local tenant wiring (copy .env.example and fill in)
+.env
+.env.*
+!.env.example

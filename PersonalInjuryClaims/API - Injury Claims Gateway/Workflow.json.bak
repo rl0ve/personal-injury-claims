@@ -1,0 +1,126 @@
+{
+  "document": {
+    "dsl": "1.0.0",
+    "name": "Workflow",
+    "tags": {
+      "projectId": "75a2601e-17d3-4475-9b69-be6c34b7c9be"
+    },
+    "version": "0.0.1",
+    "namespace": "default",
+    "metadata": {
+      "variables": []
+    }
+  },
+  "input": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "title": "Inputs",
+        "properties": {
+          "requestSource": { "type": "string", "default": "CreateClaimShell" },
+          "scenario": { "type": "string", "default": "Standard" },
+          "runId": { "type": "string", "default": "RUN-0001" },
+          "claimReference": { "type": "string", "default": "" },
+          "perilCode": { "type": "string", "default": "" },
+          "habitableFlag": { "type": "boolean", "default": false },
+          "coverageOutcome": { "type": "string", "default": "" },
+          "settlementOutcome": { "type": "string", "default": "" }
+        }
+      }
+    }
+  },
+  "output": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "title": "Outputs",
+        "properties": {
+          "claimReference": { "type": "string" },
+          "insuredName": { "type": "string" },
+          "riskAddress": { "type": "string" },
+          "perilCode": { "type": "string" },
+          "claimStatus": { "type": "string" },
+          "habitableFlag": { "type": "boolean" },
+          "activeDamageFlag": { "type": "boolean" },
+          "vulnerableCustomerFlag": { "type": "boolean" },
+          "reserveBuildings": { "type": "number" },
+          "reserveContents": { "type": "number" },
+          "reserveAccommodation": { "type": "number" },
+          "closureReasonCode": { "type": "string" },
+          "complaintRef": { "type": "string" },
+          "explanation": { "type": "string" }
+        }
+      }
+    }
+  },
+  "do": [
+    {
+      "Sequence_1": {
+        "do": [
+          {
+            "WorkflowStart": {
+              "set": "${ { ...Object.entries($workflow.definition?.document?.metadata?.variables?.schema?.document?.properties || {}).reduce((acc, [name, def]) => ({ ...acc, [name]: def?.default }), {}), ...($workflow.input || {}) } }",
+              "output": {
+                "as": "${$input}"
+              },
+              "export": {
+                "as": "{ ...$context, variables: { ...$context.variables, ...$output } }"
+              },
+              "metadata": {
+                "activityType": "Assign",
+                "displayName": "Workflow start",
+                "fullName": "Assign",
+                "isTransparent": true
+              }
+            }
+          },
+          {
+            "Javascript_1": {
+              "run": {
+                "script": {
+                  "code": "const inp = $workflow.input || {};\nconst src = inp.requestSource || 'CreateClaimShell';\nconst scenario = inp.scenario || 'Standard';\nconst runId = inp.runId || 'RUN-0001';\nconst claimReference = inp.claimReference || ('PPC-' + runId);\n\nconst SCENARIOS = {\n  Standard: {\n    insuredName: 'Margaret Ellison',\n    riskAddress: '14 Sycamore Close, Reading, RG1 4PL',\n    perilCode: 'ESCAPE_OF_WATER',\n    perilDescription: 'escape of water from a burst supply pipe under the kitchen sink',\n    habitableFlag: true,\n    activeDamageFlag: false,\n    vulnerableCustomerFlag: false,\n    reserveBuildings: 8500,\n    reserveContents: 2200,\n    reserveAccommodation: 0\n  },\n  Displaced: {\n    insuredName: 'Thomas Okafor',\n    riskAddress: '27 Birchwood Avenue, Manchester, M14 6TP',\n    perilCode: 'FIRE',\n    perilDescription: 'a kitchen fire that spread smoke and heat damage through the ground floor',\n    habitableFlag: false,\n    activeDamageFlag: true,\n    vulnerableCustomerFlag: true,\n    reserveBuildings: 65000,\n    reserveContents: 18000,\n    reserveAccommodation: 4500\n  },\n  Underinsured: {\n    insuredName: 'Priya Chandrasekaran',\n    riskAddress: '8 Mill Lane, Leeds, LS6 2QW',\n    perilCode: 'ESCAPE_OF_WATER',\n    perilDescription: 'escape of water from a failed washing machine hose damaging the kitchen and hallway',\n    habitableFlag: true,\n    activeDamageFlag: false,\n    vulnerableCustomerFlag: false,\n    reserveBuildings: 22000,\n    reserveContents: 4000,\n    reserveAccommodation: 0\n  },\n  Investigated: {\n    insuredName: 'Daniel Foster',\n    riskAddress: '52 Kestrel Road, Bristol, BS7 8HD',\n    perilCode: 'THEFT',\n    perilDescription: 'theft of contents reported after a break-in through the rear patio door, notified nine days after the event with no police report on file',\n    habitableFlag: true,\n    activeDamageFlag: false,\n    vulnerableCustomerFlag: false,\n    reserveBuildings: 1500,\n    reserveContents: 12000,\n    reserveAccommodation: 0\n  },\n  Declined: {\n    insuredName: 'Helen Marsh',\n    riskAddress: '3 Riverside Court, Shrewsbury, SY1 2LP',\n    perilCode: 'FLOOD',\n    perilDescription: 'river flood water entering the ground floor after prolonged heavy rainfall, at a property left unoccupied for 75 days',\n    habitableFlag: false,\n    activeDamageFlag: true,\n    vulnerableCustomerFlag: false,\n    reserveBuildings: 0,\n    reserveContents: 0,\n    reserveAccommodation: 0\n  },\n  Reopened: {\n    insuredName: 'George Whitfield',\n    riskAddress: '19 Orchard Way, Norwich, NR3 1XG',\n    perilCode: 'ESCAPE_OF_WATER',\n    perilDescription: 'escape of water from a corroded pipe joint behind the bathroom wall',\n    habitableFlag: true,\n    activeDamageFlag: false,\n    vulnerableCustomerFlag: false,\n    reserveBuildings: 9200,\n    reserveContents: 1800,\n    reserveAccommodation: 0\n  }\n};\n\nconst s = SCENARIOS[scenario] || SCENARIOS.Standard;\n\nconst out = {\n  claimReference: '',\n  insuredName: '',\n  riskAddress: '',\n  perilCode: '',\n  claimStatus: '',\n  habitableFlag: false,\n  activeDamageFlag: false,\n  vulnerableCustomerFlag: false,\n  reserveBuildings: 0,\n  reserveContents: 0,\n  reserveAccommodation: 0,\n  closureReasonCode: '',\n  complaintRef: '',\n  explanation: ''\n};\n\nif (src === 'CreateClaimShell') {\n  out.claimReference = claimReference;\n  out.insuredName = s.insuredName;\n  out.riskAddress = s.riskAddress;\n  out.perilCode = s.perilCode;\n  out.claimStatus = 'Registered';\n  out.explanation = 'Claim shell opened for ' + s.insuredName + ' at ' + s.riskAddress + ' following ' + s.perilDescription + '.';\n} else if (src === 'CaptureLossDetail') {\n  out.habitableFlag = s.habitableFlag;\n  out.activeDamageFlag = s.activeDamageFlag;\n  out.vulnerableCustomerFlag = s.vulnerableCustomerFlag;\n  out.explanation = 'Loss detail captured: ' + s.perilDescription + (s.habitableFlag ? '. Property remains habitable.' : '. Property is not currently habitable.');\n} else if (src === 'ConfirmRegistration') {\n  out.reserveBuildings = s.reserveBuildings;\n  out.reserveContents = s.reserveContents;\n  out.reserveAccommodation = s.reserveAccommodation;\n  out.claimStatus = (scenario === 'Displaced') ? 'Open - Emergency Lane' : 'Open';\n  out.explanation = 'Registration confirmed with opening reserves of ' + s.reserveBuildings + ' buildings and ' + s.reserveContents + ' contents.';\n} else if (src === 'RequestEvidence') {\n  out.claimStatus = 'Awaiting Evidence';\n  out.explanation = 'Evidence request issued to the insured for claim ' + claimReference + '.';\n} else if (src === 'RecordCoverageDecision') {\n  const coverageOutcome = inp.coverageOutcome || 'Covered';\n  out.claimStatus = 'Coverage Recorded: ' + coverageOutcome;\n  out.explanation = 'Coverage decision recorded as ' + coverageOutcome + ' for claim ' + claimReference + '.';\n} else if (src === 'ReconcileInvoices') {\n  out.claimStatus = 'Invoices Reconciled';\n  out.explanation = 'Contractor invoices reconciled against the agreed scope of works for claim ' + claimReference + '.';\n} else if (src === 'CheckSubjectivities') {\n  const open = (scenario === 'Investigated');\n  out.closureReasonCode = open ? 'OPEN_SUBJECTIVITIES' : 'CLEAR';\n  out.claimStatus = open ? 'Subjectivities Outstanding' : 'Ready to Close';\n  out.explanation = open ? 'Outstanding subjectivities remain open pending investigation sign-off.' : 'No outstanding subjectivities remain; the claim is ready to close.';\n} else if (src === 'ArchiveClaim') {\n  out.claimStatus = 'Closed';\n  out.explanation = 'Claim ' + claimReference + ' archived and closed.';\n} else if (src === 'IssueAdverseDecision') {\n  out.closureReasonCode = (scenario === 'Declined') ? 'FLOOD_COVER_NOT_IN_FORCE' : 'COVERAGE_DECLINED';\n  out.explanation = 'Adverse decision notice issued for claim ' + claimReference + ' with closure reason ' + out.closureReasonCode + '.';\n} else if (src === 'UpdateSupplementalReserve') {\n  out.reserveBuildings = s.reserveBuildings + 3500;\n  out.explanation = 'Supplemental reserve of 3500 added following the hidden damage discovery; buildings reserve now ' + out.reserveBuildings + '.';\n} else if (src === 'LogComplaint') {\n  out.complaintRef = 'CMP-' + runId;\n  out.explanation = 'Complaint logged under reference ' + out.complaintRef + ' with ombudsman referral rights issued to the insured.';\n} else {\n  out.claimStatus = 'UnknownRequestSource';\n  out.explanation = 'Unrecognised requestSource: ' + src + '.';\n}\n\nreturn out;",
+                  "language": "javascript",
+                  "arguments": "${{ \"$context\": $context, \"$workflow\": $workflow, \"$input\": $input }}"
+                }
+              },
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Javascript_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "JsInvoke",
+                "displayName": "Resolve claims system response",
+                "fullName": "JsInvoke"
+              }
+            }
+          },
+          {
+            "Response_1": {
+              "response": "${$context.outputs.Javascript_1}",
+              "markJobAsFailed": false,
+              "then": "end",
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Response_1\": $output } }"
+              },
+              "metadata": {
+                "activityType": "Response",
+                "displayName": "Response",
+                "fullName": "Response"
+              }
+            }
+          }
+        ],
+        "metadata": {
+          "activityType": "Sequence",
+          "displayName": "Sequence",
+          "fullName": "Sequence"
+        }
+      }
+    }
+  ],
+  "evaluate": {
+    "mode": "strict",
+    "language": "javascript"
+  }
+}

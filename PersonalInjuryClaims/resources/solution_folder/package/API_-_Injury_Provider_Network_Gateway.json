@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "API - Injury Provider Network Gateway",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "9ab5a6cf-a74a-494d-892b-6e9add04e2e1",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "API - Injury Provider Network Gateway"
+    },
+    "locks": [],
+    "key": "05f1f3a0-d253-4268-abb0-6717b063e8f8",
+    "files": []
+  }
+}

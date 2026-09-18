@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Agent - Injury Claims Triage",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "497a7a11-2a8b-488b-9b8d-80a3a112c760",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "Agent - Injury Claims Triage"
+    },
+    "locks": [],
+    "key": "ca2761a2-d9d4-430d-a1f3-566c7752dcb8",
+    "files": []
+  }
+}

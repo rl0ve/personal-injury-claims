@@ -1,0 +1,66 @@
+{
+  "$resourceType": "tool",
+  "id": "4358d4fb-0132-4c90-9232-cb36d05e3c8b",
+  "referenceKey": "a81e226c-6de8-4cb9-bf13-b29432498bf2",
+  "name": "API_Fetch File From Data Fabric",
+  "type": "api",
+  "description": "Download a file from a specified field of an entity record in UiPath Data Fabric.",
+  "location": "solution",
+  "isEnabled": true,
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "recordId": {
+        "type": "string",
+        "description": "Enter record ID to download the file from"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "file": {
+        "$ref": "#/definitions/job-attachment"
+      }
+    },
+    "definitions": {
+      "job-attachment": {
+        "type": "object",
+        "required": [
+          "ID"
+        ],
+        "x-uipath-resource-kind": "JobAttachment",
+        "properties": {
+          "ID": {
+            "type": "string",
+            "description": "Orchestrator attachment key"
+          },
+          "FullName": {
+            "type": "string",
+            "description": "File name"
+          },
+          "MimeType": {
+            "type": "string",
+            "description": "The MIME type of the content, such as \"application/json\" or \"image/png\""
+          },
+          "Metadata": {
+            "type": "object",
+            "description": "Dictionary<string, string> of metadata",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "settings": {},
+  "guardrail": {
+    "policies": []
+  },
+  "argumentProperties": {},
+  "properties": {
+    "processName": "API - Fetch File",
+    "folderPath": "solution_folder"
+  }
+}

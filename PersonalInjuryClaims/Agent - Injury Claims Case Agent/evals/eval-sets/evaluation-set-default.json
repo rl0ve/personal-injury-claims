@@ -1,0 +1,214 @@
+{
+  "fileName": "evaluation-set-default.json",
+  "id": "878fb7af-6804-4fa5-85f6-9dcf2c9b359b",
+  "name": "Default Evaluation Set",
+  "batchSize": 10,
+  "evaluatorRefs": [
+    "b22ce67c-7a5d-4385-8e4c-ac52e4a0097c",
+    "5113dbc3-c66d-4e24-a74a-e5e82ffa3868"
+  ],
+  "evaluations": [
+    {
+      "id": "7db37fa5-e989-44b3-9f9c-9f52d6c79559",
+      "name": "Standard",
+      "inputs": {
+        "caseInstanceId": "PI-RUN-STD-0001",
+        "folderKey": "00000000-0000-0000-0000-000000000001",
+        "caseCurrentExecutionState": {
+          "event": {
+            "type": "TaskCompleted",
+            "isExternal": false
+          },
+          "state": {
+            "vars": {
+              "scenario": "Standard",
+              "injuryTypeCode": "RearEndCollision",
+              "independentLivingFlag": true,
+              "fraudScore": 10
+            }
+          }
+        },
+        "caseRulesDecisions": {}
+      },
+      "expectedOutput": {},
+      "simulationInstructions": "",
+      "expectedAgentBehavior": "Escape of water, habitable, covered, clean settlement. Cause-of-loss evidence is treated as sufficient without requesting a forensic investigator; the claim advances into Coverage & Scope Assessment once Investigation & Cause-of-Loss completes. No coverage decision, restriction, or adverse decision is decided by the agent.",
+      "simulateInput": false,
+      "inputGenerationInstructions": "",
+      "simulateTools": false,
+      "evalSetId": "878fb7af-6804-4fa5-85f6-9dcf2c9b359b",
+      "createdAt": "2026-09-16T01:57:02.417Z",
+      "updatedAt": "2026-09-16T01:57:02.417Z",
+      "source": "manual"
+    },
+    {
+      "id": "c6306c80-a7dd-4056-aefb-1da3a305f56e",
+      "name": "Displaced",
+      "inputs": {
+        "caseInstanceId": "PI-RUN-DIS-0001",
+        "folderKey": "00000000-0000-0000-0000-000000000001",
+        "caseCurrentExecutionState": {
+          "event": {
+            "type": "TaskCompleted",
+            "isExternal": false
+          },
+          "state": {
+            "vars": {
+              "scenario": "Displaced",
+              "injuryTypeCode": "DriverInattention",
+              "independentLivingFlag": false,
+              "vulnerableCustomerFlag": true,
+              "activeDamageFlag": true
+            }
+          }
+        },
+        "caseRulesDecisions": {}
+      },
+      "expectedOutput": {},
+      "simulationInstructions": "",
+      "expectedAgentBehavior": "Fire, uninhabitable, vulnerable customer. The agent prioritises the Emergency Response & Alternative Accommodation lane on habitability loss and vulnerability alone, without waiting for further evidence.",
+      "simulateInput": false,
+      "inputGenerationInstructions": "",
+      "simulateTools": false,
+      "evalSetId": "878fb7af-6804-4fa5-85f6-9dcf2c9b359b",
+      "createdAt": "2026-09-16T01:57:02.843Z",
+      "updatedAt": "2026-09-16T01:57:02.843Z",
+      "source": "manual"
+    },
+    {
+      "id": "28add6e3-5409-46f7-8f34-015dcead0e71",
+      "name": "Underinsured",
+      "inputs": {
+        "caseInstanceId": "PI-RUN-UND-0001",
+        "folderKey": "00000000-0000-0000-0000-000000000001",
+        "caseCurrentExecutionState": {
+          "event": {
+            "type": "TaskCompleted",
+            "isExternal": false
+          },
+          "state": {
+            "vars": {
+              "scenario": "Underinsured",
+              "contributoryNegligenceFlag": true
+            }
+          }
+        },
+        "caseRulesDecisions": {
+          "contributoryNegligenceFlag": true
+        }
+      },
+      "expectedOutput": {},
+      "simulationInstructions": "",
+      "expectedAgentBehavior": "Sum insured materially below rebuild value, average applies. The agent lets the deterministic average / underinsurance rule stand exactly as computed and only confirms the claim can proceed to Coverage & Scope Assessment; it never recomputes or adjusts the reduction itself.",
+      "simulateInput": false,
+      "inputGenerationInstructions": "",
+      "simulateTools": false,
+      "evalSetId": "878fb7af-6804-4fa5-85f6-9dcf2c9b359b",
+      "createdAt": "2026-09-16T01:57:03.256Z",
+      "updatedAt": "2026-09-16T01:57:03.256Z",
+      "source": "manual"
+    },
+    {
+      "id": "bfe6df91-c0b6-49dd-9a54-82079adb8415",
+      "name": "Investigated",
+      "inputs": {
+        "caseInstanceId": "PI-RUN-INV-0001",
+        "folderKey": "00000000-0000-0000-0000-000000000001",
+        "caseCurrentExecutionState": {
+          "event": {
+            "type": "TaskCompleted",
+            "isExternal": false
+          },
+          "state": {
+            "vars": {
+              "scenario": "Investigated",
+              "injuryTypeCode": "ThirdPartyNegligence",
+              "fraudScore": 82
+            }
+          }
+        },
+        "caseRulesDecisions": {}
+      },
+      "expectedOutput": {},
+      "simulationInstructions": "",
+      "expectedAgentBehavior": "Theft with fraud indicators, score 82. The agent does not judge the fraud investigation or any investigative restriction; it routes the claim into the SIU & Investigative Restriction lane and records a trace escalating the restriction decision to the Claims Manager.",
+      "simulateInput": false,
+      "inputGenerationInstructions": "",
+      "simulateTools": false,
+      "evalSetId": "878fb7af-6804-4fa5-85f6-9dcf2c9b359b",
+      "createdAt": "2026-09-16T01:57:03.677Z",
+      "updatedAt": "2026-09-16T01:57:03.677Z",
+      "source": "manual"
+    },
+    {
+      "id": "3e46dc1e-0b76-4074-ad29-dbab66f02dd2",
+      "name": "Declined",
+      "inputs": {
+        "caseInstanceId": "PI-RUN-DEC-0001",
+        "folderKey": "00000000-0000-0000-0000-000000000001",
+        "caseCurrentExecutionState": {
+          "event": {
+            "type": "TaskCompleted",
+            "isExternal": false
+          },
+          "state": {
+            "vars": {
+              "scenario": "Declined",
+              "injuryTypeCode": "DefectiveEquipment",
+              "liabilityCoverInForce": false,
+              "notificationDelayDays": 75
+            }
+          }
+        },
+        "caseRulesDecisions": {}
+      },
+      "expectedOutput": {},
+      "simulationInstructions": "",
+      "expectedAgentBehavior": "Flood with no flood cover and 75 days vacancy. The agent never decides or anticipates the coverage decline itself; once Confirm Coverage Position exits on that human verdict, it routes the claim into Coverage Decline & Adverse Decision.",
+      "simulateInput": false,
+      "inputGenerationInstructions": "",
+      "simulateTools": false,
+      "evalSetId": "878fb7af-6804-4fa5-85f6-9dcf2c9b359b",
+      "createdAt": "2026-09-16T01:57:04.121Z",
+      "updatedAt": "2026-09-16T01:57:04.121Z",
+      "source": "manual"
+    },
+    {
+      "id": "1c3aa6af-8a58-43ee-9bcb-9eec41479bfb",
+      "name": "Reopened",
+      "inputs": {
+        "caseInstanceId": "PI-RUN-REO-0001",
+        "folderKey": "00000000-0000-0000-0000-000000000001",
+        "caseCurrentExecutionState": {
+          "event": {
+            "type": "TaskCompleted",
+            "isExternal": false
+          },
+          "state": {
+            "vars": {
+              "scenario": "Reopened",
+              "hiddenDamageFound": true
+            }
+          }
+        },
+        "caseRulesDecisions": {}
+      },
+      "expectedOutput": {},
+      "simulationInstructions": "",
+      "expectedAgentBehavior": "Hidden damage found after the scope was agreed. The agent treats the hidden-damage discovery as sufficient reason to re-scope, favouring a return to Coverage & Scope Assessment over letting the original scope stand.",
+      "simulateInput": false,
+      "inputGenerationInstructions": "",
+      "simulateTools": false,
+      "evalSetId": "878fb7af-6804-4fa5-85f6-9dcf2c9b359b",
+      "createdAt": "2026-09-16T01:57:07.465Z",
+      "updatedAt": "2026-09-16T01:57:07.466Z",
+      "source": "manual"
+    }
+  ],
+  "modelSettings": [],
+  "agentMemoryEnabled": false,
+  "agentMemorySettings": [],
+  "lineByLineEvaluation": false,
+  "createdAt": "2026-09-16T01:43:16.294Z",
+  "updatedAt": "2026-09-16T01:43:16.294Z"
+}

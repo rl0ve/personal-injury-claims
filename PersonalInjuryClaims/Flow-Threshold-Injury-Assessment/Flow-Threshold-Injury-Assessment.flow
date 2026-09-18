@@ -1,0 +1,1929 @@
+{
+  "id": "ce83433c-3eba-4746-b025-eeca24724d59",
+  "version": "1.9",
+  "name": "Flow-Threshold-Injury-Assessment",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "core.trigger.manual",
+      "typeVersion": "1.0",
+      "display": {
+        "label": "Manual trigger"
+      },
+      "inputs": {
+        "entryPointId": "71022393-2821-4034-b0b6-9fc0dfb31cbe",
+        "isDefaultEntryPoint": true
+      }
+    },
+    {
+      "id": "readCaseAndClaimContext1",
+      "type": "core.action.script",
+      "typeVersion": "1.1",
+      "display": {
+        "label": "Read case and claim context"
+      },
+      "inputs": {
+        "script": "",
+        "code": "var ref = claimReference ? String(claimReference) : \"\";\nreturn { recordId: ref, document: documentName || \"\", hasContext: ref !== \"\" };"
+      }
+    },
+    {
+      "id": "normalizeReferralId1",
+      "type": "core.action.script",
+      "typeVersion": "1.1",
+      "display": {
+        "label": "Normalize Referral Id"
+      },
+      "inputs": {
+        "script": "",
+        "code": "var raw = String(claimReference || \"\");\nreturn raw.replace(/[^A-Za-z0-9-]/g, \"\").toUpperCase();"
+      }
+    },
+    {
+      "id": "processInjuryReportPacketIxp1",
+      "type": "core.action.script",
+      "typeVersion": "1.1",
+      "display": {
+        "label": "Process Injury Report Packet (IXP)"
+      },
+      "inputs": {
+        "script": "",
+        "code": "var name = documentName ? String(documentName) : \"medical-records.pdf\";\nreturn { packet: name, pages: 6 };"
+      }
+    },
+    {
+      "id": "analyzeMedicalReport1",
+      "type": "uipath.core.agent.b224b58b-c800-4cca-9396-95876f6ac114",
+      "typeVersion": "1.0.0",
+      "display": {
+        "label": "Analyze medical report"
+      },
+      "inputs": {
+        "scenario": "Standard",
+        "injuryTypeCode": "WHIPLASH",
+        "independentLivingFlag": true,
+        "reserveGeneralDamages": 8500,
+        "litigationEventCode": "NONE"
+      }
+    },
+    {
+      "id": "langchainAnalyzeAccidentDetails1",
+      "type": "uipath.core.agent.f81ec540-7503-4f0c-a9b1-d66a84daa8a8",
+      "typeVersion": "1.0.0",
+      "display": {
+        "label": "Langchain-Analyze accident details"
+      },
+      "inputs": {
+        "scenario": "Standard",
+        "injuryTypeCode": "WHIPLASH",
+        "notificationDelayDays": 3,
+        "liabilityCoverInForce": true
+      }
+    },
+    {
+      "id": "analysisComplete1",
+      "type": "core.logic.merge",
+      "typeVersion": "1.0",
+      "display": {
+        "label": "Analysis complete"
+      },
+      "inputs": {}
+    },
+    {
+      "id": "injuryAssessmentAgent1",
+      "type": "uipath.core.agent.ba6829b0-010a-4849-815e-8c03c745b8ab",
+      "typeVersion": "1.0.0",
+      "display": {
+        "label": "Vertex-Injury Assessment Agent"
+      },
+      "inputs": {
+        "scenario": "Standard",
+        "liabilityBasisCode": "FULL_LIABILITY",
+        "subrogationPotentialFlag": true,
+        "estimatedCost": 17400
+      }
+    },
+    {
+      "id": "setInjuryId1",
+      "type": "core.action.script",
+      "typeVersion": "1.1",
+      "display": {
+        "label": "Set Injury Id"
+      },
+      "inputs": {
+        "script": "",
+        "code": "var suffix = String(thresholdOutcome || \"GEN\").replace(/[^A-Z]/g, \"\").slice(0,3) || \"GEN\";\nreturn \"INJ-\" + suffix + \"-\" + String(referralId || \"0000\").slice(-4);"
+      }
+    },
+    {
+      "id": "recordInjuryAssessmentOnTheCase1",
+      "type": "core.action.script",
+      "typeVersion": "1.1",
+      "display": {
+        "label": "Record injury assessment on the case"
+      },
+      "inputs": {
+        "script": "",
+        "code": "return { recorded: true, injuryId: injuryId || \"\", against: referralId || \"\" };"
+      }
+    },
+    {
+      "id": "closeOutTheAssessment1",
+      "type": "core.action.script",
+      "typeVersion": "1.1",
+      "display": {
+        "label": "Close out the assessment"
+      },
+      "inputs": {
+        "script": "",
+        "code": "return { assessmentStatus: \"Complete\", injuryId: injuryId || \"\" };"
+      }
+    },
+    {
+      "id": "end1",
+      "type": "core.control.end",
+      "typeVersion": "1.0",
+      "display": {
+        "label": "End"
+      },
+      "inputs": {}
+    }
+  ],
+  "edges": [
+    {
+      "id": "start-output-readCaseAndClaimContext1-input",
+      "sourceNodeId": "start",
+      "sourcePort": "output",
+      "targetNodeId": "readCaseAndClaimContext1",
+      "targetPort": "input"
+    },
+    {
+      "id": "analyzeMedicalReport1-output-analysisComplete1-input",
+      "sourceNodeId": "analyzeMedicalReport1",
+      "sourcePort": "output",
+      "targetNodeId": "analysisComplete1",
+      "targetPort": "input"
+    },
+    {
+      "id": "langchainAnalyzeAccidentDetails1-output-analysisComplete1-input",
+      "sourceNodeId": "langchainAnalyzeAccidentDetails1",
+      "sourcePort": "output",
+      "targetNodeId": "analysisComplete1",
+      "targetPort": "input"
+    },
+    {
+      "id": "analysisComplete1-output-injuryAssessmentAgent1-input",
+      "sourceNodeId": "analysisComplete1",
+      "sourcePort": "output",
+      "targetNodeId": "injuryAssessmentAgent1",
+      "targetPort": "input"
+    },
+    {
+      "id": "injuryAssessmentAgent1-output-setInjuryId1-input",
+      "sourceNodeId": "injuryAssessmentAgent1",
+      "sourcePort": "output",
+      "targetNodeId": "setInjuryId1",
+      "targetPort": "input"
+    },
+    {
+      "id": "readCaseAndClaimContext1-success-normalizeReferralId1-input",
+      "sourceNodeId": "readCaseAndClaimContext1",
+      "sourcePort": "success",
+      "targetNodeId": "normalizeReferralId1",
+      "targetPort": "input"
+    },
+    {
+      "id": "normalizeReferralId1-success-processInjuryReportPacketIxp1-input",
+      "sourceNodeId": "normalizeReferralId1",
+      "sourcePort": "success",
+      "targetNodeId": "processInjuryReportPacketIxp1",
+      "targetPort": "input"
+    },
+    {
+      "id": "processInjuryReportPacketIxp1-success-analyzeMedicalReport1-input",
+      "sourceNodeId": "processInjuryReportPacketIxp1",
+      "sourcePort": "success",
+      "targetNodeId": "analyzeMedicalReport1",
+      "targetPort": "input"
+    },
+    {
+      "id": "processInjuryReportPacketIxp1-success-langchainAnalyzeAccidentDetails1-input",
+      "sourceNodeId": "processInjuryReportPacketIxp1",
+      "sourcePort": "success",
+      "targetNodeId": "langchainAnalyzeAccidentDetails1",
+      "targetPort": "input"
+    },
+    {
+      "id": "setInjuryId1-success-recordInjuryAssessmentOnTheCase1-input",
+      "sourceNodeId": "setInjuryId1",
+      "sourcePort": "success",
+      "targetNodeId": "recordInjuryAssessmentOnTheCase1",
+      "targetPort": "input"
+    },
+    {
+      "id": "recordInjuryAssessmentOnTheCase1-success-closeOutTheAssessment1-input",
+      "sourceNodeId": "recordInjuryAssessmentOnTheCase1",
+      "sourcePort": "success",
+      "targetNodeId": "closeOutTheAssessment1",
+      "targetPort": "input"
+    },
+    {
+      "id": "closeOutTheAssessment1-success-end1-input",
+      "sourceNodeId": "closeOutTheAssessment1",
+      "sourcePort": "success",
+      "targetNodeId": "end1",
+      "targetPort": "input"
+    }
+  ],
+  "definitions": [
+    {
+      "nodeType": "core.trigger.manual",
+      "version": "1.0",
+      "category": "trigger",
+      "description": "Start the process manually",
+      "tags": [
+        "trigger",
+        "start",
+        "manual"
+      ],
+      "sortOrder": 80,
+      "display": {
+        "label": "Manual trigger",
+        "icon": "play",
+        "shape": "circle"
+      },
+      "handleConfiguration": [
+        {
+          "position": "right",
+          "handles": [
+            {
+              "id": "output",
+              "type": "source",
+              "handleType": "output",
+              "showButton": true,
+              "constraints": {
+                "forbiddenTargetCategories": [
+                  "trigger"
+                ]
+              }
+            }
+          ],
+          "visible": true
+        }
+      ],
+      "model": {
+        "type": "bpmn:StartEvent",
+        "entryPointId": true
+      },
+      "outputDefinition": {
+        "output": {
+          "type": "object",
+          "description": "Data passed when manually triggering the process.",
+          "source": "null",
+          "var": "output"
+        }
+      },
+      "toolbarExtensions": {
+        "design": {
+          "actions": [
+            {
+              "id": "change-trigger-type",
+              "icon": "square-mouse-pointer",
+              "label": "Change trigger type"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "nodeType": "core.action.script",
+      "version": "1.1",
+      "category": "data-operations",
+      "description": "Run custom JavaScript code",
+      "tags": [
+        "code",
+        "javascript",
+        "python"
+      ],
+      "sortOrder": 70,
+      "supportsErrorHandling": true,
+      "display": {
+        "label": "Script",
+        "icon": "code"
+      },
+      "handleConfiguration": [
+        {
+          "position": "left",
+          "handles": [
+            {
+              "id": "input",
+              "type": "target",
+              "handleType": "input"
+            }
+          ]
+        },
+        {
+          "position": "right",
+          "handles": [
+            {
+              "id": "success",
+              "type": "source",
+              "handleType": "output"
+            },
+            {
+              "id": "error",
+              "label": "Error",
+              "type": "source",
+              "handleType": "output",
+              "visible": "{inputs.errorHandlingEnabled}",
+              "constraints": {
+                "maxConnections": 1
+              }
+            }
+          ]
+        }
+      ],
+      "debug": {
+        "runtime": "clientScript"
+      },
+      "model": {
+        "type": "bpmn:ScriptTask"
+      },
+      "inputDefinition": {
+        "type": "object",
+        "properties": {
+          "script": {
+            "type": "string",
+            "minLength": 1,
+            "errorMessage": "Add a script function",
+            "validationSeverity": "warning"
+          }
+        },
+        "required": [
+          "script"
+        ]
+      },
+      "inputDefaults": {
+        "script": ""
+      },
+      "outputDefinition": {
+        "output": {
+          "type": "any",
+          "description": "The return value of the script",
+          "source": "=result.response",
+          "var": "output"
+        },
+        "error": {
+          "type": "object",
+          "description": "Error information if the node fails",
+          "source": "=Error",
+          "var": "error",
+          "schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+              "code",
+              "message",
+              "detail",
+              "category",
+              "status"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Error code as a string"
+              },
+              "message": {
+                "type": "string",
+                "description": "High-level error message"
+              },
+              "detail": {
+                "type": "string",
+                "description": "Detailed error description"
+              },
+              "category": {
+                "type": "string",
+                "description": "Error category"
+              },
+              "status": {
+                "type": "integer",
+                "description": "HTTP status code"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "form": {
+        "id": "script-properties",
+        "title": "Script configuration",
+        "sections": [
+          {
+            "id": "script",
+            "title": "Script",
+            "collapsible": true,
+            "defaultExpanded": true,
+            "fields": [
+              {
+                "name": "inputs.script",
+                "type": "custom",
+                "component": "script-editor",
+                "componentProps": {
+                  "language": "javascript",
+                  "returnType": "any",
+                  "validationMode": "script",
+                  "minHeight": 200,
+                  "placeholder": " // Return any value\nreturn {\n  message: \"Web request response\",\n  data: $vars.httpRequest1.output\n};"
+                },
+                "label": "Code",
+                "description": "JavaScript expression that returns a result"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "nodeType": "uipath.core.agent.b224b58b-c800-4cca-9396-95876f6ac114",
+      "version": "1.0.0",
+      "category": "agent.published",
+      "runtimeConstraints": {
+        "exclude": [
+          "api-function"
+        ]
+      },
+      "description": "",
+      "tags": [],
+      "sortOrder": 510,
+      "supportsErrorHandling": true,
+      "display": {
+        "label": "Agent - Injury Claims Triage",
+        "icon": "autonomous-agent"
+      },
+      "handleConfiguration": [
+        {
+          "position": "left",
+          "handles": [
+            {
+              "id": "input",
+              "type": "target",
+              "handleType": "input"
+            }
+          ]
+        },
+        {
+          "position": "right",
+          "handles": [
+            {
+              "id": "output",
+              "type": "source",
+              "handleType": "output"
+            },
+            {
+              "id": "error",
+              "label": "Error",
+              "type": "source",
+              "handleType": "output",
+              "visible": "{inputs.errorHandlingEnabled}",
+              "constraints": {
+                "maxConnections": 1
+              }
+            }
+          ]
+        }
+      ],
+      "model": {
+        "type": "bpmn:ServiceTask",
+        "serviceType": "Orchestrator.StartAgentJob",
+        "version": "v2",
+        "listingVersion": "1.2.2",
+        "bindings": {
+          "resource": "process",
+          "resourceSubType": "Agent",
+          "resourceKey": "Shared/Personal Injury Claims Demo.Agent - Injury Claims Triage",
+          "orchestratorType": "agent",
+          "values": [
+            {
+              "name": "name",
+              "propertyAttribute": "name",
+              "default": "Agent - Injury Claims Triage"
+            },
+            {
+              "name": "folderPath",
+              "propertyAttribute": "folderPath",
+              "default": "Shared/Personal Injury Claims Demo"
+            }
+          ]
+        },
+        "context": [
+          {
+            "name": "name",
+            "type": "string",
+            "value": "<bindings.name>"
+          },
+          {
+            "name": "folderPath",
+            "type": "string",
+            "value": "<bindings.folderPath>"
+          },
+          {
+            "name": "_label",
+            "type": "string",
+            "value": "Agent - Injury Claims Triage"
+          }
+        ]
+      },
+      "form": {
+        "id": "activity-properties",
+        "title": "Agent",
+        "sections": [
+          {
+            "id": "inputs",
+            "title": "Inputs",
+            "collapsible": true,
+            "defaultExpanded": true,
+            "fields": [
+              {
+                "name": "inputs.scenario",
+                "type": "text",
+                "label": "scenario"
+              },
+              {
+                "name": "inputs.injuryTypeCode",
+                "type": "text",
+                "label": "injuryTypeCode"
+              },
+              {
+                "name": "inputs.independentLivingFlag",
+                "type": "checkbox",
+                "label": "independentLivingFlag",
+                "supportsDynamicValue": true
+              },
+              {
+                "name": "inputs.reserveGeneralDamages",
+                "type": "number",
+                "label": "reserveGeneralDamages"
+              },
+              {
+                "name": "inputs.litigationEventCode",
+                "type": "text",
+                "label": "litigationEventCode"
+              }
+            ]
+          }
+        ]
+      },
+      "inputDefinition": {
+        "type": "object",
+        "properties": {
+          "scenario": {
+            "type": "string",
+            "description": "Selects the deterministic journey this claim follows, so the run is reproducible."
+          },
+          "injuryTypeCode": {
+            "type": "string",
+            "description": "The injury reported at notification, such as whiplash, soft tissue, fracture, head injury or psychological."
+          },
+          "independentLivingFlag": {
+            "type": "boolean",
+            "description": "Whether the claimant can still live independently without care support."
+          },
+          "reserveGeneralDamages": {
+            "type": "number",
+            "description": "The general damages reserve for pain and suffering set at registration."
+          },
+          "litigationEventCode": {
+            "type": "string",
+            "description": "Litigation trigger identifier when proceedings or a pre-action protocol step are live on the claim. Empty when no litigation trigger applies."
+          }
+        }
+      },
+      "inputDefaults": {
+        "scenario": "",
+        "injuryTypeCode": "",
+        "independentLivingFlag": false,
+        "reserveGeneralDamages": 0,
+        "litigationEventCode": ""
+      },
+      "outputDefinition": {
+        "output": {
+          "type": "object",
+          "source": "=this",
+          "var": "output",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "claimStatus": {
+                "type": "string",
+                "description": "The handling track for this claim. Must be exactly one of: \"Desktop\", \"Field\", \"Specialist\", \"CAT Surge\". The case routes on this value, so it must never contain any other value.",
+                "enum": [
+                  "Desktop",
+                  "Field",
+                  "Specialist",
+                  "CAT Surge"
+                ]
+              },
+              "agentRationale": {
+                "type": "string",
+                "description": "The reasoning behind the handling track, kept separate from the decision itself. This is what a person reads."
+              }
+            }
+          }
+        },
+        "error": {
+          "type": "object",
+          "description": "Error information if the node fails",
+          "source": "=Error",
+          "var": "error",
+          "schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+              "code",
+              "message",
+              "detail",
+              "category",
+              "status"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Error code as a string"
+              },
+              "message": {
+                "type": "string",
+                "description": "High-level error message"
+              },
+              "detail": {
+                "type": "string",
+                "description": "Detailed error description"
+              },
+              "category": {
+                "type": "string",
+                "description": "Error category"
+              },
+              "status": {
+                "type": "integer",
+                "description": "HTTP status code"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "debug": {
+        "runtime": "bpmnEngine"
+      }
+    },
+    {
+      "nodeType": "uipath.core.agent.f81ec540-7503-4f0c-a9b1-d66a84daa8a8",
+      "version": "1.0.0",
+      "category": "agent.published",
+      "runtimeConstraints": {
+        "exclude": [
+          "api-function"
+        ]
+      },
+      "description": "",
+      "tags": [],
+      "sortOrder": 510,
+      "supportsErrorHandling": true,
+      "display": {
+        "label": "Agent - Liability Assessment",
+        "icon": "autonomous-agent"
+      },
+      "handleConfiguration": [
+        {
+          "position": "left",
+          "handles": [
+            {
+              "id": "input",
+              "type": "target",
+              "handleType": "input"
+            }
+          ]
+        },
+        {
+          "position": "right",
+          "handles": [
+            {
+              "id": "output",
+              "type": "source",
+              "handleType": "output"
+            },
+            {
+              "id": "error",
+              "label": "Error",
+              "type": "source",
+              "handleType": "output",
+              "visible": "{inputs.errorHandlingEnabled}",
+              "constraints": {
+                "maxConnections": 1
+              }
+            }
+          ]
+        }
+      ],
+      "model": {
+        "type": "bpmn:ServiceTask",
+        "serviceType": "Orchestrator.StartAgentJob",
+        "version": "v2",
+        "listingVersion": "1.2.2",
+        "bindings": {
+          "resource": "process",
+          "resourceSubType": "Agent",
+          "resourceKey": "Shared/Personal Injury Claims Demo.Agent - Liability Assessment",
+          "orchestratorType": "agent",
+          "values": [
+            {
+              "name": "name",
+              "propertyAttribute": "name",
+              "default": "Agent - Liability Assessment"
+            },
+            {
+              "name": "folderPath",
+              "propertyAttribute": "folderPath",
+              "default": "Shared/Personal Injury Claims Demo"
+            }
+          ]
+        },
+        "context": [
+          {
+            "name": "name",
+            "type": "string",
+            "value": "<bindings.name>"
+          },
+          {
+            "name": "folderPath",
+            "type": "string",
+            "value": "<bindings.folderPath>"
+          },
+          {
+            "name": "_label",
+            "type": "string",
+            "value": "Agent - Liability Assessment"
+          }
+        ]
+      },
+      "form": {
+        "id": "activity-properties",
+        "title": "Agent",
+        "sections": [
+          {
+            "id": "inputs",
+            "title": "Inputs",
+            "collapsible": true,
+            "defaultExpanded": true,
+            "fields": [
+              {
+                "name": "inputs.scenario",
+                "type": "text",
+                "label": "scenario"
+              },
+              {
+                "name": "inputs.injuryTypeCode",
+                "type": "text",
+                "label": "injuryTypeCode"
+              },
+              {
+                "name": "inputs.notificationDelayDays",
+                "type": "number",
+                "label": "notificationDelayDays"
+              },
+              {
+                "name": "inputs.liabilityCoverInForce",
+                "type": "checkbox",
+                "label": "liabilityCoverInForce",
+                "supportsDynamicValue": true
+              }
+            ]
+          }
+        ]
+      },
+      "inputDefinition": {
+        "type": "object",
+        "properties": {
+          "scenario": {
+            "type": "string",
+            "description": "Selects the deterministic journey this claim follows, so the run is reproducible."
+          },
+          "injuryTypeCode": {
+            "type": "string",
+            "description": "The injury reported at notification, before medical evidence is obtained."
+          },
+          "notificationDelayDays": {
+            "type": "integer",
+            "description": "Days between the incident and notification of the claim."
+          },
+          "liabilityCoverInForce": {
+            "type": "boolean",
+            "description": "Whether liability cover applies under the policy."
+          }
+        }
+      },
+      "inputDefaults": {
+        "scenario": "",
+        "injuryTypeCode": "",
+        "notificationDelayDays": 0,
+        "liabilityCoverInForce": false
+      },
+      "outputDefinition": {
+        "output": {
+          "type": "object",
+          "source": "=this",
+          "var": "output",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "liabilityBasisCode": {
+                "type": "string",
+                "description": "The liability position determined from the evidence gathered. Must be exactly one of the listed values \u2014 never a variant spelling and never any other value.",
+                "enum": [
+                  "RearEndCollision",
+                  "DriverInattention",
+                  "UnsafePremises",
+                  "DefectiveEquipment",
+                  "ThirdPartyNegligence",
+                  "FailureToGiveWay",
+                  "PreExistingCondition",
+                  "SharedFault"
+                ]
+              },
+              "subrogationPotentialFlag": {
+                "type": "boolean",
+                "description": "True when the evidence points to a third party whose fault could support a subrogation recovery. This is a proposal only \u2014 it never decides coverage or whether pursuit is worthwhile."
+              },
+              "agentRationale": {
+                "type": "string",
+                "description": "The reasoning behind the liability position, including whether the evidence is ambiguous enough to need an independent medical examination or accident reconstruction. Kept separate from the decision itself; this is what a person reads."
+              }
+            }
+          }
+        },
+        "error": {
+          "type": "object",
+          "description": "Error information if the node fails",
+          "source": "=Error",
+          "var": "error",
+          "schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+              "code",
+              "message",
+              "detail",
+              "category",
+              "status"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Error code as a string"
+              },
+              "message": {
+                "type": "string",
+                "description": "High-level error message"
+              },
+              "detail": {
+                "type": "string",
+                "description": "Detailed error description"
+              },
+              "category": {
+                "type": "string",
+                "description": "Error category"
+              },
+              "status": {
+                "type": "integer",
+                "description": "HTTP status code"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "debug": {
+        "runtime": "bpmnEngine"
+      }
+    },
+    {
+      "nodeType": "core.logic.merge",
+      "version": "1.0",
+      "category": "control-flow",
+      "description": "Join parallel branches into one path",
+      "tags": [
+        "control-flow",
+        "merge"
+      ],
+      "sortOrder": 65,
+      "display": {
+        "label": "Merge",
+        "icon": "merge"
+      },
+      "handleConfiguration": [
+        {
+          "position": "left",
+          "handles": [
+            {
+              "id": "input",
+              "type": "target",
+              "handleType": "input"
+            }
+          ],
+          "visible": true
+        },
+        {
+          "position": "right",
+          "handles": [
+            {
+              "id": "output",
+              "type": "source",
+              "handleType": "output"
+            }
+          ],
+          "visible": true
+        }
+      ],
+      "model": {
+        "type": "bpmn:ParallelGateway"
+      },
+      "runtimeConstraints": {
+        "exclude": [
+          "api-function"
+        ]
+      }
+    },
+    {
+      "nodeType": "uipath.core.agent.ba6829b0-010a-4849-815e-8c03c745b8ab",
+      "version": "1.0.0",
+      "category": "agent.published",
+      "runtimeConstraints": {
+        "exclude": [
+          "api-function"
+        ]
+      },
+      "description": "",
+      "tags": [],
+      "sortOrder": 510,
+      "supportsErrorHandling": true,
+      "display": {
+        "label": "Agent - Subrogation Assessment",
+        "icon": "autonomous-agent"
+      },
+      "handleConfiguration": [
+        {
+          "position": "left",
+          "handles": [
+            {
+              "id": "input",
+              "type": "target",
+              "handleType": "input"
+            }
+          ]
+        },
+        {
+          "position": "right",
+          "handles": [
+            {
+              "id": "output",
+              "type": "source",
+              "handleType": "output"
+            },
+            {
+              "id": "error",
+              "label": "Error",
+              "type": "source",
+              "handleType": "output",
+              "visible": "{inputs.errorHandlingEnabled}",
+              "constraints": {
+                "maxConnections": 1
+              }
+            }
+          ]
+        }
+      ],
+      "model": {
+        "type": "bpmn:ServiceTask",
+        "serviceType": "Orchestrator.StartAgentJob",
+        "version": "v2",
+        "listingVersion": "1.2.2",
+        "bindings": {
+          "resource": "process",
+          "resourceSubType": "Agent",
+          "resourceKey": "Shared/Personal Injury Claims Demo.Agent - Subrogation Assessment",
+          "orchestratorType": "agent",
+          "values": [
+            {
+              "name": "name",
+              "propertyAttribute": "name",
+              "default": "Agent - Subrogation Assessment"
+            },
+            {
+              "name": "folderPath",
+              "propertyAttribute": "folderPath",
+              "default": "Shared/Personal Injury Claims Demo"
+            }
+          ]
+        },
+        "context": [
+          {
+            "name": "name",
+            "type": "string",
+            "value": "<bindings.name>"
+          },
+          {
+            "name": "folderPath",
+            "type": "string",
+            "value": "<bindings.folderPath>"
+          },
+          {
+            "name": "_label",
+            "type": "string",
+            "value": "Agent - Subrogation Assessment"
+          }
+        ]
+      },
+      "form": {
+        "id": "activity-properties",
+        "title": "Agent",
+        "sections": [
+          {
+            "id": "inputs",
+            "title": "Inputs",
+            "collapsible": true,
+            "defaultExpanded": true,
+            "fields": [
+              {
+                "name": "inputs.scenario",
+                "type": "text",
+                "label": "scenario"
+              },
+              {
+                "name": "inputs.liabilityBasisCode",
+                "type": "text",
+                "label": "liabilityBasisCode"
+              },
+              {
+                "name": "inputs.subrogationPotentialFlag",
+                "type": "checkbox",
+                "label": "subrogationPotentialFlag",
+                "supportsDynamicValue": true
+              },
+              {
+                "name": "inputs.estimatedCost",
+                "type": "number",
+                "label": "estimatedCost"
+              }
+            ]
+          }
+        ]
+      },
+      "inputDefinition": {
+        "type": "object",
+        "properties": {
+          "scenario": {
+            "type": "string",
+            "description": "Selects the deterministic journey this claim follows, so the run is reproducible."
+          },
+          "liabilityBasisCode": {
+            "type": "string",
+            "description": "The liability position determined at assessment."
+          },
+          "subrogationPotentialFlag": {
+            "type": "boolean",
+            "description": "The subrogation recovery potential proposed at assessment \u2014 a candidate flag, not yet a pursuit decision."
+          },
+          "estimatedCost": {
+            "type": "number",
+            "description": "Estimated settlement value of the claim, general and special damages together, the basis for weighing pursuit against the minimum pursuit value."
+          }
+        }
+      },
+      "inputDefaults": {
+        "scenario": "",
+        "liabilityBasisCode": "",
+        "subrogationPotentialFlag": false,
+        "estimatedCost": 0
+      },
+      "outputDefinition": {
+        "output": {
+          "type": "object",
+          "source": "=this",
+          "var": "output",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "subrogationPotentialFlag": {
+                "type": "boolean",
+                "description": "Whether subrogation recovery is worth pursuing against the at-fault third party. This is the decision the case routes on \u2014 a real boolean, never a string."
+              },
+              "agentRationale": {
+                "type": "string",
+                "description": "The reasoning behind the pursuit decision, kept separate from the decision itself. This is what a person reads."
+              }
+            }
+          }
+        },
+        "error": {
+          "type": "object",
+          "description": "Error information if the node fails",
+          "source": "=Error",
+          "var": "error",
+          "schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+              "code",
+              "message",
+              "detail",
+              "category",
+              "status"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Error code as a string"
+              },
+              "message": {
+                "type": "string",
+                "description": "High-level error message"
+              },
+              "detail": {
+                "type": "string",
+                "description": "Detailed error description"
+              },
+              "category": {
+                "type": "string",
+                "description": "Error category"
+              },
+              "status": {
+                "type": "integer",
+                "description": "HTTP status code"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "debug": {
+        "runtime": "bpmnEngine"
+      }
+    },
+    {
+      "nodeType": "core.control.end",
+      "version": "1.0",
+      "category": "control-flow",
+      "description": "Mark the end of a process path",
+      "tags": [
+        "control-flow",
+        "end",
+        "finish",
+        "complete"
+      ],
+      "sortOrder": 66,
+      "display": {
+        "label": "End",
+        "icon": "circle-check",
+        "shape": "circle"
+      },
+      "handleConfiguration": [
+        {
+          "position": "left",
+          "handles": [
+            {
+              "id": "input",
+              "type": "target",
+              "handleType": "input"
+            }
+          ]
+        }
+      ],
+      "model": {
+        "type": "bpmn:EndEvent"
+      }
+    }
+  ],
+  "runtime": "maestro",
+  "variables": {
+    "nodes": [
+      {
+        "id": "start.output",
+        "type": "object",
+        "description": "Data passed when manually triggering the process.",
+        "binding": {
+          "nodeId": "start",
+          "outputId": "output"
+        }
+      },
+      {
+        "id": "readCaseAndClaimContext1.output",
+        "type": "any",
+        "description": "The return value of the script",
+        "binding": {
+          "nodeId": "readCaseAndClaimContext1",
+          "outputId": "output"
+        }
+      },
+      {
+        "id": "readCaseAndClaimContext1.error",
+        "type": "object",
+        "description": "Error information if the node fails",
+        "schema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "required": [
+            "code",
+            "message",
+            "detail",
+            "category",
+            "status"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Error code as a string"
+            },
+            "message": {
+              "type": "string",
+              "description": "High-level error message"
+            },
+            "detail": {
+              "type": "string",
+              "description": "Detailed error description"
+            },
+            "category": {
+              "type": "string",
+              "description": "Error category"
+            },
+            "status": {
+              "type": "integer",
+              "description": "HTTP status code"
+            }
+          },
+          "additionalProperties": false
+        },
+        "binding": {
+          "nodeId": "readCaseAndClaimContext1",
+          "outputId": "error"
+        }
+      },
+      {
+        "id": "normalizeReferralId1.output",
+        "type": "any",
+        "description": "The return value of the script",
+        "binding": {
+          "nodeId": "normalizeReferralId1",
+          "outputId": "output"
+        }
+      },
+      {
+        "id": "normalizeReferralId1.error",
+        "type": "object",
+        "description": "Error information if the node fails",
+        "schema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "required": [
+            "code",
+            "message",
+            "detail",
+            "category",
+            "status"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Error code as a string"
+            },
+            "message": {
+              "type": "string",
+              "description": "High-level error message"
+            },
+            "detail": {
+              "type": "string",
+              "description": "Detailed error description"
+            },
+            "category": {
+              "type": "string",
+              "description": "Error category"
+            },
+            "status": {
+              "type": "integer",
+              "description": "HTTP status code"
+            }
+          },
+          "additionalProperties": false
+        },
+        "binding": {
+          "nodeId": "normalizeReferralId1",
+          "outputId": "error"
+        }
+      },
+      {
+        "id": "processInjuryReportPacketIxp1.output",
+        "type": "any",
+        "description": "The return value of the script",
+        "binding": {
+          "nodeId": "processInjuryReportPacketIxp1",
+          "outputId": "output"
+        }
+      },
+      {
+        "id": "processInjuryReportPacketIxp1.error",
+        "type": "object",
+        "description": "Error information if the node fails",
+        "schema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "required": [
+            "code",
+            "message",
+            "detail",
+            "category",
+            "status"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Error code as a string"
+            },
+            "message": {
+              "type": "string",
+              "description": "High-level error message"
+            },
+            "detail": {
+              "type": "string",
+              "description": "Detailed error description"
+            },
+            "category": {
+              "type": "string",
+              "description": "Error category"
+            },
+            "status": {
+              "type": "integer",
+              "description": "HTTP status code"
+            }
+          },
+          "additionalProperties": false
+        },
+        "binding": {
+          "nodeId": "processInjuryReportPacketIxp1",
+          "outputId": "error"
+        }
+      },
+      {
+        "id": "analyzeMedicalReport1.output",
+        "type": "object",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "claimStatus": {
+              "type": "string",
+              "description": "The handling track for this claim. Must be exactly one of: \"Desktop\", \"Field\", \"Specialist\", \"CAT Surge\". The case routes on this value, so it must never contain any other value.",
+              "enum": [
+                "Desktop",
+                "Field",
+                "Specialist",
+                "CAT Surge"
+              ]
+            },
+            "agentRationale": {
+              "type": "string",
+              "description": "The reasoning behind the handling track, kept separate from the decision itself. This is what a person reads."
+            }
+          }
+        },
+        "binding": {
+          "nodeId": "analyzeMedicalReport1",
+          "outputId": "output"
+        }
+      },
+      {
+        "id": "analyzeMedicalReport1.error",
+        "type": "object",
+        "description": "Error information if the node fails",
+        "schema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "required": [
+            "code",
+            "message",
+            "detail",
+            "category",
+            "status"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Error code as a string"
+            },
+            "message": {
+              "type": "string",
+              "description": "High-level error message"
+            },
+            "detail": {
+              "type": "string",
+              "description": "Detailed error description"
+            },
+            "category": {
+              "type": "string",
+              "description": "Error category"
+            },
+            "status": {
+              "type": "integer",
+              "description": "HTTP status code"
+            }
+          },
+          "additionalProperties": false
+        },
+        "binding": {
+          "nodeId": "analyzeMedicalReport1",
+          "outputId": "error"
+        }
+      },
+      {
+        "id": "langchainAnalyzeAccidentDetails1.output",
+        "type": "object",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "liabilityBasisCode": {
+              "type": "string",
+              "description": "The liability position determined from the evidence gathered. Must be exactly one of the listed values \u2014 never a variant spelling and never any other value.",
+              "enum": [
+                "RearEndCollision",
+                "DriverInattention",
+                "UnsafePremises",
+                "DefectiveEquipment",
+                "ThirdPartyNegligence",
+                "FailureToGiveWay",
+                "PreExistingCondition",
+                "SharedFault"
+              ]
+            },
+            "subrogationPotentialFlag": {
+              "type": "boolean",
+              "description": "True when the evidence points to a third party whose fault could support a subrogation recovery. This is a proposal only \u2014 it never decides coverage or whether pursuit is worthwhile."
+            },
+            "agentRationale": {
+              "type": "string",
+              "description": "The reasoning behind the liability position, including whether the evidence is ambiguous enough to need an independent medical examination or accident reconstruction. Kept separate from the decision itself; this is what a person reads."
+            }
+          }
+        },
+        "binding": {
+          "nodeId": "langchainAnalyzeAccidentDetails1",
+          "outputId": "output"
+        }
+      },
+      {
+        "id": "langchainAnalyzeAccidentDetails1.error",
+        "type": "object",
+        "description": "Error information if the node fails",
+        "schema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "required": [
+            "code",
+            "message",
+            "detail",
+            "category",
+            "status"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Error code as a string"
+            },
+            "message": {
+              "type": "string",
+              "description": "High-level error message"
+            },
+            "detail": {
+              "type": "string",
+              "description": "Detailed error description"
+            },
+            "category": {
+              "type": "string",
+              "description": "Error category"
+            },
+            "status": {
+              "type": "integer",
+              "description": "HTTP status code"
+            }
+          },
+          "additionalProperties": false
+        },
+        "binding": {
+          "nodeId": "langchainAnalyzeAccidentDetails1",
+          "outputId": "error"
+        }
+      },
+      {
+        "id": "injuryAssessmentAgent1.output",
+        "type": "object",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "subrogationPotentialFlag": {
+              "type": "boolean",
+              "description": "Whether subrogation recovery is worth pursuing against the at-fault third party. This is the decision the case routes on \u2014 a real boolean, never a string."
+            },
+            "agentRationale": {
+              "type": "string",
+              "description": "The reasoning behind the pursuit decision, kept separate from the decision itself. This is what a person reads."
+            }
+          }
+        },
+        "binding": {
+          "nodeId": "injuryAssessmentAgent1",
+          "outputId": "output"
+        }
+      },
+      {
+        "id": "injuryAssessmentAgent1.error",
+        "type": "object",
+        "description": "Error information if the node fails",
+        "schema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "required": [
+            "code",
+            "message",
+            "detail",
+            "category",
+            "status"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Error code as a string"
+            },
+            "message": {
+              "type": "string",
+              "description": "High-level error message"
+            },
+            "detail": {
+              "type": "string",
+              "description": "Detailed error description"
+            },
+            "category": {
+              "type": "string",
+              "description": "Error category"
+            },
+            "status": {
+              "type": "integer",
+              "description": "HTTP status code"
+            }
+          },
+          "additionalProperties": false
+        },
+        "binding": {
+          "nodeId": "injuryAssessmentAgent1",
+          "outputId": "error"
+        }
+      },
+      {
+        "id": "setInjuryId1.output",
+        "type": "any",
+        "description": "The return value of the script",
+        "binding": {
+          "nodeId": "setInjuryId1",
+          "outputId": "output"
+        }
+      },
+      {
+        "id": "setInjuryId1.error",
+        "type": "object",
+        "description": "Error information if the node fails",
+        "schema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "required": [
+            "code",
+            "message",
+            "detail",
+            "category",
+            "status"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Error code as a string"
+            },
+            "message": {
+              "type": "string",
+              "description": "High-level error message"
+            },
+            "detail": {
+              "type": "string",
+              "description": "Detailed error description"
+            },
+            "category": {
+              "type": "string",
+              "description": "Error category"
+            },
+            "status": {
+              "type": "integer",
+              "description": "HTTP status code"
+            }
+          },
+          "additionalProperties": false
+        },
+        "binding": {
+          "nodeId": "setInjuryId1",
+          "outputId": "error"
+        }
+      },
+      {
+        "id": "recordInjuryAssessmentOnTheCase1.output",
+        "type": "any",
+        "description": "The return value of the script",
+        "binding": {
+          "nodeId": "recordInjuryAssessmentOnTheCase1",
+          "outputId": "output"
+        }
+      },
+      {
+        "id": "recordInjuryAssessmentOnTheCase1.error",
+        "type": "object",
+        "description": "Error information if the node fails",
+        "schema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "required": [
+            "code",
+            "message",
+            "detail",
+            "category",
+            "status"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Error code as a string"
+            },
+            "message": {
+              "type": "string",
+              "description": "High-level error message"
+            },
+            "detail": {
+              "type": "string",
+              "description": "Detailed error description"
+            },
+            "category": {
+              "type": "string",
+              "description": "Error category"
+            },
+            "status": {
+              "type": "integer",
+              "description": "HTTP status code"
+            }
+          },
+          "additionalProperties": false
+        },
+        "binding": {
+          "nodeId": "recordInjuryAssessmentOnTheCase1",
+          "outputId": "error"
+        }
+      },
+      {
+        "id": "closeOutTheAssessment1.output",
+        "type": "any",
+        "description": "The return value of the script",
+        "binding": {
+          "nodeId": "closeOutTheAssessment1",
+          "outputId": "output"
+        }
+      },
+      {
+        "id": "closeOutTheAssessment1.error",
+        "type": "object",
+        "description": "Error information if the node fails",
+        "schema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "required": [
+            "code",
+            "message",
+            "detail",
+            "category",
+            "status"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Error code as a string"
+            },
+            "message": {
+              "type": "string",
+              "description": "High-level error message"
+            },
+            "detail": {
+              "type": "string",
+              "description": "Detailed error description"
+            },
+            "category": {
+              "type": "string",
+              "description": "Error category"
+            },
+            "status": {
+              "type": "integer",
+              "description": "HTTP status code"
+            }
+          },
+          "additionalProperties": false
+        },
+        "binding": {
+          "nodeId": "closeOutTheAssessment1",
+          "outputId": "error"
+        }
+      }
+    ]
+  },
+  "bindings": [
+    {
+      "id": "bFw8S2nYq",
+      "name": "name",
+      "type": "string",
+      "resource": "process",
+      "resourceKey": "Shared/Personal Injury Claims Demo.Agent - Injury Claims Triage",
+      "default": "Agent - Injury Claims Triage",
+      "propertyAttribute": "name",
+      "resourceSubType": "Agent"
+    },
+    {
+      "id": "bzzgBXbY0",
+      "name": "folderPath",
+      "type": "string",
+      "resource": "process",
+      "resourceKey": "Shared/Personal Injury Claims Demo.Agent - Injury Claims Triage",
+      "default": "Shared/Personal Injury Claims Demo",
+      "propertyAttribute": "folderPath",
+      "resourceSubType": "Agent"
+    },
+    {
+      "id": "bSw5UtJV7",
+      "name": "name",
+      "type": "string",
+      "resource": "process",
+      "resourceKey": "Shared/Personal Injury Claims Demo.Agent - Liability Assessment",
+      "default": "Agent - Liability Assessment",
+      "propertyAttribute": "name",
+      "resourceSubType": "Agent"
+    },
+    {
+      "id": "bPVG5O41D",
+      "name": "folderPath",
+      "type": "string",
+      "resource": "process",
+      "resourceKey": "Shared/Personal Injury Claims Demo.Agent - Liability Assessment",
+      "default": "Shared/Personal Injury Claims Demo",
+      "propertyAttribute": "folderPath",
+      "resourceSubType": "Agent"
+    },
+    {
+      "id": "bMrn4UVls",
+      "name": "name",
+      "type": "string",
+      "resource": "process",
+      "resourceKey": "Shared/Personal Injury Claims Demo.Agent - Subrogation Assessment",
+      "default": "Agent - Subrogation Assessment",
+      "propertyAttribute": "name",
+      "resourceSubType": "Agent"
+    },
+    {
+      "id": "b2seFCGYg",
+      "name": "folderPath",
+      "type": "string",
+      "resource": "process",
+      "resourceKey": "Shared/Personal Injury Claims Demo.Agent - Subrogation Assessment",
+      "default": "Shared/Personal Injury Claims Demo",
+      "propertyAttribute": "folderPath",
+      "resourceSubType": "Agent"
+    }
+  ],
+  "layout": {
+    "nodes": {
+      "start": {
+        "position": {
+          "x": -192,
+          "y": 0
+        },
+        "size": {
+          "width": 96,
+          "height": 96
+        }
+      },
+      "readCaseAndClaimContext1": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "size": {
+          "width": 96,
+          "height": 96
+        }
+      },
+      "normalizeReferralId1": {
+        "position": {
+          "x": 192,
+          "y": -16
+        },
+        "size": {
+          "width": 96,
+          "height": 96
+        }
+      },
+      "processInjuryReportPacketIxp1": {
+        "position": {
+          "x": 384,
+          "y": -32
+        },
+        "size": {
+          "width": 96,
+          "height": 96
+        }
+      },
+      "analyzeMedicalReport1": {
+        "position": {
+          "x": 576,
+          "y": -48
+        },
+        "size": {
+          "width": 96,
+          "height": 96
+        }
+      },
+      "langchainAnalyzeAccidentDetails1": {
+        "position": {
+          "x": 576,
+          "y": 144
+        },
+        "size": {
+          "width": 96,
+          "height": 96
+        }
+      },
+      "analysisComplete1": {
+        "position": {
+          "x": 768,
+          "y": -64
+        },
+        "size": {
+          "width": 96,
+          "height": 96
+        }
+      },
+      "injuryAssessmentAgent1": {
+        "position": {
+          "x": 960,
+          "y": -64
+        },
+        "size": {
+          "width": 96,
+          "height": 96
+        }
+      },
+      "setInjuryId1": {
+        "position": {
+          "x": 1152,
+          "y": -80
+        },
+        "size": {
+          "width": 96,
+          "height": 96
+        }
+      },
+      "recordInjuryAssessmentOnTheCase1": {
+        "position": {
+          "x": 1344,
+          "y": -96
+        },
+        "size": {
+          "width": 96,
+          "height": 96
+        }
+      },
+      "closeOutTheAssessment1": {
+        "position": {
+          "x": 1536,
+          "y": -112
+        },
+        "size": {
+          "width": 96,
+          "height": 96
+        }
+      },
+      "end1": {
+        "position": {
+          "x": 1728,
+          "y": -128
+        },
+        "size": {
+          "width": 96,
+          "height": 96
+        }
+      }
+    }
+  }
+}

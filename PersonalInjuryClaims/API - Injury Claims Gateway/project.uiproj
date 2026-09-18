@@ -1,0 +1,6 @@
+{
+  "ProjectType": "Api",
+  "Name": "API - Injury Claims Gateway",
+  "Description": null,
+  "MainFile": "Workflow.json"
+}
