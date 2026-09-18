@@ -30,7 +30,10 @@
       "retentionAction": "Delete",
       "retentionPeriod": 30,
       "staleRetentionAction": "Delete",
-      "staleRetentionPeriod": 180
+      "staleRetentionPeriod": 180,
+      "entryPoints": "{\n  \"$schema\": \"https://cloud.uipath.com/draft/2024-12/entry-point\",\n  \"$id\": \"entry-points.json\",\n  \"entryPoints\": [\n    {\n      \"filePath\": \"content/Workflow.json\",\n      \"uniqueId\": \"1b9a4fdf-2004-48f8-8b1f-7a7dbe6d35b3\",\n      \"type\": \"Api\",\n      \"input\": null,\n      \"output\": null\n    }\n  ]\n}\n",
+      "entryPointName": "content/Workflow.json",
+      "entryPointUniqueId": "1b9a4fdf-2004-48f8-8b1f-7a7dbe6d35b3"
     },
     "locks": [],
     "key": "7b533c97-255b-422f-abf4-76d90d6e9099",

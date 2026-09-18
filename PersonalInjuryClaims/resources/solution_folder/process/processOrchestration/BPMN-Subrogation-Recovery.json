@@ -29,7 +29,10 @@
       "retentionAction": "Delete",
       "retentionPeriod": 30,
       "staleRetentionAction": "Delete",
-      "staleRetentionPeriod": 180
+      "staleRetentionPeriod": 180,
+      "entryPoints": "{\n  \"$schema\": \"https://cloud.uipath.com/draft/2024-12/entry-point\",\n  \"$id\": \"entry-points.json\",\n  \"entryPoints\": [\n    {\n      \"filePath\": \"/content/BPMN-Subrogation-Recovery.bpmn#Event_start\",\n      \"uniqueId\": \"02feec65-7747-42e7-a022-dc014a66fda6\",\n      \"type\": \"ProcessOrchestration\",\n      \"input\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"scenario\": {\n            \"type\": \"string\"\n          },\n          \"claimReference\": {\n            \"type\": \"string\"\n          },\n          \"liabilityBasisCode\": {\n            \"type\": \"string\"\n          }\n        }\n      },\n      \"output\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"recoveryAmountReceived\": {\n            \"type\": \"number\"\n          },\n          \"claimStatus\": {\n            \"type\": \"string\"\n          }\n        }\n      },\n      \"displayName\": \"Manual trigger\"\n    }\n  ]\n}\n",
+      "entryPointName": "/content/BPMN-Subrogation-Recovery.bpmn#Event_start",
+      "entryPointUniqueId": "02feec65-7747-42e7-a022-dc014a66fda6"
     },
     "locks": [],
     "key": "aa1cf09e-1420-4609-a0ca-f856907db728",

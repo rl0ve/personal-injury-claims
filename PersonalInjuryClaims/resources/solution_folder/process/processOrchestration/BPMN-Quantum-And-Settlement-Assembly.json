@@ -29,7 +29,10 @@
       "retentionAction": "Delete",
       "retentionPeriod": 30,
       "staleRetentionAction": "Delete",
-      "staleRetentionPeriod": 180
+      "staleRetentionPeriod": 180,
+      "entryPoints": "{\n  \"$schema\": \"https://cloud.uipath.com/draft/2024-12/entry-point\",\n  \"$id\": \"entry-points.json\",\n  \"entryPoints\": [\n    {\n      \"filePath\": \"/content/BPMN-Quantum-And-Settlement-Assembly.bpmn#Event_start\",\n      \"uniqueId\": \"48ec445a-c483-45ac-a590-b5ea286675a7\",\n      \"type\": \"ProcessOrchestration\",\n      \"input\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"scenario\": {\n            \"type\": \"string\"\n          },\n          \"claimReference\": {\n            \"type\": \"string\"\n          },\n          \"liabilityBasisCode\": {\n            \"type\": \"string\"\n          },\n          \"contributoryNegligenceFlag\": {\n            \"type\": \"boolean\"\n          }\n        }\n      },\n      \"output\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"estimatedCost\": {\n            \"type\": \"number\"\n          },\n          \"settlementBasis\": {\n            \"type\": \"string\"\n          },\n          \"settlementPath\": {\n            \"type\": \"string\"\n          }\n        }\n      },\n      \"displayName\": \"Manual trigger\"\n    }\n  ]\n}\n",
+      "entryPointName": "/content/BPMN-Quantum-And-Settlement-Assembly.bpmn#Event_start",
+      "entryPointUniqueId": "48ec445a-c483-45ac-a590-b5ea286675a7"
     },
     "locks": [],
     "key": "42caa4df-448b-45d5-a8f4-5d24cbf0428f",

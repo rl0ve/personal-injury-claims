@@ -52,7 +52,10 @@
       "retentionAction": "Delete",
       "retentionPeriod": 30,
       "staleRetentionAction": "Delete",
-      "staleRetentionPeriod": 180
+      "staleRetentionPeriod": 180,
+      "entryPoints": "{\n  \"$schema\": \"https://cloud.uipath.com/draft/2024-12/entry-point\",\n  \"$id\": \"entry-points.json\",\n  \"entryPoints\": [\n    {\n      \"filePath\": \"content/Workflow.json\",\n      \"uniqueId\": \"5dc9d6c3-1e07-4b72-9aa0-f67b09303e5a\",\n      \"type\": \"Api\",\n      \"input\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"recordId\": {\n            \"type\": \"string\"\n          }\n        },\n        \"title\": \"Inputs\"\n      },\n      \"output\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"file\": {\n            \"$ref\": \"#/definitions/job-attachment\"\n          }\n        },\n        \"title\": \"Outputs\",\n        \"definitions\": {\n          \"job-attachment\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"ID\": {\n                \"type\": \"string\",\n                \"description\": \"Orchestrator attachment key\"\n              },\n              \"FullName\": {\n                \"type\": \"string\",\n                \"description\": \"File name\"\n              },\n              \"MimeType\": {\n                \"type\": \"string\",\n                \"description\": \"The MIME type of the content, such as \\\"application/json\\\" or \\\"image/png\\\"\"\n              },\n              \"Metadata\": {\n                \"type\": \"object\",\n                \"description\": \"Dictionary<string, string> of metadata\",\n                \"additionalProperties\": {\n                  \"type\": \"string\"\n                }\n              }\n            },\n            \"required\": [\n              \"ID\"\n            ],\n            \"x-uipath-resource-kind\": \"JobAttachment\"\n          }\n        }\n      }\n    }\n  ]\n}",
+      "entryPointName": "content/Workflow.json",
+      "entryPointUniqueId": "5dc9d6c3-1e07-4b72-9aa0-f67b09303e5a"
     },
     "locks": [],
     "key": "742122d0-6c8c-46e8-a1e6-39cd2a5e2915",

@@ -29,7 +29,10 @@
       "retentionAction": "Delete",
       "retentionPeriod": 30,
       "staleRetentionAction": "Delete",
-      "staleRetentionPeriod": 180
+      "staleRetentionPeriod": 180,
+      "entryPoints": "{\n  \"$schema\": \"https://cloud.uipath.com/draft/2024-12/entry-point\",\n  \"$id\": \"entry-points.json\",\n  \"entryPoints\": [\n    {\n      \"filePath\": \"/content/BPMN-Early-Intervention-Dispatch.bpmn#Event_start\",\n      \"uniqueId\": \"4e32495a-467c-4bfe-884b-5388945335cc\",\n      \"type\": \"ProcessOrchestration\",\n      \"input\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"scenario\": {\n            \"type\": \"string\"\n          },\n          \"claimReference\": {\n            \"type\": \"string\"\n          },\n          \"incidentLocation\": {\n            \"type\": \"string\"\n          },\n          \"vulnerableCustomerFlag\": {\n            \"type\": \"boolean\"\n          }\n        }\n      },\n      \"output\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"claimStatus\": {\n            \"type\": \"string\"\n          }\n        }\n      },\n      \"displayName\": \"Manual trigger\"\n    }\n  ]\n}\n",
+      "entryPointName": "/content/BPMN-Early-Intervention-Dispatch.bpmn#Event_start",
+      "entryPointUniqueId": "4e32495a-467c-4bfe-884b-5388945335cc"
     },
     "locks": [],
     "key": "f694a763-d8e3-42c9-8eae-3e78dc28f0a3",

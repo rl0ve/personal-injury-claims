@@ -293,7 +293,10 @@
       "retentionAction": "Delete",
       "retentionPeriod": 30,
       "staleRetentionAction": "Delete",
-      "staleRetentionPeriod": 180
+      "staleRetentionPeriod": 180,
+      "entryPoints": "{\n    \"$schema\": \"https://cloud.uipath.com/draft/2024-12/entry-point\",\n    \"$id\": \"entry-points.json\",\n    \"entryPoints\": [\n        {\n            \"filePath\": \"/content/caseplan.json.bpmn#trigger_Start1\",\n            \"uniqueId\": \"ec5a23ec-206f-4736-bf9e-49e93a63920e\",\n            \"type\": \"CaseManagement\",\n            \"input\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"scenario\": {\n                        \"type\": \"string\",\n                        \"title\": \"scenario\",\n                        \"default\": \"Standard\"\n                    },\n                    \"runId\": {\n                        \"type\": \"string\",\n                        \"title\": \"runId\",\n                        \"default\": \"5182\"\n                    },\n                    \"ownerEmail\": {\n                        \"type\": \"string\",\n                        \"title\": \"ownerEmail\",\n                        \"default\": \"robert.love@uipath.com\"\n                    }\n                }\n            },\n            \"output\": {\n                \"type\": \"object\",\n                \"properties\": {\n                    \"caseOutcome\": {\n                        \"type\": \"string\",\n                        \"title\": \"caseOutcome\",\n                        \"default\": \"\"\n                    },\n                    \"closureReasonCode\": {\n                        \"type\": \"string\",\n                        \"title\": \"closureReasonCode\",\n                        \"default\": \"\"\n                    }\n                }\n            },\n            \"displayName\": \"Report a personal injury claim\"\n        }\n    ]\n}\n",
+      "entryPointName": "/content/caseplan.json.bpmn#trigger_Start1",
+      "entryPointUniqueId": "ec5a23ec-206f-4736-bf9e-49e93a63920e"
     },
     "locks": [],
     "key": "917cd626-5053-45f2-9651-091e8eabc9ad",
