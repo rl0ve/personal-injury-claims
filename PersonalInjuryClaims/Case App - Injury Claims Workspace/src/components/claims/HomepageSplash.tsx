@@ -126,7 +126,7 @@ const STAGE_SHORT: Record<string, string> = {
   "Liability Assessment & Admission": "Liability",
   "Medical Evidence & Quantum Decision": "Medical",
   "Rehabilitation & Return-to-Work": "Rehab",
-  "Quantum Assessment & Settlement Negotiation": "Quantum",
+  "Treatment Delivery & Provider Management": "Quantum",
   "Subrogation & Recovery": "Recover",
   "Settlement & Closure": "Close",
 };

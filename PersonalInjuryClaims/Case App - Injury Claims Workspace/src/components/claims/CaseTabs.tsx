@@ -287,7 +287,12 @@ export function CaseTabs({
                   }
                   title="Summary"
                 >
-                  <span className="text-xs font-normal text-muted-foreground">AI generated</span>
+                  {/* Not "AI generated": caseSummary.ts assembles this from fixed
+                      sentence templates and case values. Saying otherwise invites a
+                      question about the model that the demo cannot answer. */}
+                  <span className="text-xs font-normal text-muted-foreground">
+                    From the case record
+                  </span>
                 </WidgetHeader>
                 {/* Progress, not the open decision. The Action needed card
                     beside this one states what is owed and why it reached a

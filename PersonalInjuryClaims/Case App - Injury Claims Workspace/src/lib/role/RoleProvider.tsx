@@ -42,7 +42,7 @@ export const ROLE_PROFILES: Record<Role, RoleProfile> = {
     title: "Claims Manager",
     initials: "PN",
     ownerGroup: "Aldergate Claims Operations",
-    stages: ["Quantum Assessment & Settlement Negotiation", "Settlement & Closure", "Escalation & Authority Referral"],
+    stages: ["Treatment Delivery & Provider Management", "Settlement & Closure", "Escalation & Authority Referral"],
   },
   adjuster: {
     role: "adjuster",

@@ -154,7 +154,7 @@ export const PRIMARY_STAGES: StageDefinition[] = [
   },
   {
     id: "s6",
-    name: "Quantum Assessment & Settlement Negotiation",
+    name: "Treatment Delivery & Provider Management",
     kind: "primary",
     sla: "4 hr in-policy decision",
     slaMinutes: 4 * HOUR,
@@ -472,7 +472,7 @@ export const CASE_PLAN_VERSIONS = [
     version: "v2",
     label: "recovery gate",
     publishedAt: "2026-08-24T16:20:00Z",
-    note: "Adds Subrogation & Recovery as a primary stage (4 tasks) between Quantum Assessment & Settlement Negotiation and Settlement & Closure. Settlement & Closure now requires recovery reviewed = true; the recovery-detected event targets the new stage. Running claims can migrate without restarting.",
+    note: "Adds Subrogation & Recovery as a primary stage (4 tasks) between Treatment Delivery & Provider Management and Settlement & Closure. Settlement & Closure now requires recovery reviewed = true; the recovery-detected event targets the new stage. Running claims can migrate without restarting.",
   },
 ] as const;
 
