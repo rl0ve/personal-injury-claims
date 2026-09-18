@@ -89,9 +89,25 @@ export function classifyStage(stage: CaseGetStageResponse): StageState {
   const status = normaliseStatus(stage.status);
   if (COMPLETED_STATUSES.has(status)) return "completed";
   if (SKIPPED_STATUSES.has(status)) return "skipped";
-  if (IN_PROGRESS_STATUSES.has(status)) return "active";
 
   const tasks = flattenTasks(stage);
+
+  /*
+    Maestro never moves a CaseStage off InProgress. A case sitting in Settlement
+    & Closure still reports Fnol01, Trge02 and Invs03 as InProgress, so trusting
+    the stage status alone meant no stage was ever "completed" and every summary
+    read "0 of 8 stages are complete".
+
+    So an in-progress stage whose tasks have all finished counts as complete.
+    The stage the case is actually in keeps at least one task open, which is what
+    keeps it "active" rather than sweeping it up with the rest.
+  */
+  if (IN_PROGRESS_STATUSES.has(status)) {
+    const live = tasks.map((t) => normaliseStatus(t.status));
+    if (live.length > 0 && live.every((s) => COMPLETED_STATUSES.has(s))) return "completed";
+    return "active";
+  }
+
   if (tasks.length === 0) return "pending";
 
   const statuses = tasks.map((t) => normaliseStatus(t.status));

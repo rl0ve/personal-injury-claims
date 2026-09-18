@@ -91,8 +91,18 @@ export function caseProgressFacts(
     { label: "Progress", value: `${done} of ${total} stages complete` },
     { label: "Current stage", value: claim.currentStage },
     {
+      /*
+        "Coverage.Position" is a property-claims variable and does not exist in
+        the injury case plan, so this bullet read "Not yet set" on every case
+        however far it had got. The injury plan carries liabilityOutcome once a
+        decision is recorded and liabilityBasisCode from investigation onwards.
+      */
       label: "Liability position",
-      value: String(claim.variables["Coverage.Position"] ?? "Not yet set"),
+      value: String(
+        claim.variables["liabilityOutcome"] ??
+          claim.variables["liabilityBasisCode"] ??
+          "Not yet set",
+      ),
     },
     {
       label: "Open lanes",

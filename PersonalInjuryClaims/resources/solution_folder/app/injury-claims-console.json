@@ -1,0 +1,24 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "injury-claims-console",
+    "kind": "app",
+    "apiVersion": "apps.uipath.com/v1",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "injury-claims-console",
+      "version": "1.0.10",
+      "appVersionRef": "injury-claims-console:1.0.10"
+    },
+    "locks": [],
+    "key": "0f983106-51b6-40c2-9360-a0968764392a",
+    "files": []
+  }
+}
