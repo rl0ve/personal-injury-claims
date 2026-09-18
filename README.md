@@ -11,13 +11,14 @@ deployed to the `businessorchestration` organisation, `DefaultTenant`.
 
 | Path | What it is |
 |---|---|
-| `docs/BRIEF.md` | Scope brief derived from the 2026-09-17 investor demo call, with two corrections verified against the CLI |
-| `docs/maestro-case-demo-script.md` | The presenter script. Narrative ground truth, including the "don't say" list |
-| `docs/completion-plan.md` | The plan followed to get from the property build to this one |
 | `docs/BUILD-NOTES.md` | Traps hit during the build and how each was resolved |
 | `demo-assets/updated-medical-records.pdf` | The document uploaded on camera at the ~5:00 mark |
 | `docs/video-narration.md` | Per-frame narration for the screenshot video, demo beats only |
 | `PersonalInjuryClaims/` | The solution source: case plan, agents, case apps, APIs, flow and BPMN projects |
+
+The presenter script, the scope brief and the completion plan are kept out of
+this repo: they name people and schedule internal meetings. Ask Robert for them
+directly.
 
 ## The demo in one paragraph
 
