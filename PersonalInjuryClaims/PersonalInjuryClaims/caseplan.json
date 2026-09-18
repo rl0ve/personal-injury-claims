@@ -969,8 +969,8 @@
       "name": "name",
       "type": "string",
       "resource": "app",
-      "resourceKey": "Shared.injury-claims-console",
-      "default": "injury-claims-console",
+      "resourceKey": "solution_folder.injury-claims-action",
+      "default": "injury-claims-action",
       "propertyAttribute": "name"
     },
     {
@@ -978,8 +978,8 @@
       "name": "folderPath",
       "type": "string",
       "resource": "app",
-      "resourceKey": "Shared.injury-claims-console",
-      "default": "Shared",
+      "resourceKey": "solution_folder.injury-claims-action",
+      "default": "",
       "propertyAttribute": "folderPath"
     },
     {

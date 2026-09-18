@@ -1,0 +1,33 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "injury-claims-action",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": "injury-claims-action.1.0.0.nupkg",
+      "fileReference": "injury-claims-action_1.0.0",
+      "name": "injury-claims-action",
+      "version": "1.0.0"
+    },
+    "locks": [],
+    "key": "injury-claims-action:1.0.0",
+    "files": [
+      {
+        "key": "injury-claims-action_1.0.0",
+        "name": "injury-claims-action.1.0.0.nupkg",
+        "url": "https://cloud.uipath.com/businessorchestration/DefaultTenant/orchestrator_/odata/Processes/UiPath.Server.Configuration.OData.DownloadPackage(key='injury-claims-action:1.0.0')?feedId=b9bd3227-068c-4a37-aea6-47f403cdf6ad",
+        "kind": "Package",
+        "version": "1.0.0"
+      }
+    ]
+  }
+}

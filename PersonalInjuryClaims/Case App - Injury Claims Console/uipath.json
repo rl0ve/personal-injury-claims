@@ -1,4 +1,4 @@
 {
-  "scope": "OR.Tasks OR.Tasks.Read OR.Folders.Read OR.Execution.Read",
+  "scope": "OR.Tasks OR.Tasks.Read OR.Folders.Read OR.Execution.Read DataFabric.Data.Read DataFabric.Data.Write DataFabric.Schema.Read",
   "clientId": "ce33064e-0fdf-4e81-8269-09e0374941fa"
 }
