@@ -49,10 +49,7 @@
             "isExpression": false
           }
         },
-        "resourceKind": "App",
-        "resourceKey": "dcb50731-078a-4fb2-a754-ece8be29fe06",
-        "resourceName": "injury-claims-console_1",
-        "folderKey": "359ef0ed-2404-4636-bf92-310ccdeea2dc"
+        "resourceKind": "App"
       },
       {
         "bindingType": "process",
